@@ -20,25 +20,34 @@ Rule learner AnyBURL (Anytime Bottom Up Rule Learning):
 
 https://web.informatik.uni-mannheim.de/AnyBURL/
 
+## Use case and data sets
 
+Bio2RDF Drug Bank data set:
 
-## Use case and data set
+* https://download.bio2rdf.org/#/release/4/drugbank/
 
-Drug Bank data set
+Logs of Bio2RDF user's SPARQL queries: 
 
-Logs of user's queries 
-
-
+* https://umids-download.137.120.31.102.nip.io/bio2rdf/logs/
 
 ## Other tools
 
-Representing SPARQL as RDF: LSQ 
+### Representing SPARQL as RDF: LSQ 
 
 http://lsq.aksw.org/
 
+Skip tests and build:
+
+```bash
+mvn -P bundle clean install -DskipTests
+```
+
+Run the built jar:
+
+```bash
+java -jar .\lsq-cli\target\lsq-cli-*-jar-with-dependencies.jar
+```
 
 
 
-
-## 
 
