@@ -1,0 +1,995 @@
+query,domain,agent,timestamp
+CONSTRUCT { ?s ?p ?o . } WHERE { SERVICE <http://bio2rdf.org/sparql> { ?s ?p ?o . } } LIMIT 1,bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:13:19.227Z
+"SELECT DISTINCT ?prefix WHERE { { SELECT DISTINCT ?p WHERE { ?s ?p ?o . } } . BIND(IF(CONTAINS(STR(?p), ""#""), REPLACE(STR(?p), ""#[^#]*$"", ""#""), REPLACE(STR(?p), ""/[^/]*$"", ""/"")) AS ?prefix) }",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:18:36.078Z
+select * where {[] a ?Concept} LIMIT 100&format=text/html&timeout=0&debug=on&run= Run Query ,bio2rdf.org,"Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",2020-03-11T13:48:04.625Z
+"With the advantages of utilizing a job recruiter weighed towards the disadvantages you'll discover that most often using a job headhunter is not 
+the very best option for you or your organization. Whhen Mr.
+Delbart’s job att Orajge CH turned redundant, he was employed 
+as Head of Support for Transport Publics Genevois, a personal 
+company offering transport facilities to the public.
+Let me let you know slightly about Mr. Delbart’s career before analyzing 
+the common principles that it is best to observe.
+Since 2009, Betts Recruiting has been serving to veterans 
+make career dreams come true and serving to corporations scale 
+for growth. At the time, he was inquisitive about having a technical profession related to Information Technology (IT) improvement and maintenance.
+
+Having learned about the value of an MBA program from a colleague, he next started 
+finding out at Rushmore University, where he centered on the idea and follow of promoting, sustainable growth, the Internet, 
+andd IT. An unexpected benefit of his MBA program was learning the right way to be simpler in researching and understanding 
+new topics on his personal, making iit easier for 
+him to prokceed his schooling after graduating.Seeking much more variety and scope for his profession, he joined with a associate to launch a 
+web design agency.
+
+Right now, it haas yet to point out up in current government efficiency knowledge,
+annd truly, tthe latest jobs report showed even a slight drop within the number of financial professionals.
+Even if the person you’re talking to doesn’t endure from that 
+specific problem, by specializing in problems moderately than some bland recitation about what you ""do"", you dramatically increase 
+the chance that they will remember you. You will want to think aout your consolation level with different coaching strategies, comparable to speaking in entrance of 
+massive groups, one-on-one coaching, talking over the telephone, corresponding 
+by electronic mail or another platform, and find the supply platform that works finest for you.
+The point is that if you want to get someone’s attention yyou should concentrate on the 
+problems that you simply clear up. In some unspecified time in the future 
+the one distinction between you and the latest employee 
+is thaqt you've got more experience. If a headhunter contacts you about a specific job, the primary question that 
+you need to pose to him or her is ""How many people have you positioned with this employer, the one you might be contacting me about, previously 12 months? They're lawyers or attorney recruiters who help the unemployed land a job.
+
+Who are you aware who is aware of somebody who knows some else at the company you might be serious about? Thus, somebody who began out handling a single aspect of the nationwide actions for the company’s operations would finally handle only a small portion of that original side. Iris posted on the Gmail Help forum instructions for determining whether or not somebody is forwarding mail to the account. Next, he left Swisscom to join a new cellular vendor, Orange CH, which allowed him the opportunity to assist construct a company from scratch. The subsequent method and likewise the newest solution to recruit help is to make use of a web-based service. As I considered his career, I might clearly see a method out for people who discover themselves in an excessively circumscribed, ever-narrowing job in an more and more specialized industry where little differentiation seems to be attainable. All that’s left for us to do now could be to send out our best agents out to apprehend the scofflaws, now that we've got uncovered their nefarious plot.
+
+She might attempt to get attention by saying, ""I’m 
+a marketing advisor."" In a single ear and out the other. However, every reply follows the same format off hooking consideration by focusing on an issue. Use an alternate digital or paper format. Ask your self: Do you really need to use Executive Search Services to search out your nnew leader? Instead, at this time's' most successful businesses are turning to skilled headhunters tto finish their govt search in China. Search for headhunter positions on websites like Glassdoor, Indeed, or LinkedIn. Also feedback in a LinkedIn (or different social media) saying 'I am involved' or 'I qualify' do not yield any outcomes. While the Deell method is great forr handling progress, it can be stultifying for the individuals whose jobs grow to be smaller and smaller in scope as the company’s imension will increase. Right now, there are still more jobs which are cut than new hires. Whether or not you ever have that type of alternative, you'll turn out to be effectively prepared to take on thrilling new roles and to be mire profitable on the older ones.&format=text/html&timeout=0&debug=on&run=Go",bio2rdf.org,"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 YaBrowser/18.2.1.196 Yowser/2.5 Safari/537.36",2021-04-20T10:18:11.078Z
+"With the advantages of utilizing a job recruiter weighed towards the disadvantages you'll discover that most often using a job headhunter is not 
+the very best option for you or your organization. Whhen Mr.
+Delbart’s job att Orajge CH turned redundant, he was employed 
+as Head of Support for Transport Publics Genevois, a personal 
+company offering transport facilities to the public.
+Let me let you know slightly about Mr. Delbart’s career before analyzing 
+the common principles that it is best to observe.
+Since 2009, Betts Recruiting has been serving to veterans 
+make career dreams come true and serving to corporations scale 
+for growth. At the time, he was inquisitive about having a technical profession related to Information Technology (IT) improvement and maintenance.
+
+Having learned about the value of an MBA program from a colleague, he next started 
+finding out at Rushmore University, where he centered on the idea and follow of promoting, sustainable growth, the Internet, 
+andd IT. An unexpected benefit of his MBA program was learning the right way to be simpler in researching and understanding 
+new topics on his personal, making iit easier for 
+him to prokceed his schooling after graduating.Seeking much more variety and scope for his profession, he joined with a associate to launch a 
+web design agency.
+
+Right now, it haas yet to point out up in current government efficiency knowledge,
+annd truly, tthe latest jobs report showed even a slight drop within the number of financial professionals.
+Even if the person you’re talking to doesn’t endure from that 
+specific problem, by specializing in problems moderately than some bland recitation about what you ""do"", you dramatically increase 
+the chance that they will remember you. You will want to think aout your consolation level with different coaching strategies, comparable to speaking in entrance of 
+massive groups, one-on-one coaching, talking over the telephone, corresponding 
+by electronic mail or another platform, and find the supply platform that works finest for you.
+The point is that if you want to get someone’s attention yyou should concentrate on the 
+problems that you simply clear up. In some unspecified time in the future 
+the one distinction between you and the latest employee 
+is thaqt you've got more experience. If a headhunter contacts you about a specific job, the primary question that 
+you need to pose to him or her is ""How many people have you positioned with this employer, the one you might be contacting me about, previously 12 months? They're lawyers or attorney recruiters who help the unemployed land a job.
+
+Who are you aware who is aware of somebody who knows some else at the company you might be serious about? Thus, somebody who began out handling a single aspect of the nationwide actions for the company’s operations would finally handle only a small portion of that original side. Iris posted on the Gmail Help forum instructions for determining whether or not somebody is forwarding mail to the account. Next, he left Swisscom to join a new cellular vendor, Orange CH, which allowed him the opportunity to assist construct a company from scratch. The subsequent method and likewise the newest solution to recruit help is to make use of a web-based service. As I considered his career, I might clearly see a method out for people who discover themselves in an excessively circumscribed, ever-narrowing job in an more and more specialized industry where little differentiation seems to be attainable. All that’s left for us to do now could be to send out our best agents out to apprehend the scofflaws, now that we've got uncovered their nefarious plot.
+
+She might attempt to get attention by saying, ""I’m 
+a marketing advisor."" In a single ear and out the other. However, every reply follows the same format off hooking consideration by focusing on an issue. Use an alternate digital or paper format. Ask your self: Do you really need to use Executive Search Services to search out your nnew leader? Instead, at this time's' most successful businesses are turning to skilled headhunters tto finish their govt search in China. Search for headhunter positions on websites like Glassdoor, Indeed, or LinkedIn. Also feedback in a LinkedIn (or different social media) saying 'I am involved' or 'I qualify' do not yield any outcomes. While the Deell method is great forr handling progress, it can be stultifying for the individuals whose jobs grow to be smaller and smaller in scope as the company’s imension will increase. Right now, there are still more jobs which are cut than new hires. Whether or not you ever have that type of alternative, you'll turn out to be effectively prepared to take on thrilling new roles and to be mire profitable on the older ones.&format=text/html&timeout=0&debug=on&run=Go",bio2rdf.org,"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 YaBrowser/18.2.1.196 Yowser/2.5 Safari/537.36",2021-04-20T10:18:11.132Z
+"With the advantages of utilizing a job recruiter weighed towards the disadvantages you'll discover that most often using a job headhunter is not 
+the very best option for you or your organization. Whhen Mr.
+Delbart’s job att Orajge CH turned redundant, he was employed 
+as Head of Support for Transport Publics Genevois, a personal 
+company offering transport facilities to the public.
+Let me let you know slightly about Mr. Delbart’s career before analyzing 
+the common principles that it is best to observe.
+Since 2009, Betts Recruiting has been serving to veterans 
+make career dreams come true and serving to corporations scale 
+for growth. At the time, he was inquisitive about having a technical profession related to Information Technology (IT) improvement and maintenance.
+
+Having learned about the value of an MBA program from a colleague, he next started 
+finding out at Rushmore University, where he centered on the idea and follow of promoting, sustainable growth, the Internet, 
+andd IT. An unexpected benefit of his MBA program was learning the right way to be simpler in researching and understanding 
+new topics on his personal, making iit easier for 
+him to prokceed his schooling after graduating.Seeking much more variety and scope for his profession, he joined with a associate to launch a 
+web design agency.
+
+Right now, it haas yet to point out up in current government efficiency knowledge,
+annd truly, tthe latest jobs report showed even a slight drop within the number of financial professionals.
+Even if the person you’re talking to doesn’t endure from that 
+specific problem, by specializing in problems moderately than some bland recitation about what you ""do"", you dramatically increase 
+the chance that they will remember you. You will want to think aout your consolation level with different coaching strategies, comparable to speaking in entrance of 
+massive groups, one-on-one coaching, talking over the telephone, corresponding 
+by electronic mail or another platform, and find the supply platform that works finest for you.
+The point is that if you want to get someone’s attention yyou should concentrate on the 
+problems that you simply clear up. In some unspecified time in the future 
+the one distinction between you and the latest employee 
+is thaqt you've got more experience. If a headhunter contacts you about a specific job, the primary question that 
+you need to pose to him or her is ""How many people have you positioned with this employer, the one you might be contacting me about, previously 12 months? They're lawyers or attorney recruiters who help the unemployed land a job.
+
+Who are you aware who is aware of somebody who knows some else at the company you might be serious about? Thus, somebody who began out handling a single aspect of the nationwide actions for the company’s operations would finally handle only a small portion of that original side. Iris posted on the Gmail Help forum instructions for determining whether or not somebody is forwarding mail to the account. Next, he left Swisscom to join a new cellular vendor, Orange CH, which allowed him the opportunity to assist construct a company from scratch. The subsequent method and likewise the newest solution to recruit help is to make use of a web-based service. As I considered his career, I might clearly see a method out for people who discover themselves in an excessively circumscribed, ever-narrowing job in an more and more specialized industry where little differentiation seems to be attainable. All that’s left for us to do now could be to send out our best agents out to apprehend the scofflaws, now that we've got uncovered their nefarious plot.
+
+She might attempt to get attention by saying, ""I’m 
+a marketing advisor."" In a single ear and out the other. However, every reply follows the same format off hooking consideration by focusing on an issue. Use an alternate digital or paper format. Ask your self: Do you really need to use Executive Search Services to search out your nnew leader? Instead, at this time's' most successful businesses are turning to skilled headhunters tto finish their govt search in China. Search for headhunter positions on websites like Glassdoor, Indeed, or LinkedIn. Also feedback in a LinkedIn (or different social media) saying 'I am involved' or 'I qualify' do not yield any outcomes. While the Deell method is great forr handling progress, it can be stultifying for the individuals whose jobs grow to be smaller and smaller in scope as the company’s imension will increase. Right now, there are still more jobs which are cut than new hires. Whether or not you ever have that type of alternative, you'll turn out to be effectively prepared to take on thrilling new roles and to be mire profitable on the older ones.&format=text/html&timeout=0&debug=on&run=Go",bio2rdf.org,"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 YaBrowser/18.2.1.196 Yowser/2.5 Safari/537.36",2021-04-20T10:18:11.190Z
+"With the advantages of utilizing a job recruiter weighed towards the disadvantages you'll discover that most often using a job headhunter is not 
+the very best option for you or your organization. Whhen Mr.
+Delbart’s job att Orajge CH turned redundant, he was employed 
+as Head of Support for Transport Publics Genevois, a personal 
+company offering transport facilities to the public.
+Let me let you know slightly about Mr. Delbart’s career before analyzing 
+the common principles that it is best to observe.
+Since 2009, Betts Recruiting has been serving to veterans 
+make career dreams come true and serving to corporations scale 
+for growth. At the time, he was inquisitive about having a technical profession related to Information Technology (IT) improvement and maintenance.
+
+Having learned about the value of an MBA program from a colleague, he next started 
+finding out at Rushmore University, where he centered on the idea and follow of promoting, sustainable growth, the Internet, 
+andd IT. An unexpected benefit of his MBA program was learning the right way to be simpler in researching and understanding 
+new topics on his personal, making iit easier for 
+him to prokceed his schooling after graduating.Seeking much more variety and scope for his profession, he joined with a associate to launch a 
+web design agency.
+
+Right now, it haas yet to point out up in current government efficiency knowledge,
+annd truly, tthe latest jobs report showed even a slight drop within the number of financial professionals.
+Even if the person you’re talking to doesn’t endure from that 
+specific problem, by specializing in problems moderately than some bland recitation about what you ""do"", you dramatically increase 
+the chance that they will remember you. You will want to think aout your consolation level with different coaching strategies, comparable to speaking in entrance of 
+massive groups, one-on-one coaching, talking over the telephone, corresponding 
+by electronic mail or another platform, and find the supply platform that works finest for you.
+The point is that if you want to get someone’s attention yyou should concentrate on the 
+problems that you simply clear up. In some unspecified time in the future 
+the one distinction between you and the latest employee 
+is thaqt you've got more experience. If a headhunter contacts you about a specific job, the primary question that 
+you need to pose to him or her is ""How many people have you positioned with this employer, the one you might be contacting me about, previously 12 months? They're lawyers or attorney recruiters who help the unemployed land a job.
+
+Who are you aware who is aware of somebody who knows some else at the company you might be serious about? Thus, somebody who began out handling a single aspect of the nationwide actions for the company’s operations would finally handle only a small portion of that original side. Iris posted on the Gmail Help forum instructions for determining whether or not somebody is forwarding mail to the account. Next, he left Swisscom to join a new cellular vendor, Orange CH, which allowed him the opportunity to assist construct a company from scratch. The subsequent method and likewise the newest solution to recruit help is to make use of a web-based service. As I considered his career, I might clearly see a method out for people who discover themselves in an excessively circumscribed, ever-narrowing job in an more and more specialized industry where little differentiation seems to be attainable. All that’s left for us to do now could be to send out our best agents out to apprehend the scofflaws, now that we've got uncovered their nefarious plot.
+
+She might attempt to get attention by saying, ""I’m 
+a marketing advisor."" In a single ear and out the other. However, every reply follows the same format off hooking consideration by focusing on an issue. Use an alternate digital or paper format. Ask your self: Do you really need to use Executive Search Services to search out your nnew leader? Instead, at this time's' most successful businesses are turning to skilled headhunters tto finish their govt search in China. Search for headhunter positions on websites like Glassdoor, Indeed, or LinkedIn. Also feedback in a LinkedIn (or different social media) saying 'I am involved' or 'I qualify' do not yield any outcomes. While the Deell method is great forr handling progress, it can be stultifying for the individuals whose jobs grow to be smaller and smaller in scope as the company’s imension will increase. Right now, there are still more jobs which are cut than new hires. Whether or not you ever have that type of alternative, you'll turn out to be effectively prepared to take on thrilling new roles and to be mire profitable on the older ones.&format=text/html&timeout=0&debug=on&run=Go",bio2rdf.org,"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 YaBrowser/18.2.1.196 Yowser/2.5 Safari/537.36",2021-04-20T10:18:11.246Z
+CONSTRUCT { ?s ?p ?o . } WHERE { SERVICE <http://bio2rdf.org/sparql> { ?s ?p ?o . } } LIMIT 1,bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-10T07:21:34.538Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://taxonomy.bio2rdf.org/fct/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:00:13.444Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://cu.biomodels.bio2rdf.org/fct/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:29:43.062Z
+"SELECT  ?g
+WHERE
+  { GRAPH ?g
+      { ?sub  ?pred  ?obj }
+  }
+LIMIT   10
+",bio2rdf.org,Apache-Jena-ARQ/3.1.0,2020-03-11T18:13:04.058Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://chem2bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:09:18.954Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://interpro.bio2rdf.org/fct/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:29:39.584Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://orphanet.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:39:49.897Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://clinicaltrials.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:11:21.168Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://download.bio2df.org/release/4/sider/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:17:26.812Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://go.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:23:32.901Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://go.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:37:52.068Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://orphanet.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:54:07.851Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://ncbigene.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:04:18.375Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://mgi.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:48:01.483Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://omim.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:52:05.936Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://interpro.bio2rdf.org/fct/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:43:57.469Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://drugbank.bio2rdf.org/fct/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:21:30.877Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://hgnc.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:25:34.605Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://chebi.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:07:16.368Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://chem2bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:23:39.904Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://homologene.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:41:55.352Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://cu.affymetrix.bio2rdf.org/fct/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:27:42.138Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://chebi.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:21:38.561Z
+"SELECT  ?g
+WHERE
+  { GRAPH ?g
+      { ?sub  ?pred  ?obj }
+  }
+LIMIT   10
+",bio2rdf.org,Apache-Jena-ARQ/3.1.0,2020-03-11T18:13:04.815Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://homologene.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:27:37.763Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://wormbase.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:47:57.822Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://ndc.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:50:03.769Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://download.bio2rdf.org/release/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:19:28.572Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://clinicaltrials.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:25:41.313Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://download.bio2df.org/release/4/sider/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:31:46.029Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://ndc.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:35:45.724Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://omim.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:37:47.928Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://ncbigene.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:49:59.496Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://kegg.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:31:41.210Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://pubmed.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:41:51.805Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://mgi.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:33:43.545Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://sgd.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:43:53.542Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://taxonomy.bio2rdf.org/fct/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:45:55.924Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://cu.biomodels.bio2rdf.org/fct/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:15:24.836Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://download.bio2rdf.org/release/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:33:47.878Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://drugbank.bio2rdf.org/fct/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:35:49.713Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://hgnc.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:39:53.803Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://kegg.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:45:59.608Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://pubmed.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:56:09.874Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://sgd.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:58:11.849Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://wormbase.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:02:16.071Z
+"SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://cu.affymetrix.bio2rdf.org/fct/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:13:22.792Z
+select distinct ?p where {?s ?p ?o}&format=text/html&timeout=0&debug=on&run= Run Query ,drugbank.bio2rdf.org,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36",2020-02-14T15:31:01.769Z
+CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . } LIMIT 1&query=CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . } LIMIT 1,bio2rdf.org,Umaka-Crawler/1.0 by DBCLS (umakadata@dbcls.jp),2019-10-30T07:07:51.727Z
+CONSTRUCT { ?s ?p ?o . } WHERE { SERVICE <http://bio2rdf.org/sparql> { ?s ?p ?o . } } LIMIT 1,bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-12T01:04:35.177Z
+"CONSTRUCT 
+  { 
+    ?s ?p ?o .
+  }
+FROM <facets>
+WHERE
+  { ?s  ?p  ?o }
+OFFSET  32
+LIMIT   32
+",bio2rdf.org,Apache-Jena-ARQ/3.14.0,2020-03-10T01:13:07.543Z
+"CONSTRUCT 
+  { 
+    ?s ?p ?o .
+  }
+FROM <http://localhost:8890/sparql>
+WHERE
+  { ?s  ?p  ?o }
+OFFSET  0
+LIMIT   10000
+",bio2rdf.org,Apache-Jena-ARQ/3.14.0,2020-03-10T01:22:34.200Z
+"CONSTRUCT 
+  { 
+    ?s ?p ?o .
+  }
+FROM <http://www.openlinksw.com/schemas/virtrdf#>
+WHERE
+  { ?s  ?p  ?o }
+OFFSET  0
+LIMIT   10000
+",bio2rdf.org,Apache-Jena-ARQ/3.14.0,2020-03-10T02:49:08.661Z
+"CONSTRUCT 
+  { 
+    ?s ?p ?o .
+  }
+FROM <http://localhost:8890/sparql>
+WHERE
+  { ?s  ?p  ?o }
+OFFSET  14
+LIMIT   14
+",bio2rdf.org,Apache-Jena-ARQ/3.14.0,2020-03-10T01:22:34.286Z
+"CONSTRUCT 
+  { 
+    ?s ?p ?o .
+  }
+FROM <facets>
+WHERE
+  { ?s  ?p  ?o }
+OFFSET  0
+LIMIT   10000
+",bio2rdf.org,Apache-Jena-ARQ/3.14.0,2020-03-10T01:13:07.426Z
+"CONSTRUCT 
+  { 
+    ?s ?p ?o .
+  }
+FROM <http://www.openlinksw.com/schemas/virtrdf#>
+WHERE
+  { ?s  ?p  ?o }
+OFFSET  2514
+LIMIT   2514
+",bio2rdf.org,Apache-Jena-ARQ/3.14.0,2020-03-10T02:49:08.943Z
+CONSTRUCT { ?s ?p ?o . } WHERE { SERVICE <http://bio2rdf.org/sparql> { ?s ?p ?o . } } LIMIT 1,bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-13T00:13:48.694Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",interpro.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T01:17:11.026Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",taxonomy.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T01:22:16.947Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",goa.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T01:39:46.000Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",homologene.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T01:42:48.844Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",wormbase.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T01:44:39.028Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",mesh.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T02:17:07.882Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",pharmgkb.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T02:17:07.884Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",gendr.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T02:17:08.088Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",hgnc.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T02:45:25.365Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",interpro.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T00:17:07.342Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",clinicaltrials.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T00:26:40.984Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",sider.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T00:37:08.769Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",biomodels.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T00:38:19.515Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",hgnc.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T00:38:20.420Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",wormbase.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T00:39:31.723Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",mgi.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T00:47:10.868Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",kegg.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T00:49:20.108Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",dbsnp.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T02:52:49.385Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",mesh.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T03:17:07.836Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",interpro.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T03:17:07.854Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",taxonomy.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T03:23:53.206Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",ctd.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T03:26:54.400Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",bioportal.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T01:22:16.546Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",clinicaltrials.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T01:26:42.290Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",drugbank.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T01:29:06.977Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",pubmed.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T01:46:16.894Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",kegg.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T01:53:48.782Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",lsr.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T02:26:37.529Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",ndc.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T02:29:35.986Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",ctd.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T00:26:42.053Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",ndc.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T00:29:03.082Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",ncbigene.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T00:36:00.687Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",goa.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T00:36:00.696Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",homologene.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T00:39:31.640Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",pubmed.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T00:42:34.464Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",sgd.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T00:44:43.191Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",dbsnp.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T00:44:43.388Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",orphanet.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T02:51:32.203Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",mgi.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T02:52:49.489Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",goa.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T03:38:12.081Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",ncbigene.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T03:38:12.084Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",pharmgkb.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T07:17:08.845Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",interpro.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T07:17:10.946Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",pharmgkb.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T04:17:09.171Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",interpro.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T04:17:09.180Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",kegg.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T03:53:20.339Z
+SELECT ?s WHERE  { ?s ?p ?o } LIMIT 1,taxonomy.bio2rdf.org,sparqlwrapper 1.8.5 (rdflib.github.io/sparqlwrapper),2020-03-11T08:10:12.788Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",sider.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T08:40:12.839Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",omim.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T08:21:06.737Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",biomodels.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T08:42:23.676Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",homologene.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T08:42:24.055Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",orphanet.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T09:40:47.483Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",dbsnp.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T09:42:24.605Z
+SELECT ?s WHERE  { ?s ?p ?o } LIMIT 1,interpro.bio2rdf.org,sparqlwrapper 1.8.5 (rdflib.github.io/sparqlwrapper),2020-03-11T07:48:04.344Z
+SELECT ?s WHERE  { ?s ?p ?o } LIMIT 1,dbsnp.bio2rdf.org,sparqlwrapper 1.8.5 (rdflib.github.io/sparqlwrapper),2020-03-11T07:51:13.138Z
+SELECT ?s WHERE  { ?s ?p ?o } LIMIT 1,mesh.bio2rdf.org,sparqlwrapper 1.8.5 (rdflib.github.io/sparqlwrapper),2020-03-11T08:01:08.588Z
+SELECT ?s WHERE  { ?s ?p ?o } LIMIT 1,orphanet.bio2rdf.org,sparqlwrapper 1.8.5 (rdflib.github.io/sparqlwrapper),2020-03-11T07:45:39.852Z
+SELECT ?s WHERE  { ?s ?p ?o } LIMIT 1,lsr.bio2rdf.org,sparqlwrapper 1.8.5 (rdflib.github.io/sparqlwrapper),2020-03-11T07:45:45.905Z
+SELECT ?s WHERE  { ?s ?p ?o } LIMIT 1,ndc.bio2rdf.org,sparqlwrapper 1.8.5 (rdflib.github.io/sparqlwrapper),2020-03-11T07:59:09.604Z
+SELECT ?s WHERE  { ?s ?p ?o } LIMIT 1,irefindex.bio2rdf.org,sparqlwrapper 1.8.5 (rdflib.github.io/sparqlwrapper),2020-03-11T08:10:58.680Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",affymetrix.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T07:43:52.272Z
+SELECT ?s WHERE  { ?s ?p ?o } LIMIT 1,wormbase.bio2rdf.org,sparqlwrapper 1.8.5 (rdflib.github.io/sparqlwrapper),2020-03-11T07:53:59.233Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",drugbank.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T10:25:41.924Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",pharmgkb.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T10:17:10.176Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",biomodels.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T10:38:14.545Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",orphanet.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T10:42:17.305Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",sgd.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T10:42:17.697Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",pharmgkb.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T11:17:08.619Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",hgnc.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T04:40:19.967Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",sider.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T04:38:45.690Z
+"SELECT  (COUNT(?c) AS ?x)
+WHERE
+  { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?c}
+",taxonomy.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:38:04.358Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",ncbigene.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:38:56.967Z
+"SELECT  (COUNT(?c) AS ?x)
+WHERE
+  { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?c}
+",lsr.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:40:51.963Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",sider.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:40:31.888Z
+"SELECT  (COUNT(?p) AS ?x)
+WHERE
+  { ?s ?p ?o}
+",clinicaltrials.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:41:20.098Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",biomodels.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:42:21.888Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",pubmed.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:46:27.289Z
+"SELECT DISTINCT  ?o ?p2
+WHERE
+  { ?s ?p ?o
+    OPTIONAL
+      { <http://nonsensical.com/1/1583905561800> ?p2 ?o}
+  }
+LIMIT   1000
+",ndc.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:46:06.894Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",mgi.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:49:57.286Z
+"SELECT  (COUNT(?c) AS ?x)
+WHERE
+  { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?c}
+",pharmgkb.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:29:17.026Z
+"SELECT DISTINCT  ?o ?p2
+WHERE
+  { ?s ?p ?o
+    OPTIONAL
+      { <http://nonsensical.com/1/1583904577197> ?p2 ?o}
+  }
+LIMIT   1000
+",genage.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:29:42.293Z
+"SELECT DISTINCT  ?o ?p2
+WHERE
+  { ?s ?p ?o
+    OPTIONAL
+      { <http://nonsensical.com/1/1583904577208> ?p2 ?o}
+  }
+LIMIT   1000
+",mesh.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:29:42.302Z
+"SELECT  (COUNT(?p) AS ?x)
+WHERE
+  { ?s ?p ?o}
+",mesh.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:29:27.141Z
+"SELECT  (COUNT(?c) AS ?x)
+WHERE
+  { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?c}
+",omim.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:34:33.174Z
+"SELECT DISTINCT  ?o ?p2
+WHERE
+  { ?s ?p ?o
+    OPTIONAL
+      { <http://nonsensical.com/1/1583905045802> ?p2 ?o}
+  }
+LIMIT   1000
+",bioportal.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:37:25.842Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",taxonomy.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:22:25.176Z
+"SELECT  (COUNT(?p) AS ?x)
+WHERE
+  { ?s ?p ?o}
+",ncbigene.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:01:55.604Z
+"SELECT DISTINCT  ?o ?p2
+WHERE
+  { ?s ?p ?o
+    OPTIONAL
+      { <http://nonsensical.com/1/1583906525667> ?p2 ?o}
+  }
+LIMIT   1000
+",ncbigene.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:02:05.707Z
+"SELECT DISTINCT  ?o ?p2
+WHERE
+  { ?s ?p ?o
+    OPTIONAL
+      { <http://nonsensical.com/1/1583906565937> ?p2 ?o}
+  }
+LIMIT   1000
+",goa.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:02:45.976Z
+"SELECT  (COUNT(?p) AS ?x)
+WHERE
+  { ?s ?p ?o}
+",sider.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:06:26.819Z
+"SELECT  (COUNT(?p) AS ?x)
+WHERE
+  { ?s ?p ?o}
+",biomodels.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:08:01.756Z
+"SELECT  (COUNT(?p) AS ?x)
+WHERE
+  { ?s ?p ?o}
+",hgnc.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:08:35.884Z
+"SELECT DISTINCT  ?o ?p2
+WHERE
+  { ?s ?p ?o
+    OPTIONAL
+      { <http://nonsensical.com/1/1583907002954> ?p2 ?o}
+  }
+LIMIT   1000
+",homologene.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:10:03.000Z
+"SELECT DISTINCT  ?o ?p2
+WHERE
+  { ?s ?p ?o
+    OPTIONAL
+      { <http://nonsensical.com/1/1583907119312> ?p2 ?o}
+  }
+LIMIT   1000
+",wormbase.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:11:59.352Z
+"SELECT  (COUNT(?c) AS ?x)
+WHERE
+  { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?c}
+",wormbase.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:11:44.194Z
+"SELECT DISTINCT  ?o ?p2
+WHERE
+  { ?s ?p ?o
+    OPTIONAL
+      { <http://nonsensical.com/1/1583907119312> ?p2 ?o}
+  }
+LIMIT   1000
+",wormbase.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:12:04.407Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",ndc.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T11:28:04.964Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",pubmed.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T11:41:38.743Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",genage.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T12:17:09.776Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",mgi.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T11:45:01.197Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",sgd.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T11:44:44.904Z
+"SELECT  (COUNT(?c) AS ?x)
+WHERE
+  { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?c}
+",kegg.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:23:40.746Z
+"SELECT  (COUNT(?p) AS ?x)
+WHERE
+  { ?s ?p ?o}
+",kegg.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:23:45.799Z
+"SELECT  (COUNT(?c) AS ?x)
+WHERE
+  { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?c}
+",kegg.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:23:35.697Z
+"SELECT  (COUNT(?p) AS ?x)
+WHERE
+  { ?s ?p ?o}
+",kegg.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:23:50.854Z
+"SELECT DISTINCT  ?o ?p2
+WHERE
+  { ?s ?p ?o
+    OPTIONAL
+      { <http://nonsensical.com/1/1583907835868> ?p2 ?o}
+  }
+LIMIT   1000
+",kegg.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:24:00.957Z
+"SELECT  (COUNT(?c) AS ?x)
+WHERE
+  { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?c}
+",mgi.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:19:38.052Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",kegg.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:54:32.323Z
+"SELECT  (COUNT(?p) AS ?x)
+WHERE
+  { ?s ?p ?o}
+",affymetrix.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:16:49.808Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",pharmgkb.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:17:06.990Z
+"SELECT  (COUNT(?p) AS ?x)
+WHERE
+  { ?s ?p ?o}
+",affymetrix.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:16:54.859Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",bioportal.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:23:11.819Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",homologene.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:46:54.055Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",wormbase.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:46:54.289Z
+"SELECT  (COUNT(?p) AS ?x)
+WHERE
+  { ?s ?p ?o}
+",orphanet.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:17:24.640Z
+"SELECT DISTINCT  ?o ?p2
+WHERE
+  { ?s ?p ?o
+    OPTIONAL
+      { <http://nonsensical.com/1/1583907454706> ?p2 ?o}
+  }
+LIMIT   1000
+",orphanet.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:17:34.746Z
+"SELECT  (COUNT(?c) AS ?x)
+WHERE
+  { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?c}
+",sgd.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T06:17:27.713Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",ctd.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T12:24:15.566Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",bioportal.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T13:22:08.173Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",biomodels.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T13:41:44.328Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",irefindex.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T12:36:22.904Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",sgd.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T12:43:38.316Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",ndc.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T03:29:26.868Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",irefindex.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T03:38:12.082Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",sider.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T03:39:59.322Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",orphanet.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T03:47:58.211Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",mgi.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T03:50:31.003Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",interpro.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:17:12.246Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",biomodels.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T04:40:19.967Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",sgd.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T04:46:51.917Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",clinicaltrials.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:25:36.046Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",goa.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T04:37:29.959Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",pubmed.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T04:43:46.686Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",ndc.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:28:25.565Z
+"SELECT  (COUNT(?c) AS ?x)
+WHERE
+  { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?c}
+",mesh.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:29:17.033Z
+"SELECT  (COUNT(?c) AS ?x)
+WHERE
+  { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?c}
+",interpro.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:29:17.038Z
+"SELECT DISTINCT  ?o ?p2
+WHERE
+  { ?s ?p ?o
+    OPTIONAL
+      { <http://nonsensical.com/1/1583904577214> ?p2 ?o}
+  }
+LIMIT   1000
+",pharmgkb.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:29:37.255Z
+"SELECT  (COUNT(?c) AS ?x)
+WHERE
+  { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?c}
+",pharmgkb.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:29:22.092Z
+"SELECT  (COUNT(?p) AS ?x)
+WHERE
+  { ?s ?p ?o}
+",interpro.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:29:27.144Z
+"SELECT  (COUNT(?p) AS ?x)
+WHERE
+  { ?s ?p ?o}
+",gendr.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:29:27.153Z
+"SELECT DISTINCT  ?o ?p2
+WHERE
+  { ?s ?p ?o
+    OPTIONAL
+      { <http://nonsensical.com/1/1583904577214> ?p2 ?o}
+  }
+LIMIT   1000
+",pharmgkb.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:29:42.306Z
+"SELECT DISTINCT  ?o ?p2
+WHERE
+  { ?s ?p ?o
+    OPTIONAL
+      { <http://nonsensical.com/1/1583904577212> ?p2 ?o}
+  }
+LIMIT   1000
+",interpro.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:29:42.312Z
+"SELECT  (COUNT(?c) AS ?x)
+WHERE
+  { ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?c}
+",bioportal.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:37:05.637Z
+"SELECT DISTINCT  ?o ?p2
+WHERE
+  { ?s ?p ?o
+    OPTIONAL
+      { <http://nonsensical.com/1/1583905045802> ?p2 ?o}
+  }
+LIMIT   1000
+",bioportal.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:37:30.895Z
+"SELECT DISTINCT  ?o ?p2
+WHERE
+  { ?s ?p ?o
+    OPTIONAL
+      { <http://nonsensical.com/1/1583905099479> ?p2 ?o}
+  }
+LIMIT   1000
+",taxonomy.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:38:19.519Z
+"SELECT  (COUNT(?p) AS ?x)
+WHERE
+  { ?s ?p ?o}
+",taxonomy.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:38:09.410Z
+"SELECT  ?s
+WHERE
+  { ?s ?p ?o}
+LIMIT   1
+",goa.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:39:28.171Z
+"SELECT DISTINCT  ?o ?p2
+WHERE
+  { ?s ?p ?o
+    OPTIONAL
+      { <http://nonsensical.com/1/1583905344087> ?p2 ?o}
+  }
+LIMIT   1000
+",ctd.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:42:24.128Z
