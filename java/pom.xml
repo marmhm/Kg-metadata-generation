@@ -1,0 +1,109 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.semanticscience.d2s</groupId>
+	<artifactId>sparql-parser</artifactId>
+	<version>0.0.1</version>
+	
+	<url>https://github.com/marmhm/kg-metadata-generation</url>
+	<description>Parse SPARQL queries.</description>
+	
+	<scm>
+		<url>https://github.com/marmhm/kg-metadata-generation</url>
+		<connection>scm:git:git://github.com/marmhm/kg-metadata-generation.git</connection>
+		<developerConnection>scm:git:git@github.com:marmhm/kg-metadata-generation.git</developerConnection>
+	</scm>
+	
+    <licenses>
+      <license>
+        <name>MIT License</name>
+        <url>https://opensource.org/licenses/MIT</url>
+        <distribution>repo</distribution>
+      </license>
+    </licenses>
+	<organization>
+		<name>Institute of Data Science at Maastricht University</name>
+		<url>https://www.maastrichtuniversity.nl/IDS</url>
+	</organization>
+	<developers>
+		<developer>
+			<name>Vincent Emonet</name>
+			<email>vincent.emonet@gmail.com</email>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>Europe/Amsterdam</timezone>
+		</developer>
+	</developers>
+
+	<properties>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.rdf4j</groupId>
+			<artifactId>rdf4j-runtime</artifactId>
+            <!-- <version>3.7.3</version>	 -->
+			<version>2.4.0</version>
+			<exclusions>
+				<!-- To remove multiple SLF4J bindings warnings -->
+			    <exclusion>
+			        <groupId>ch.qos.logback</groupId>
+			        <artifactId>logback-classic</artifactId>
+			    </exclusion>
+			</exclusions> 
+		</dependency>
+
+		<!-- <dependency>
+			<groupId>info.picocli</groupId>
+			<artifactId>picocli</artifactId>
+			<version>3.1.0</version>
+		</dependency> -->
+	</dependencies>
+	
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>org.semanticscience.d2s.Main</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<!-- <distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub MaastrichtU-IDS Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/marmhm/kg-metadata-generation</url>
+		</repository>
+	</distributionManagement> -->
+
+</project>

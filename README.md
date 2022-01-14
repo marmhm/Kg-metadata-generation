@@ -35,6 +35,14 @@ python3 parse_sparql.py
 
 https://github.com/AKSW/LSQ/tree/develop/lsq-parser/src/main/java/org/aksw/simba/lsq/parser
 
+```bash
+cd java
+mvn clean package
+
+```
+
+java/org/semanticscience/d2s
+
 ## Use the LSQ tool
 
 ### Representing SPARQL as RDF: LSQ 

@@ -1,2 +1,5 @@
 metadata.ttl
 .ipynb_checkpoints
+target/
+
+/LSQ/
