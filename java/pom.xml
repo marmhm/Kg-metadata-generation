@@ -63,6 +63,12 @@
 			</exclusions> 
 		</dependency>
 
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>31.0.1-jre</version>
+		</dependency>
+
 		<!-- <dependency>
 			<groupId>info.picocli</groupId>
 			<artifactId>picocli</artifactId>
@@ -81,7 +87,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>org.semanticscience.d2s.Main</mainClass>
+							<mainClass>org.semanticscience.d2s.SparqlParser</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -96,6 +102,12 @@
 				</executions>
 			</plugin>
 		</plugins>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
 	</build>
 
 	<!-- <distributionManagement>
