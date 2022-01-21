@@ -6,3 +6,14 @@ SELECT * WHERE {
     <http://www.bigdata.com/rdf#serviceParam>  <http://wikiba.se/ontology#language>  "en".
   }
 }
+##########
+# My query for something
+SELECT ?var1 WHERE {
+  ?var1  <http://www.wikidata.org/prop/direct/P31>  <http://www.wikidata.org/entity/Q5> .
+  ?var1  <http://www.wikidata.org/prop/direct/P39>  <http://www.wikidata.org/entity/Q16707842> .
+  ?var1  <http://www.wikidata.org/prop/direct/P2937>  <http://www.wikidata.org/entity/Q29974940> .
+  SERVICE  <http://wikiba.se/ontology#label>   {
+    <http://www.bigdata.com/rdf#serviceParam>  <http://wikiba.se/ontology#language>  "en".
+  }
+}
+##########

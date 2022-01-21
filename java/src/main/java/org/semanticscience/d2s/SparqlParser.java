@@ -20,31 +20,25 @@ public class SparqlParser {
 
 	public static void main(String[] args) throws Exception {
 		try { 
-            System.out.println("Parsing SPARQL with RDF4J:");
-            
+            System.out.println("Parsing SPARQL queries with RDF4J:");
             //String sparqlQuery = "SELECT * WHERE { ?s ?p ?o . ?s a ?type.   . FILTER(?type = <http://ohoho>) . } LIMIT 14";
-            // ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-            // System.out.println(classLoader.getResource("query1.rq").toURI());
 
-            // System.out.println(Paths.get(SparqlParser.class.getClassLoader().getResource("query1.rq").toURI()));
-            // String sparqlQuery = Files.readString(Paths.get(SparqlParser.class.getClassLoader().getResource("query1.rq").toURI()));
-            // String sparqlQuery = Files.readString(Paths.get(new ClassPathResource("query1.rq").getURI()));
-            // String sparqlQuery = readFile("query1.rq");
-
-            // URL url = Resources.getResource("query1.rq");
-            String sparqlQuery = Resources.toString(Resources.getResource("query1.rq"), StandardCharsets.UTF_8);
-            System.out.println(sparqlQuery);
+            String sparqlQueries = Resources.toString(Resources.getResource("query1.rq"), StandardCharsets.UTF_8);
             
             SPARQLParserFactory factory = new SPARQLParserFactory();
             QueryParser parser = factory.getParser();
-            ParsedQuery parsedQuery = parser.parseQuery(sparqlQuery, null);
 
-            StatementPatternCollector collector = new StatementPatternCollector();
-            TupleExpr tupleExpr = parsedQuery.getTupleExpr();
-            tupleExpr.visit(collector);
+            for (String sparqlQuery : sparqlQueries.split("##########")) {
+                  System.out.println(sparqlQuery);
+                  ParsedQuery parsedQuery = parser.parseQuery(sparqlQuery, null);
 
-            for (StatementPattern pattern : collector.getStatementPatterns()) {
-                System.out.println(pattern);
+                  StatementPatternCollector collector = new StatementPatternCollector();
+                  TupleExpr tupleExpr = parsedQuery.getTupleExpr();
+                  tupleExpr.visit(collector);
+
+                  for (StatementPattern pattern : collector.getStatementPatterns()) {
+                  System.out.println(pattern);
+                  }
             }
 
 		} catch (Exception e) {
