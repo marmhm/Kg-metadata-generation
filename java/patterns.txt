@@ -1,0 +1,4 @@
+StatementPattern
+   Var (name=_const_7a199a7d_uri, value=http://www.wikidata.org/entity/null, anonymous)
+   Var (name=_const_d85f6439_uri, value=http://www.wikidata.org/prop/direct/P856, anonymous)
+   Var (name=var4)

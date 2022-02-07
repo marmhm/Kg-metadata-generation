@@ -1,4 +1,7 @@
 
+rm -rf target
+rm -rf **/.ipynb_checkpoints
+
 mvn clean package
 # mvn package 
 

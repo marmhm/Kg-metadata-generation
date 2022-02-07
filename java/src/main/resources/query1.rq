@@ -1,19 +1,14 @@
-SELECT * WHERE {
-  ?var1  <http://www.wikidata.org/prop/direct/P31>  <http://www.wikidata.org/entity/Q5> .
-  ?var1  <http://www.wikidata.org/prop/direct/P39>  <http://www.wikidata.org/entity/Q16707842> .
-  ?var1  <http://www.wikidata.org/prop/direct/P2937>  <http://www.wikidata.org/entity/Q29974940> .
-  SERVICE  <http://wikiba.se/ontology#label>   {
-    <http://www.bigdata.com/rdf#serviceParam>  <http://wikiba.se/ontology#language>  "en".
-  }
+SELECT ?var1Label  ?var2  ?var3  ?var4 
+WHERE {
+  <http://www.wikidata.org/entity/null>  <http://www.w3.org/2000/01/rdf-schema#label>  ?var1Label .
+  <http://www.wikidata.org/entity/null>  <http://www.wikidata.org/prop/direct/P625>  ?var2 .
+ OPTIONAL {
+  <http://www.wikidata.org/entity/null>  <http://www.wikidata.org/prop/direct/P18>  ?var3 .
+ }
+ OPTIONAL {
+  <http://www.wikidata.org/entity/null>  <http://www.wikidata.org/prop/direct/P856>  ?var4 .
+ }
+ FILTER (  ( (  LANG (  ?var1Label  )  =  "en" ) ) 
+) .
 }
-##########
-# My query for something
-SELECT ?var1 WHERE {
-  ?var1  <http://www.wikidata.org/prop/direct/P31>  <http://www.wikidata.org/entity/Q5> .
-  ?var1  <http://www.wikidata.org/prop/direct/P39>  <http://www.wikidata.org/entity/Q16707842> .
-  ?var1  <http://www.wikidata.org/prop/direct/P2937>  <http://www.wikidata.org/entity/Q29974940> .
-  SERVICE  <http://wikiba.se/ontology#label>   {
-    <http://www.bigdata.com/rdf#serviceParam>  <http://wikiba.se/ontology#language>  "en".
-  }
-}
-##########
+LIMIT 1
