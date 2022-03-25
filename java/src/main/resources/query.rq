@@ -93,21 +93,6 @@ WHERE {
 }
 LIMIT 1000
 ##########
-SELECT ?var1Label  ?var2  ?var3  ?var4 
-WHERE {
-  <http://www.wikidata.org/entity/null>  <http://www.w3.org/2000/01/rdf-schema#label>  ?var1Label .
-  <http://www.wikidata.org/entity/null>  <http://www.wikidata.org/prop/direct/P625>  ?var2 .
- OPTIONAL {
-  <http://www.wikidata.org/entity/null>  <http://www.wikidata.org/prop/direct/P18>  ?var3 .
- }
- OPTIONAL {
-  <http://www.wikidata.org/entity/null>  <http://www.wikidata.org/prop/direct/P856>  ?var4 .
- }
- FILTER (  ( (  LANG (  ?var1Label  )  =  "en" ) ) 
-) .
-}
-LIMIT 1
-##########
 SELECT ?var1 
 WHERE {
   ?var1  <http://www.w3.org/2004/02/skos/core#altLabel>  "pork"@eng .
@@ -127,21 +112,6 @@ SELECT ?var1
 WHERE {
   ?var1  <http://www.w3.org/2004/02/skos/core#altLabel>  "string1"@eng .
 }
-##########
-SELECT ?var1Label  ?var2  ?var3  ?var4 
-WHERE {
-  <http://www.wikidata.org/entity/null>  <http://www.w3.org/2000/01/rdf-schema#label>  ?var1Label .
-  <http://www.wikidata.org/entity/null>  <http://www.wikidata.org/prop/direct/P625>  ?var2 .
- OPTIONAL {
-  <http://www.wikidata.org/entity/null>  <http://www.wikidata.org/prop/direct/P18>  ?var3 .
- }
- OPTIONAL {
-  <http://www.wikidata.org/entity/null>  <http://www.wikidata.org/prop/direct/P856>  ?var4 .
- }
- FILTER (  ( (  LANG (  ?var1Label  )  =  "en" ) ) 
-) .
-}
-LIMIT 1
 ##########
 SELECT ?var1 
 WHERE {

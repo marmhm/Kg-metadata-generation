@@ -1,14 +1,91 @@
-SELECT ?var1Label  ?var2  ?var3  ?var4 
+SELECT ?var1  ?var2 
 WHERE {
-  <http://www.wikidata.org/entity/null>  <http://www.w3.org/2000/01/rdf-schema#label>  ?var1Label .
-  <http://www.wikidata.org/entity/null>  <http://www.wikidata.org/prop/direct/P625>  ?var2 .
- OPTIONAL {
-  <http://www.wikidata.org/entity/null>  <http://www.wikidata.org/prop/direct/P18>  ?var3 .
- }
- OPTIONAL {
-  <http://www.wikidata.org/entity/null>  <http://www.wikidata.org/prop/direct/P856>  ?var4 .
- }
- FILTER (  ( (  LANG (  ?var1Label  )  =  "en" ) ) 
+  ?var1  <http://www.wikidata.org/prop/direct/P279>  <http://www.wikidata.org/entity/Q189567> .
+  ?var1  <http://www.w3.org/2000/01/rdf-schema#label>  ?var2 .
+ FILTER (  ( (  LANG (  ?var2  )  =  "es" ) ) 
 ) .
 }
-LIMIT 1
+GROUP BY  ?var1  ?var2 
+ORDER BY  DESC( ?var2 )
+LIMIT 50
+##########
+SELECT ?var1 
+WHERE {
+  VALUES (  ?var2  ) {
+   (  <http://www.wikidata.org/entity/Q215627>  )
+  }
+  ?var1  <http://www.wikidata.org/prop/direct/P279> * ?var2 .
+}
+##########
+SELECT ?var1 
+WHERE {
+  VALUES (  ?var2  ) {
+   (  <http://www.wikidata.org/entity/Q3918>  )
+  }
+  ?var1  <http://www.wikidata.org/prop/direct/P279> * ?var2 .
+}
+##########
+SELECT *
+WHERE {
+  ?var1  <http://schema.org/about>  <https://query.wikidata.org/bigdata/namespace/wdq/undefined> ;
+ <http://schema.org/inLanguage>  ?var2 .
+}
+##########
+SELECT DISTINCT ?var1 
+WHERE {
+  BIND (  <http://www.wikidata.org/entity/Q84>  AS  ?var2 ).
+  ?var2 ( <http://www.wikidata.org/prop/direct/P30> | <http://www.wikidata.org/prop/direct/P17> | <http://www.wikidata.org/prop/direct/P131> | <http://www.wikidata.org/prop/direct/P376> | <http://www.wikidata.org/prop/direct/P501> )* ?var1 .
+}
+##########
+SELECT ?var1 ( COUNT ( ?var2  ) AS  ?var3  )(  GROUP_CONCAT (  ?var2  )  AS  ?var4  )
+WHERE {
+  ?var2  <http://www.wikidata.org/prop/direct/P2355>  ?var1 .
+}
+GROUP BY  ?var1 
+ HAVING  ( (  ?var3  > "1"^^<http://www.w3.org/2001/XMLSchema#integer>  ) ) 
+ ##########
+SELECT DISTINCT ?var1Label  ?var2  ?var3  ?var4  ?var5Label  ?var6Label  ?var7  ?var8  ?var9 
+WHERE {
+  ?var10  <http://www.wikidata.org/prop/direct/P641>  ?var1 .
+  <https://fr.wikipedia.org/wiki/Boris%20Becker>  <http://schema.org/about>  ?var10 .
+ OPTIONAL {
+  ?var10  <http://www.wikidata.org/prop/direct/P552>  ?var6 .
+ }
+ OPTIONAL {
+  ?var10  <http://www.wikidata.org/prop/direct/P741>  ?var6 .
+ }
+ OPTIONAL {
+  ?var10  <http://www.wikidata.org/prop/direct/P2067>  ?var7 .
+ }
+ OPTIONAL {
+  ?var10  <http://www.wikidata.org/prop/direct/P2048>  ?var8 .
+ }
+ OPTIONAL {
+  ?var10  <http://www.wikidata.org/prop/direct/P564>  ?var2 .
+ }
+ OPTIONAL {
+  ?var10  <http://www.wikidata.org/prop/direct/P555>  ?var3 .
+ }
+ OPTIONAL {
+  ?var10  <http://www.wikidata.org/prop/direct/P2121>  ?var9 .
+ }
+ OPTIONAL {
+  ?var10  <http://www.wikidata.org/prop/P1352>  ?var11 .
+ OPTIONAL {
+  ?var11  <http://www.wikidata.org/prop/statement/P1352>  ?var4 .
+ OPTIONAL {
+  ?var11  <http://www.wikidata.org/prop/qualifier/P641>  ?var5 .
+ }
+ }
+ }
+ SERVICE  <http://wikiba.se/ontology#label>   {
+    <http://www.bigdata.com/rdf#serviceParam>  <http://wikiba.se/ontology#language>  "fr".
+  }
+}
+##########
+SELECT ?var1 
+WHERE {
+  ?var1  <http://www.wikidata.org/entity/P31>  <http://www.wikidata.org/entity/Q5> .
+ FILTER (  (  LANGMATCHES (  LANG (  ?var2Label  ) ,  "EN" )  ) 
+) .
+}
