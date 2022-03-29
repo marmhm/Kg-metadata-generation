@@ -1,0 +1,7 @@
+{
+    "query": {
+        "query_string": {
+            "query": "(domain: *.bio2rdf.org OR domain: bio2rdf.org) AND url: sparql AND query AND (SELECT OR ASK OR CONSTRUCT OR INSERT)"
+        }
+    }
+}
