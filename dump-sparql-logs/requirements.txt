@@ -1,0 +1,3 @@
+pandas
+pandarallel
+modin[all]
