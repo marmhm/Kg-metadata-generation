@@ -27,7 +27,7 @@ public class SparqlParser {
 
 	public static void main(String[] args) throws Exception {
 		try { 
-                  String fileName = "nodespatterns.txt";
+                  String fileName = "examplepatterns.txt";
                   Path filePath = Path.of(fileName);
                   // String text = "Welcome to geekforgeeks\nHappy Learning!";
                   // Files.writeString(filePath, text);
@@ -37,7 +37,7 @@ public class SparqlParser {
                   System.out.println("Parsing SPARQL queries with RDF4J:");
                   //String sparqlQuery = "SELECT * WHERE { ?s ?p ?o . ?s a ?type.   . FILTER(?type = <http://ohoho>) . } LIMIT 14";
 
-                  String sparqlQueries = Resources.toString(Resources.getResource("wholequery.rq"), StandardCharsets.UTF_8);
+                  String sparqlQueries = Resources.toString(Resources.getResource("query1.rq"), StandardCharsets.UTF_8);
                   
                   SPARQLParserFactory factory = new SPARQLParserFactory();
                   QueryParser parser = factory.getParser();

@@ -1,5 +1,7 @@
 metadata.ttl
 .ipynb_checkpoints
 target/
+.virtual_documents/
+.vscode/
 
 /LSQ/
