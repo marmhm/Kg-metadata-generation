@@ -3,6 +3,8 @@ metadata.ttl
 target/
 .virtual_documents/
 .vscode/
+visitor/target/
+
 
 /LSQ/
 data/
