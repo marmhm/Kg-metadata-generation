@@ -1,4 +1,6 @@
+# This repository contains code and papers of research: (Semi-)Automatic construction of metadata for knowledge graphs
 
+To start learning about this research please first read "ESWC2022-Mohammadi-KGmetadata-construction_187.pdf" 
 ## Graph summarization Algorithm
 
 Rule learner AnyBURL (Anytime Bottom Up Rule Learning):

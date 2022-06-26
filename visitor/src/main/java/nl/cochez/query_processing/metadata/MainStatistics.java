@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
+import java.util.zip.GZIPInputStream;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.LiteralLabel;
@@ -114,16 +114,16 @@ public class MainStatistics {
 			}
 		};
 
-		// IterateQueriesFromWikidataLog.processFromFile(new GZIPInputStream(in),collector);
+		IterateQueriesFromWikidataLog.processFromFile(new GZIPInputStream(in),collector);
 		
-		List<String> queries = Lists.newArrayList("SELECT * WHERE { <http://test.com/subject> ?p \"Hello\" }", "SELECT * WHERE { <http://test.com/subject> ?p 5 }",
-				"SELECT * WHERE { <http://test.com/subject> ?p \"Hello\"@en }");
-		for (String query : queries) {
-			Query q = QueryFactory.create(query);
-			System.out.println(q);
-			Op op = Algebra.compile(q);
-			op.visit(visitor);
-		}
+		// List<String> queries = Lists.newArrayList("SELECT * WHERE { <http://test.com/subject> ?p \"Hello\" }", "SELECT * WHERE { <http://test.com/subject> ?p 5 }",
+		// 		"SELECT * WHERE { <http://test.com/subject> ?p \"Hello\"@en }");
+		// for (String query : queries) {
+		// 	Query q = QueryFactory.create(query);
+		// 	System.out.println(q);
+		// 	Op op = Algebra.compile(q);
+		// 	op.visit(visitor);
+		// }
 		watch.stop();
 		System.out.println("Elapsed" + watch.elapsed(TimeUnit.SECONDS));
 

@@ -84,8 +84,8 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <!-- <mainClass>nl.cochez.query_processing.metadata.MainStatistics</mainClass> -->
-              <mainClass>nl.cochez.query_processing.metadata.MainIsomorphisms</mainClass>
+              <mainClass>nl.cochez.query_processing.metadata.MainStatistics</mainClass>
+              <!-- <mainClass>nl.cochez.query_processing.metadata.MainIsomorphisms</mainClass> -->
             </manifest>
           </archive>
         </configuration>
