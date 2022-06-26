@@ -78,9 +78,9 @@ WHERE {
  }
  }
  }
- SERVICE  <http://wikiba.se/ontology#label>   {
-    <http://www.bigdata.com/rdf#serviceParam>  <http://wikiba.se/ontology#language>  "fr".
+ SERVICE  <http://wikiba.se/ontology#label>   {"fr".
   }
+    <http://www.bigdata.com/rdf#serviceParam>  <http://wikiba.se/ontology#language>  
 }
 ##########
 SELECT ?var1 

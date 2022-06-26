@@ -1,7 +1,7 @@
 query,domain,agent,timestamp
 CONSTRUCT { ?s ?p ?o . } WHERE { SERVICE <http://bio2rdf.org/sparql> { ?s ?p ?o . } } LIMIT 1,bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:13:19.227Z
 "SELECT DISTINCT ?prefix WHERE { { SELECT DISTINCT ?p WHERE { ?s ?p ?o . } } . BIND(IF(CONTAINS(STR(?p), ""#""), REPLACE(STR(?p), ""#[^#]*$"", ""#""), REPLACE(STR(?p), ""/[^/]*$"", ""/"")) AS ?prefix) }",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:18:36.078Z
-select * where {[] a ?Concept} LIMIT 100&format=text/html&timeout=0&debug=on&run= Run Query ,bio2rdf.org,"Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",2020-03-11T13:48:04.625Z
+"select * where {[] a ?Concept} LIMIT 100&format=text/html&timeout=0&debug=on&run= Run Query ",bio2rdf.org,"Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",2020-03-11T13:48:04.625Z
 "With the advantages of utilizing a job recruiter weighed towards the disadvantages you'll discover that most often using a job headhunter is not 
 the very best option for you or your organization. Whhen Mr.
 Delbart’s job att Orajge CH turned redundant, he was employed 
@@ -201,19 +201,10 @@ LIMIT   10
 "SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://sgd.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T06:58:11.849Z
 "SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://wormbase.bio2rdf.org/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:02:16.071Z
 "SELECT ?s WHERE { GRAPH ?g { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), ""http://cu.affymetrix.bio2rdf.org/fct/"")) } } LIMIT 1",bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-11T07:13:22.792Z
-select distinct ?p where {?s ?p ?o}&format=text/html&timeout=0&debug=on&run= Run Query ,drugbank.bio2rdf.org,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36",2020-02-14T15:31:01.769Z
+"select distinct ?p where {?s ?p ?o}&format=text/html&timeout=0&debug=on&run= Run Query ",drugbank.bio2rdf.org,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36",2020-02-14T15:31:01.769Z
 CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . } LIMIT 1&query=CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . } LIMIT 1,bio2rdf.org,Umaka-Crawler/1.0 by DBCLS (umakadata@dbcls.jp),2019-10-30T07:07:51.727Z
 CONSTRUCT { ?s ?p ?o . } WHERE { SERVICE <http://bio2rdf.org/sparql> { ?s ?p ?o . } } LIMIT 1,bio2rdf.org,Umaka-Crawler/1.0.0 by DBCLS (umakadata@dbcls.jp),2020-03-12T01:04:35.177Z
-"CONSTRUCT 
-  { 
-    ?s ?p ?o .
-  }
-FROM <facets>
-WHERE
-  { ?s  ?p  ?o }
-OFFSET  32
-LIMIT   32
-",bio2rdf.org,Apache-Jena-ARQ/3.14.0,2020-03-10T01:13:07.543Z
+CONSTRUCT   {     ?s ?p ?o .  }FROM <facets>WHERE  { ?s  ?p  ?o }OFFSET  32LIMIT   32,bio2rdf.org,Apache-Jena-ARQ/3.14.0,2020-03-10T01:13:07.543Z
 "CONSTRUCT 
   { 
     ?s ?p ?o .
@@ -993,3 +984,4 @@ WHERE
   }
 LIMIT   1000
 ",ctd.bio2rdf.org,SPARQLES client using HTTPClient/4.2.3 (https://github.com/pyvandenbussche/sparqles),2020-03-11T05:42:24.128Z
+,,,

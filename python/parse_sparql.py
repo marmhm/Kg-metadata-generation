@@ -1,5 +1,8 @@
+import os
 from rdflib.plugins.sparql.parser import Query, UpdateUnit
 from rdflib.plugins.sparql.processor import translateQuery
+
+os.system
 
 query_string = 'SELECT * WHERE { ?s ?p ?o . ?s a ?type .} LIMIT 14'
 

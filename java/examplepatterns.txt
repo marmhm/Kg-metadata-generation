@@ -1,0 +1,6 @@
+http://www.wikidata.org/entity/Q189567
+https://query.wikidata.org/bigdata/namespace/wdq/undefined
+https://fr.wikipedia.org/wiki/Boris%20Becker
+http://www.bigdata.com/rdf#serviceParam
+"fr"
+http://www.wikidata.org/entity/Q5

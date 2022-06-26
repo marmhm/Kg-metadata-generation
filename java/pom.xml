@@ -95,7 +95,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>org.semanticscience.d2s.SparqlParser</mainClass>
+							<mainClass>org.semanticscience.d2s.SparqlParsertest</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
