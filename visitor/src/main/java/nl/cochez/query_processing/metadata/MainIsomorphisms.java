@@ -21,8 +21,9 @@ public class MainIsomorphisms {
 
 	public static void main(String[] args) throws IOException, QueryException {
 		Stopwatch watch = Stopwatch.createStarted();
+		org.apache.jena.query.ARQ.init();
 
-		InputStream in = new FileInputStream("/home/cochez/papers/propertyGraphApproxQueries/wikidataQueries/2017-06-12_2017-07-09_organic.tsv.gz");
+		InputStream in = new FileInputStream("/home/jovyan/work/persistent/visitor/src/main/java/nl/cochez/query_processing/2017-06-12_2017-07-09_organic.tsv.gz");
 		IsomorpismClusteringQueryCollector collector = new IsomorpismClusteringQueryCollector();
 
 		IterateQueriesFromWikidataLog.processFromFile(new GZIPInputStream(in), collector);

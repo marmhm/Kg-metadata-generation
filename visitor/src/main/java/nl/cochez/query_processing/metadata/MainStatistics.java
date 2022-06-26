@@ -82,8 +82,8 @@ public class MainStatistics {
 
 	public static void main(String[] args) throws IOException {
 		Stopwatch watch = Stopwatch.createStarted();
-
-		InputStream in = new FileInputStream("/home/cochez/papers/propertyGraphApproxQueries/wikidataQueries/2017-06-12_2017-07-09_organic.tsv.gz");
+        org.apache.jena.query.ARQ.init();
+		InputStream in = new FileInputStream("/home/jovyan/work/persistent/visitor/src/main/java/nl/cochez/query_processing/2017-06-12_2017-07-09_organic.tsv.gz");
 
 		final StatVisitor visitor = new StatVisitor();
 
@@ -114,9 +114,8 @@ public class MainStatistics {
 			}
 		};
 
-		// IterateQueriesFromWikidataLog.processFromFile(new GZIPInputStream(in),
-		// collector);
-
+		// IterateQueriesFromWikidataLog.processFromFile(new GZIPInputStream(in),collector);
+		
 		List<String> queries = Lists.newArrayList("SELECT * WHERE { <http://test.com/subject> ?p \"Hello\" }", "SELECT * WHERE { <http://test.com/subject> ?p 5 }",
 				"SELECT * WHERE { <http://test.com/subject> ?p \"Hello\"@en }");
 		for (String query : queries) {

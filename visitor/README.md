@@ -16,3 +16,4 @@ Run the compiled jar:
 ```bash
 java -jar target/metadata-0.0.1-SNAPSHOT.jar
 ```
+<!-- java -jar target/metadata-0.0.1-SNAPSHOT-jar-with-dependencies.jar -->
