@@ -45,7 +45,7 @@ public class MainStatistics {
 				}
 				Node p = triple.getPredicate();
 				if (p.isURI()) {
-					predicates.add(s.getURI());
+					predicates.add(p.getURI());
 				} else if (p.isVariable()) {
 					// TODO
 				} else {
@@ -53,7 +53,7 @@ public class MainStatistics {
 				}
 				Node o = triple.getObject();
 				if (o.isURI()) {
-					objects.add(s.getURI());
+					objects.add(o.getURI());
 				} else if (o.isVariable()) {
 					// TODO
 				} else if (o.isLiteral()) {
@@ -83,7 +83,7 @@ public class MainStatistics {
 	public static void main(String[] args) throws IOException {
 		Stopwatch watch = Stopwatch.createStarted();
         org.apache.jena.query.ARQ.init();
-		InputStream in = new FileInputStream("/home/jovyan/work/persistent/visitor/src/main/java/nl/cochez/query_processing/2017-06-12_2017-07-09_organic.tsv.gz");
+		InputStream in = new FileInputStream("/home/coder/project/kg-metadata-generation/visitor/src/main/java/nl/cochez/query_processing/metadata/reallall-bio2rdf-processed.tsv.gz");
 
 		final StatVisitor visitor = new StatVisitor();
 
