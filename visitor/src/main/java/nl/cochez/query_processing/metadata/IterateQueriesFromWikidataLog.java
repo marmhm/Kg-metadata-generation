@@ -53,6 +53,7 @@ public class IterateQueriesFromWikidataLog {
 				}
 			}
 			rankQuery(queryList);
+			rankPattern(queryList);
 		}
 	}
 
