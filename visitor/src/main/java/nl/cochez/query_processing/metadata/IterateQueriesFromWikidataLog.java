@@ -30,6 +30,7 @@ import org.apache.jena.sparql.core.BasicPattern;
 
 public class IterateQueriesFromWikidataLog {
 	public static void processFromFile(InputStream in, IQueryCollector collector) throws IOException {
+		System.out.println("1 file processing");
 		try (BufferedReader l = new BufferedReader(new BufferedReader(new InputStreamReader(in)))) {
 			String line;
 			// take headerline off
@@ -59,7 +60,7 @@ public class IterateQueriesFromWikidataLog {
 
 	public static void rankQuery(ArrayList<Query> queryList) {
 		List<Map.Entry<Query, Integer>> result = sortByValue(findFrequentNumber(queryList));
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 1000; i++) {
 			System.out.println(
 					"----------------\n" + "Top" + (i + 1) + " query is\n****************\n"
 							+ result.get(i).getKey().toString()
@@ -184,10 +185,10 @@ public class IterateQueriesFromWikidataLog {
 			try {
 				pattern_query.add(QueryFactory.create(replace_query_string));
 			} catch (Exception e) {
-				System.out.println(replace_map);
-				System.out.println(replace_query_string);
-				e.printStackTrace();
-				System.exit(1);
+				// System.out.println(replace_map);
+				// System.out.println(replace_query_string);
+				// e.printStackTrace();
+				// System.exit(1);
 			}
 		}
 		List<Map.Entry<Query, Integer>> result = sortPatternByValue(findFrequentPattern(pattern_query));
