@@ -96,13 +96,13 @@ public class MainStatistics {
 
 	public static void main(String[] args) throws IOException {
 		Stopwatch watch = Stopwatch.createStarted();
-		String filename = "/home/coder/project/visitor/src/main/java/nl/cochez/query_processing/metadata/drugbank_test.tsv.gz";
+		String filename = "/home/coder/project/visitor/src/main/java/nl/cochez/query_processing/metadata/reallall-bio2rdf-processed.tsv.gz";
 		if (args.length > 0) {
 			filename = args[0];
 		}
 		
 		InputStream in = new FileInputStream(filename);
-
+        
 		final StatVisitor visitor = new StatVisitor();
 		
 		IQueryCollector collector = new IQueryCollector() {
