@@ -40,7 +40,12 @@ https://github.com/AKSW/LSQ/tree/develop/lsq-parser/src/main/java/org/aksw/simba
 ```bash
 cd java
 mvn clean package
+```
 
+To run directly fronm a `.java` file you will need to pass a `.argfile` with the classpath, e.g.:
+
+```bash
+rm out_finding_patterns.log || true && nohup java -Dfile.encoding=UTF-8 @/home/coder/project/java/classpath.argfile nl.cochez.query_processing.metadata.MainIsomorphisms &> out_finding_patterns.log &
 ```
 
 java/org/semanticscience/d2s
