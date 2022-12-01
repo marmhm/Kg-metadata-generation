@@ -151,7 +151,7 @@ public class IsomorpismClusteringQueryCollector implements IQueryCollector {
 			} else if (triple.getSubject().isBlank()) {
 				subject = Node.forBlanknode(triple.getSubject().getBlankNodeLabel());
 			} else {
-				subject = Node.forURLEntity(triple.getSubject().getURI());
+				subject = Node.forURLEntity(triple.getSubject().toString());
 			}
 
 			if (triple.getPredicate().isVariable()) {
@@ -167,7 +167,7 @@ public class IsomorpismClusteringQueryCollector implements IQueryCollector {
 			} else if (triple.getObject().isLiteral()) {
 				object = Node.forLiteral(triple.getObject().getLiteralLexicalForm());
 			} else {
-				object = Node.forURLEntity(triple.getObject().getURI());
+				object = Node.forURLEntity(triple.getObject().toString());
 			}
 
 			asGraph.addVertex(subject);

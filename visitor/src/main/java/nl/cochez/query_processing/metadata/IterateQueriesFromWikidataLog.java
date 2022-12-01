@@ -1,6 +1,8 @@
 package nl.cochez.query_processing.metadata;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
@@ -52,19 +55,39 @@ public class IterateQueriesFromWikidataLog {
 					e.printStackTrace();
 				}
 			}
-			rankQuery(queryList);
-			rankPattern(queryList);
+			rankQuery(queryList, 100);//input is (queryList, top number of display)
+			rankPattern(queryList, 100);//input is (queryList, top number of display)
 		}
 	}
 
-	public static void rankQuery(ArrayList<Query> queryList) {
+	public static void rankQuery(ArrayList<Query> queryList, int top) {
 		List<Map.Entry<Query, Integer>> result = sortByValue(findFrequentNumber(queryList));
-		for (int i = 0; i < 10; i++) {
-			System.out.println(
-					"----------------\n" + "Top" + (i + 1) + " query is\n****************\n"
-							+ result.get(i).getKey().toString()
-							+ "\n****************\nThe frequency of above query is " + result.get(i).getValue()
-							+ "\n----------------\n");
+		for (int i = 0; i < Math.min(top, result.size()); i++) {
+			BufferedWriter bw = null;
+			try {
+				bw = new BufferedWriter(new FileWriter("top"+Integer.toString(top)+"_query.json",true));
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+			JsonObject jo = new JsonObject();
+			jo.put("Top Number", i+1);
+			jo.put("SPARQL query", result.get(i).getKey().serialize());
+			jo.put("frequency", result.get(i).getValue());
+			try {
+				bw.write(jo.toString());
+				bw.newLine();
+				bw.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.exit(1);
+			}
+			// System.out.println(
+			// 		"----------------\n" + "Top" + (i + 1) + " query is\n****************\n"
+			// 				+ result.get(i).getKey().toString()
+			// 				+ "\n****************\nThe frequency of above query is " + result.get(i).getValue()
+			// 				+ "\n----------------\n");
 		}
 	}
 
@@ -114,7 +137,7 @@ public class IterateQueriesFromWikidataLog {
 		return numberMap;
 	}
 
-	public static void rankPattern(ArrayList<Query> queryList) {
+	public static void rankPattern(ArrayList<Query> queryList, int top) {
 		List<Query> pattern_query = new ArrayList<Query>();
 		for (Query q : queryList) {
 			Map<String, String> replace_map = new HashMap<String, String>();
@@ -191,10 +214,30 @@ public class IterateQueriesFromWikidataLog {
 			}
 		}
 		List<Map.Entry<Query, Integer>> result = sortPatternByValue(findFrequentPattern(pattern_query));
-		for (int i = 0; i < Math.min(300, result.size()); i++) {
-			System.out.println("----------------\n" + "Top" + (i + 1) + " pattern is\n****************\n"
-					+ result.get(i).getKey().serialize() + "\n****************\nThe frequency of above query is "
-					+ result.get(i).getValue() + "\n----------------\n");
+		for (int i = 0; i < Math.min(top, result.size()); i++) {
+			BufferedWriter bw = null;
+			try {
+				bw = new BufferedWriter(new FileWriter("top"+Integer.toString(top)+"_pattern.json",true));
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+			JsonObject jo = new JsonObject();
+			jo.put("Top Number", i+1);
+			jo.put("SPARQL query", result.get(i).getKey().serialize());
+			jo.put("frequency", result.get(i).getValue());
+			try {
+				bw.write(jo.toString());
+				bw.newLine();
+				bw.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.exit(1);
+			}
+			// System.out.println("----------------\n" + "Top" + (i + 1) + " pattern is\n****************\n"
+			// 		+ result.get(i).getKey().serialize() + "\n****************\nThe frequency of above query is "
+			// 		+ result.get(i).getValue() + "\n----------------\n");
 		}
 	}
 
