@@ -13,7 +13,6 @@ import org.apache.jena.sparql.algebra.op.OpDisjunction;
 import org.apache.jena.sparql.algebra.op.OpDistinct;
 import org.apache.jena.sparql.algebra.op.OpExtend;
 import org.apache.jena.sparql.algebra.op.OpFilter;
-import org.apache.jena.sparql.algebra.op.OpFind;
 import org.apache.jena.sparql.algebra.op.OpGraph;
 import org.apache.jena.sparql.algebra.op.OpGroup;
 import org.apache.jena.sparql.algebra.op.OpJoin;
@@ -143,11 +142,6 @@ public abstract class AllNodeOpVisitor implements OpVisitor {
 
 	@Override
 	public final void visit(OpPath opPath) {
-		// does not contain BGP => ignored
-	}
-
-	@Override
-	public final void visit(OpFind opFind) {
 		// does not contain BGP => ignored
 	}
 
