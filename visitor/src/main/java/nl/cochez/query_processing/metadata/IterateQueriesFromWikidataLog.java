@@ -304,7 +304,9 @@ public class IterateQueriesFromWikidataLog {
 			// }
 		}
 		List<Map.Entry<Query, Integer>> result = sortPatternByValue(findFrequentPattern(pattern_query));
-		for (int i = 0; i < Math.min(top, result.size()); i++) {
+		for (int i = 0; i < Math.min(top, result.size()); ) {
+			if(!check_with_endpoint(result.get(i).getKey()) || !check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey())))
+				continue;
 			BufferedWriter bw = null;
 			BufferedWriter bw_all = null;
 			try {
@@ -340,6 +342,7 @@ public class IterateQueriesFromWikidataLog {
 				e.printStackTrace();
 				System.exit(1);
 			}
+			i++;
 			// System.out.println("----------------\n" + "Top" + (i + 1) + " pattern is\n****************\n"
 			// 		+ result.get(i).getKey().serialize() + "\n****************\nThe frequency of above query is "
 			// 		+ result.get(i).getValue() + "\n----------------\n");
