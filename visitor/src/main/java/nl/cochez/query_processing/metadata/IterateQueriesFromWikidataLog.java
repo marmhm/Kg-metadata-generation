@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.graph.Triple;
@@ -72,7 +73,7 @@ public class IterateQueriesFromWikidataLog {
 				}
 			}
 			// rankQuery(queryList, 100);//input is (queryList, top number of display)
-			rankPattern(queryList, 100);//input is (queryList, top number of display)
+			rankPattern(queryList, 100, 3);//input is (queryList, top number of display)
 		}
 	}
 
@@ -147,7 +148,7 @@ public class IterateQueriesFromWikidataLog {
 	// 	return numberMap;
 	// }
 
-	public static void rankPattern(ArrayList<Query> queryList, int top) {
+	public static void rankPattern(ArrayList<Query> queryList, int top, int tripleNumber) {
 		List<Query> pattern_query = new ArrayList<Query>();
 		Map<Query, Query> pattern_instance_pair = new HashMap<Query,Query>();
 		br1: for (Query q : queryList) {
@@ -232,6 +233,9 @@ public class IterateQueriesFromWikidataLog {
 					HandlerBlock handlerBlock = new HandlerBlock(QueryFactory.create(replace_query_string));
 					selectBuilder.getHandlerBlock().addAll(handlerBlock);
 					selectBuilder.setBase(null);
+					for (Entry<String,String> prefix :q.getPrefixMapping().getNsPrefixMap().entrySet()){
+						selectBuilder.addPrefix(prefix.getKey(), prefix.getValue());
+					}
 					for(String ent : ent_vars){
 						try {
 							selectBuilder.addFilter("isIRI("+ent+")");
@@ -259,6 +263,9 @@ public class IterateQueriesFromWikidataLog {
 					HandlerBlock handlerBlock = new HandlerBlock(QueryFactory.create(replace_query_string));
 					selectBuilder.getHandlerBlock().addAll(handlerBlock);
 					selectBuilder.setBase(null);
+					for (Entry<String,String> prefix :q.getPrefixMapping().getNsPrefixMap().entrySet()){
+						selectBuilder.addPrefix(prefix.getKey(), prefix.getValue());
+					}
 					for(String ent : ent_vars){
 						try {
 							selectBuilder.addFilter("isIRI("+ent+")");
@@ -286,6 +293,9 @@ public class IterateQueriesFromWikidataLog {
 					HandlerBlock handlerBlock = new HandlerBlock(QueryFactory.create(replace_query_string));
 					selectBuilder.getHandlerBlock().addAll(handlerBlock);
 					selectBuilder.setBase(null);
+					for (Entry<String,String> prefix :q.getPrefixMapping().getNsPrefixMap().entrySet()){
+						selectBuilder.addPrefix(prefix.getKey(), prefix.getValue());
+					}
 					for(String ent : ent_vars){
 						try {
 							selectBuilder.addFilter("isIRI("+ent+")");
@@ -312,6 +322,9 @@ public class IterateQueriesFromWikidataLog {
 					HandlerBlock handlerBlock = new HandlerBlock(QueryFactory.create(replace_query_string));
 					selectBuilder.getHandlerBlock().addAll(handlerBlock);
 					selectBuilder.setBase(null);
+					for (Entry<String,String> prefix :q.getPrefixMapping().getNsPrefixMap().entrySet()){
+						selectBuilder.addPrefix(prefix.getKey(), prefix.getValue());
+					}
 					for(String ent : ent_vars){
 						try {
 							selectBuilder.addFilter("isIRI("+ent+")");
@@ -333,7 +346,7 @@ public class IterateQueriesFromWikidataLog {
 				}
 			}
 			else{
-				System.out.println("Query is not any type of SELECT or CONSTRUCT or ASK:");
+				System.out.println("Query is not any type of SELECT or CONSTRUCT or ASK or DESCRIBE:");
 				System.out.println(q.serialize());
 				continue;
 			}
@@ -349,49 +362,72 @@ public class IterateQueriesFromWikidataLog {
 			// }
 		}
 		List<Map.Entry<Query, Integer>> result = sortPatternByValue(findFrequentPattern(pattern_query));
-		for (int i = 0; i < Math.min(top, result.size()); ) {
-			// if(!check_with_endpoint(result.get(i).getKey()) || !check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey())))
-			// 	continue;
-			BufferedWriter bw = null;
-			BufferedWriter bw_all = null;
-			try {
-				bw = new BufferedWriter(new FileWriter("top"+Integer.toString(top)+"_pattern.json",true));
-				bw_all = new BufferedWriter(new FileWriter("top"+Integer.toString(top)+"_pattern_with_frequency.json",true));
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.exit(1);
+		for (int num = 1; num <= tripleNumber; num ++){
+			int count = 0;
+			br2: for (int i = 0; count < Math.min(top, result.size()) && i < result.size(); i++) {
+				// if(!check_with_endpoint(result.get(i).getKey()) || !check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey())))
+				// 	continue br2;
+				if(getBGPtripleNumber(result.get(i).getKey())!=num){
+					continue br2;
+				}
+				BufferedWriter bw = null;
+				BufferedWriter bw_all = null;
+				try {
+					bw = new BufferedWriter(new FileWriter("top"+Integer.toString(top)+"_pattern.json",true));
+					bw_all = new BufferedWriter(new FileWriter("top"+Integer.toString(top)+"_pattern_with_frequency.json",true));
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+				JsonObject jo = new JsonObject();
+				jo.put("Title", "");
+				// jo.put("Pattern Rank Number", Integer.toString(count+1)+"("+Integer.toString(i+1)+")");
+				jo.put("SPARQL Query Pattern", result.get(i).getKey().serialize());
+				jo.put("Instance Query", pattern_instance_pair.get(result.get(i).getKey()).serialize());
+				jo.put("Contained Triple's Number", num);
+				
+				try {
+					bw.write(jo.toString());
+					bw.newLine();
+					bw.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.exit(1);
+				}
+	
+				jo.put("Frequency", result.get(i).getValue());
+				try {
+					bw_all.write(jo.toString());
+					bw_all.newLine();
+					bw_all.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.exit(1);
+				}
+				count++;
 			}
-			JsonObject jo = new JsonObject();
-			jo.put("Title", "");
-			jo.put("Pattern Rank Number", i+1);
-			jo.put("SPARQL Query Pattern", result.get(i).getKey().serialize());
-			jo.put("Instance Query", pattern_instance_pair.get(result.get(i).getKey()).serialize());
-			
-			try {
-				bw.write(jo.toString());
-				bw.newLine();
-				bw.flush();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				System.exit(1);
-			}
-
-			jo.put("Frequency", result.get(i).getValue());
-			try {
-				bw_all.write(jo.toString());
-				bw_all.newLine();
-				bw_all.flush();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				System.exit(1);
-			}
-			i++;
-			// System.out.println("----------------\n" + "Top" + (i + 1) + " pattern is\n****************\n"
-			// 		+ result.get(i).getKey().serialize() + "\n****************\nThe frequency of above query is "
-			// 		+ result.get(i).getValue() + "\n----------------\n");
 		}
+	}
+
+	private static int getBGPtripleNumber(Query q){
+		List<Integer> num = new ArrayList<Integer>();
+		AllBGPOpVisitor visitor = new AllBGPOpVisitor() {
+			@Override
+			public void visit(OpBGP opBGP) {
+				for (Triple tp : opBGP.getPattern())
+					num.add(1);
+			}
+		};
+		try {
+			Algebra.compile(q).visit(visitor);
+		} catch (Exception e) {
+			//TODO: handle exception
+			return 0;
+		}
+		
+		return num.size();
 	}
 
 	private static HashMap<Query, Integer> findFrequentPattern(List<Query> inputArr) {
