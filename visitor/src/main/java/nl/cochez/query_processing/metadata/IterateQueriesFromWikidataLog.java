@@ -34,8 +34,15 @@ import org.apache.jena.sparql.algebra.op.OpBGP;
 import org.apache.jena.sparql.algebra.op.OpSlice;
 import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
+
+import nl.cochez.query_processing.metadata.IsomorpismClusteringQueryCollector.Node;
+
 import org.apache.jena.arq.querybuilder.AskBuilder;
 import org.apache.jena.arq.querybuilder.ConstructBuilder;
+import org.apache.jena.arq.querybuilder.DescribeBuilder;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 
@@ -299,6 +306,32 @@ public class IterateQueriesFromWikidataLog {
 					continue br1;
 				}
 			}
+			else if (q.isDescribeType()){
+				DescribeBuilder selectBuilder = new DescribeBuilder();
+				try {
+					HandlerBlock handlerBlock = new HandlerBlock(QueryFactory.create(replace_query_string));
+					selectBuilder.getHandlerBlock().addAll(handlerBlock);
+					selectBuilder.setBase(null);
+					for(String ent : ent_vars){
+						try {
+							selectBuilder.addFilter("isIRI("+ent+")");
+						} catch (ParseException e) {
+						}
+					}
+					for (String literal : lit_vars){
+						try {
+							selectBuilder.addFilter("isLiteral("+literal+")");
+						} catch (ParseException e) {
+						}
+					}
+					Query pattern_q = selectBuilder.build();
+					pattern_query.add(pattern_q);
+					if(!pattern_instance_pair.containsKey(pattern_q))
+						pattern_instance_pair.put(pattern_q, q);
+				} catch (Exception e) {
+					continue br1;
+				}
+			}
 			else{
 				System.out.println("Query is not any type of SELECT or CONSTRUCT or ASK:");
 				System.out.println(q.serialize());
@@ -512,5 +545,89 @@ public class IterateQueriesFromWikidataLog {
         	return true;
         }
         return false;
+	}
+	private static Graph toGraph(Query pattern){
+		Graph<Node, RelationshipEdge> graph = new DefaultDirectedGraph<Node, RelationshipEdge>(RelationshipEdge.class);
+		AllBGPOpVisitor visitor = new AllBGPOpVisitor() {
+
+			@Override
+			public void visit(OpBGP opBGP) {
+				for (Triple tp : opBGP.getPattern()){
+					org.apache.jena.graph.Node s = tp.getSubject();
+					org.apache.jena.graph.Node o = tp.getObject();
+					org.apache.jena.graph.Node p = tp.getPredicate();
+
+					RelationshipEdge edge = new RelationshipEdge(p.toString());
+					Node sNode = null;
+					if (s.isVariable() || s.toString().startsWith("?")){
+						if(s.toString().startsWith("?variable")){
+							sNode = new Node(s.toString().replace("?",""), "variable");
+						}
+						else if (s.toString().startsWith("?ent")){
+							sNode = new Node(s.toString().replace("?", ""), "entity");
+						}
+						else if (s.toString().startsWith("?str")){
+							sNode = new Node(s.toString().replace("?", ""), "literal");
+						}
+					}
+					else {
+						sNode = new Node(s.toString(), s.toString());
+					}
+
+					Node oNode = null;
+					if (o.isVariable() || o.toString().startsWith("?")){
+						if(o.toString().startsWith("?variable")){
+							oNode = new Node(o.toString().replace("?",""), "variable");
+						}
+						else if (o.toString().startsWith("?ent")){
+							oNode = new Node(o.toString().replace("?", ""), "entity");
+						}
+						else if (o.toString().startsWith("?str")){
+							oNode = new Node(o.toString().replace("?", ""), "literal");
+						}
+					}
+					else {
+						oNode = new Node(o.toString(),o.toString());
+					}
+					graph.addVertex(sNode);
+					graph.addVertex(oNode);
+					graph.addEdge(sNode, oNode, edge);
+				}
+			}
+		};
+
+		Op op = Algebra.compile(pattern);
+		op.visit(visitor);
+		
+		return graph;
+	}
+}
+
+	
+
+class RelationshipEdge
+    extends
+    DefaultEdge
+{
+    private String label;
+
+    public RelationshipEdge(String label)
+    {
+        this.label = label;
+    }
+
+    public String getLabel()
+    {
+        return label;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "( "+ ((Node)getSource()).value + " "+ label+" " + ((Node)getTarget()).value+" )";
+    }
+
+	public String toString_group(){
+		return "( "+ ((Node)getSource()).getGroup() + " "+ label+" " + ((Node)getTarget()).getGroup()+" )";
 	}
 }
