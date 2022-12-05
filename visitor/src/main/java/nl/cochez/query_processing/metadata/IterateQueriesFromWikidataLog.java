@@ -143,7 +143,7 @@ public class IterateQueriesFromWikidataLog {
 	public static void rankPattern(ArrayList<Query> queryList, int top) {
 		List<Query> pattern_query = new ArrayList<Query>();
 		Map<Query, Query> pattern_instance_pair = new HashMap<Query,Query>();
-		for (Query q : queryList) {
+		br1: for (Query q : queryList) {
 			// System.out.println(q.queryType().name());
 			Map<String, String> replace_map = new HashMap<String, String>();
 			Op ope = Algebra.compile(q);
@@ -221,69 +221,83 @@ public class IterateQueriesFromWikidataLog {
 
 			if(q.isSelectType()){
 				SelectBuilder selectBuilder = new SelectBuilder();
-				HandlerBlock handlerBlock = new HandlerBlock(QueryFactory.create(replace_query_string));
-				selectBuilder.getHandlerBlock().addAll(handlerBlock);
-				selectBuilder.setBase(null);
-				for(String ent : ent_vars){
-					try {
-						selectBuilder.addFilter("isIRI("+ent+")");
-					} catch (ParseException e) {
+				try {
+					HandlerBlock handlerBlock = new HandlerBlock(QueryFactory.create(replace_query_string));
+					selectBuilder.getHandlerBlock().addAll(handlerBlock);
+					selectBuilder.setBase(null);
+					for(String ent : ent_vars){
+						try {
+							selectBuilder.addFilter("isIRI("+ent+")");
+						} catch (ParseException e) {
+						}
 					}
-				}
-				for (String literal : lit_vars){
-					try {
-						selectBuilder.addFilter("isLiteral("+literal+")");
-					} catch (ParseException e) {
+					for (String literal : lit_vars){
+						try {
+							selectBuilder.addFilter("isLiteral("+literal+")");
+						} catch (ParseException e) {
+						}
 					}
+					Query pattern_q = selectBuilder.build();
+					pattern_query.add(pattern_q);
+					if(!pattern_instance_pair.containsKey(pattern_q))
+						pattern_instance_pair.put(pattern_q, q);
+				} catch (Exception e) {
+					//TODO: handle exception
+					continue br1;
 				}
-				Query pattern_q = selectBuilder.build();
-				pattern_query.add(pattern_q);
-				if(!pattern_instance_pair.containsKey(pattern_q))
-					pattern_instance_pair.put(pattern_q, q);
 			}
 			else if (q.isConstructType()){
 				ConstructBuilder selectBuilder = new ConstructBuilder();
-				HandlerBlock handlerBlock = new HandlerBlock(QueryFactory.create(replace_query_string));
-				selectBuilder.getHandlerBlock().addAll(handlerBlock);
-				selectBuilder.setBase(null);
-				for(String ent : ent_vars){
-					try {
-						selectBuilder.addFilter("isIRI("+ent+")");
-					} catch (ParseException e) {
+				try {
+					HandlerBlock handlerBlock = new HandlerBlock(QueryFactory.create(replace_query_string));
+					selectBuilder.getHandlerBlock().addAll(handlerBlock);
+					selectBuilder.setBase(null);
+					for(String ent : ent_vars){
+						try {
+							selectBuilder.addFilter("isIRI("+ent+")");
+						} catch (ParseException e) {
+						}
 					}
-				}
-				for (String literal : lit_vars){
-					try {
-						selectBuilder.addFilter("isLiteral("+literal+")");
-					} catch (ParseException e) {
+					for (String literal : lit_vars){
+						try {
+							selectBuilder.addFilter("isLiteral("+literal+")");
+						} catch (ParseException e) {
+						}
 					}
+					Query pattern_q = selectBuilder.build();
+					pattern_query.add(pattern_q);
+					if(!pattern_instance_pair.containsKey(pattern_q))
+						pattern_instance_pair.put(pattern_q, q);
+				} catch (Exception e) {
+					//TODO: handle exception
+					continue br1;
 				}
-				Query pattern_q = selectBuilder.build();
-				pattern_query.add(pattern_q);
-				if(!pattern_instance_pair.containsKey(pattern_q))
-					pattern_instance_pair.put(pattern_q, q);
 			}
 			else if (q.isAskType()){
 				AskBuilder selectBuilder = new AskBuilder();
-				HandlerBlock handlerBlock = new HandlerBlock(QueryFactory.create(replace_query_string));
-				selectBuilder.getHandlerBlock().addAll(handlerBlock);
-				selectBuilder.setBase(null);
-				for(String ent : ent_vars){
-					try {
-						selectBuilder.addFilter("isIRI("+ent+")");
-					} catch (ParseException e) {
+				try {
+					HandlerBlock handlerBlock = new HandlerBlock(QueryFactory.create(replace_query_string));
+					selectBuilder.getHandlerBlock().addAll(handlerBlock);
+					selectBuilder.setBase(null);
+					for(String ent : ent_vars){
+						try {
+							selectBuilder.addFilter("isIRI("+ent+")");
+						} catch (ParseException e) {
+						}
 					}
-				}
-				for (String literal : lit_vars){
-					try {
-						selectBuilder.addFilter("isLiteral("+literal+")");
-					} catch (ParseException e) {
+					for (String literal : lit_vars){
+						try {
+							selectBuilder.addFilter("isLiteral("+literal+")");
+						} catch (ParseException e) {
+						}
 					}
+					Query pattern_q = selectBuilder.build();
+					pattern_query.add(pattern_q);
+					if(!pattern_instance_pair.containsKey(pattern_q))
+						pattern_instance_pair.put(pattern_q, q);
+				} catch (Exception e) {
+					continue br1;
 				}
-				Query pattern_q = selectBuilder.build();
-				pattern_query.add(pattern_q);
-				if(!pattern_instance_pair.containsKey(pattern_q))
-					pattern_instance_pair.put(pattern_q, q);
 			}
 			else{
 				System.out.println("Query is not any type of SELECT or CONSTRUCT or ASK:");
@@ -303,8 +317,8 @@ public class IterateQueriesFromWikidataLog {
 		}
 		List<Map.Entry<Query, Integer>> result = sortPatternByValue(findFrequentPattern(pattern_query));
 		for (int i = 0; i < Math.min(top, result.size()); ) {
-			if(!check_with_endpoint(result.get(i).getKey()) || !check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey())))
-				continue;
+			// if(!check_with_endpoint(result.get(i).getKey()) || !check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey())))
+			// 	continue;
 			BufferedWriter bw = null;
 			BufferedWriter bw_all = null;
 			try {
