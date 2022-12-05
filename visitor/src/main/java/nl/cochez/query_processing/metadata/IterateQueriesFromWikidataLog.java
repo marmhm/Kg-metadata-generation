@@ -73,7 +73,7 @@ public class IterateQueriesFromWikidataLog {
 				}
 			}
 			// rankQuery(queryList, 100);//input is (queryList, top number of display)
-			rankPattern(queryList, 100, 3);//input is (queryList, top number of display)
+			rankPattern(queryList, 100, 3);//input is (queryList, top number of display, max number of triples in pattern query)
 		}
 	}
 
