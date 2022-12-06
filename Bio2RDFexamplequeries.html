@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<head><link href="https://unpkg.com/@triply/yasgui/build/yasgui.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://unpkg.com/@triply/yasgui/build/yasgui.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  </head>
+<body>
+<h1  style="color:white;font-family:verdana;font-size:50px;background-color:tomato;"><center>FAQ</center></h1>
+<p style=" font-size:30px;;background-color:powderblue;">  Take a look on what others have asked from Bio2RDF so far, their question might be your question!</p>
+
+
+
+
+
+<style>
+    th{ 
+        cursor: pointer;
+		color:#fff;
+    }
+</style>
+
+
+  <div class="row">
+    <div class="col">
+	    <div class="card card-body">
+		    <input id="search-input" class="from-control" type="text">
+		</div>
+    </div>
+  </div>	
+	
+
+<table class="table table-striped">
+    <tr  class="bg-info">
+        <th  class="bg-info" data-colname="name" data-order="desc">Title</th>
+        <th  data-colname="age" data-order="desc">Pattern</th>
+        <th  data-colname="birthdate" data-order="desc">query</th>
+    </tr>
+    <tbody id="myTable">
+        
+    </tbody>
+</table>
+
+
+<script>
+var myArray = [
+    {'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
+    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}'},
+    {'name':'return all drugs and their name, title, indications, food-intractions,indication-text, and food-intraction-text.  ', 'age':'ASK\nWHERE\n  { ?variable1  n &lt; http://nonsensical.com/1/1587271614525 &gt;  ?ent1\n    FILTER isIRI(?ent1)\n  }\n', 'birthdate':'ASK\nWHERE\n  { ?s  http://nonsensical.com/1/1587271614525  http://nonsensical.com/2/1587271614525 }\n'},
+    {'name':'Dennis', 'age':'25', 'birthdate':'11/29/1993'},
+    {'name':'Tim', 'age':'SELECT  *\nWHERE\n  { { { { { ?variable7  a                   ?ent1 ;\n                      <http://www.w3.org/2000/01/rdf-schema#label>  ?variable5 ;\n                      <http://purl.org/dc/terms/title>  ?variable9 . \n            ?variable7  <http://bio2rdf.org/drugbank_vocabulary:dosage>  ?variable8\n          }\n          ?variable7  <http://bio2rdf.org/drugbank_vocabulary:indication>  ?variable4\n        }\n        ?variable7  <http://purl.org/dc/terms/description>  ?variable1\n      }\n      ?variable7  <http://bio2rdf.org/drugbank_vocabulary:food-interaction>  ?variable10\n    }\n    ?variable8  <http://purl.org/dc/terms/title>  ?variable2 .\n    ?variable4  <http://purl.org/dc/terms/description>  ?variable6 .\n    ?variable10  <http://www.w3.org/1999/02/22-rdf-syntax-ns#value>  ?variable3\n    BIND(lcase(str(?variable5)) AS ?drug_nametext)\n    FILTER isIRI(?ent1)\n  }','birthdate':'SELECT  *\nWHERE\n  { { { { { ?drug  a                     <http://bio2rdf.org/drugbank_vocabulary:Drug>'},
+    {'name':'Erik', 'age':'24', 'birthdate':'10/31/1995'},
+	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
+    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
+	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
+    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
+	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
+    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
+	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
+    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
+	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
+    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
+	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
+    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
+	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
+    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
+	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
+    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
+	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
+    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
+	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
+    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
+]
+
+$('#search-input').on('keyup', function(){
+   var value= $(this).val()
+   console.log('Value:', value)
+   var data = searchTable(value, myArray)
+   buildTable(data)
+})
+
+buildTable(myArray) 
+
+function searchTable(value, data){
+    var filteredData = []
+    for (var i=0; i < data.length; i++){
+        value= value.toLowerCase()
+	    var name= data[i].name.toLowerCase()
+	
+	    if (name.includes(value)){
+	        filteredData.push(data[i])
+		
+		}
+	}	
+	return filteredData
+}
+    
+function buildTable(data){
+
+    var table = document.getElementById('myTable')
+
+    table.innerHTML = ''
+
+    for (var i = 0; i < data.length; i++){
+	    
+        var row = `<tr>
+                        <td>${data[i].name}</td>
+                        <td>${data[i].age}</td>
+                        <td>${data[i].birthdate}</td>
+                   </tr>`
+        table.innerHTML += row
+    }
+}
+
+</script>
+
+<center><img src="barh.png" alt="Trulli" width="500" height="333"></center>
+<h1 style="color:white;font-family:verdana;font-size:30px;background-color:tomato;"><center>Frequent terms used as a Subject of the triple:</center></h1>
+
+
+<h1 style="color:white;font-family:verdana;font-size:30px;background-color:tomato;"><center>Frequent terms used as a Subject of the triple:</center></h1>
+
+<center><img src="sub2.png" alt="Trulli" width="500" height="333"></center>
+
+<h1 style="color:white;font-family:verdana;font-size:30px;background-color:tomato;"><center>Frequent terms used as a Subject of the triple:</center></h1>
+
+<center><img src="drugbanksubjects.png" alt="Trulli" width="500" height="333"></center>
+
+<h1 style="color:white;font-family:verdana;font-size:30px;background-color:tomato;"><center>Frequent terms used as a Subject of the triple:</center></h1>
+
+
+<center><img src="drugbanksubjects.png" alt="Trulli" width="500" height="333"></center>
+<h1 style="color:white;font-family:verdana;font-size:30px;background-color:tomato;"><center>Frequent terms used as a Subject of the triple:</center></h1>
+
+<center><img src="drugbanksubjects.png" alt="Trulli" width="500" height="333"></center>
+
+
+
+  <div id="yasgui"></div>
+  <script>
+    const yasgui = new Yasgui(document.getElementById("yasgui"));
+  </script>
+</body>
