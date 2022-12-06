@@ -146,9 +146,9 @@ public class MainStatistics {
 				for (Entry<String> str : Iterables.limit(Multisets.copyHighestCountFirst(visitor.subjects).entrySet(), 100)){
 					String label = get_labels("<"+str.getElement()+">");
 					if(label!=null)
-					System.out.print(str.getElement()+"("+get_labels("<"+str.getElement()+">")+") X "+str.getCount()+", ");
+					System.out.print("<"+str.getElement()+">"+"("+get_labels("<"+str.getElement()+">")+") X "+str.getCount()+", ");
 					// else
-					// System.out.print(str.getElement()+" X "+str.getCount()+", ");
+					// System.out.print("<"+str.getElement()+">"+" X "+str.getCount()+", ");
 				}
 				System.out.println("]");
 				
@@ -158,9 +158,9 @@ public class MainStatistics {
 				for (Entry<String> str : Iterables.limit(Multisets.copyHighestCountFirst(visitor.objects).entrySet(), 100)){
 					String label = get_labels("<"+str.getElement()+">");
 					if(label!=null)
-					System.out.print(str.getElement()+"("+label+") X "+str.getCount()+", ");
+					System.out.print("<"+str.getElement()+">"+"("+label+") X "+str.getCount()+", ");
 					// else
-					// System.out.print(str.getElement()+" X "+str.getCount()+", ");
+					// System.out.print("<"+str.getElement()+">"+" X "+str.getCount()+", ");
 				}
 				System.out.println("]");
 				System.out.println("literals" + Iterables.limit(Multisets.copyHighestCountFirst(visitor.literal_values).entrySet(), 100));
