@@ -73,7 +73,7 @@ public class IterateQueriesFromWikidataLog {
 				}
 			}
 			// rankQuery(queryList, 100);//input is (queryList, top number of display)
-			rankPattern(queryList, 100, 3);//input is (queryList, top number of display, max number of triples in pattern query)
+			rankPattern(queryList, 10, 5,5);//input is (queryList, top number of display, max number of triples in pattern query)
 		}
 	}
 
@@ -148,7 +148,7 @@ public class IterateQueriesFromWikidataLog {
 	// 	return numberMap;
 	// }
 
-	public static void rankPattern(ArrayList<Query> queryList, int top, int tripleNumber) {
+	public static void rankPattern(ArrayList<Query> queryList, int top,int offset, int tripleNumber) {
 		List<Query> pattern_query = new ArrayList<Query>();
 		Map<Query, Query> pattern_instance_pair = new HashMap<Query,Query>();
 		br1: for (Query q : queryList) {
@@ -362,7 +362,7 @@ public class IterateQueriesFromWikidataLog {
 			// }
 		}
 		List<Map.Entry<Query, Integer>> result = sortPatternByValue(findFrequentPattern(pattern_query));
-		br: for (int num = 1; num <= tripleNumber; num ++){
+		br: for (int num = offset; num <= tripleNumber; num ++){
 			boolean go_on = true;
 			int count = 0;
 			br2: for (int i = 0; count < Math.min(top, result.size()) && i < result.size(); i++) {
