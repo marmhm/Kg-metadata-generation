@@ -32,7 +32,8 @@ public class MainIsomorphisms {
 		System.out.println("Elapsed" + watch.elapsed(TimeUnit.SECONDS));
 
 		collector.stats();
-
+		
+		PatternDisplay.rankPattern(collector.queryList,10,5,5);
 	}
 
 }

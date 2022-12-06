@@ -75,7 +75,7 @@ public class IsomorpismClusteringQueryCollector implements IQueryCollector {
 		public final String value;
 		private final String group;
 
-		private Node(String value, String group) {
+		Node(String value, String group) {
 			super();
 			this.value = value;
 			this.group = group;
@@ -95,6 +95,10 @@ public class IsomorpismClusteringQueryCollector implements IQueryCollector {
 
 		public static Node forLiteral(String value) {
 			return new Node(value, "literal");
+		}
+
+		public String getGroup(){
+			return group;
 		}
 
 		@Override
@@ -271,6 +275,7 @@ public class IsomorpismClusteringQueryCollector implements IQueryCollector {
 
 	// maps from the signatuer to a list of potentially isomorpic graphs
 	private ArrayListMultimap<QuerySignature, GraphWithCountAndIsomorphs> theGraphCollection = ArrayListMultimap.create();
+	public ArrayList<Query> queryList = new ArrayList<Query>();
 
 	private int count = 0;
 	private int failures = 0;
@@ -300,6 +305,7 @@ public class IsomorpismClusteringQueryCollector implements IQueryCollector {
 
 	@Override
 	public void add(Query q) {
+		queryList.add(q);
 		Op op = Algebra.compile(q);
 		op.visit(visitor);
 		this.count++;

@@ -123,6 +123,7 @@ public class MainStatistics {
 		InputStream in = new FileInputStream(filename);
         
 		final StatVisitor visitor = new StatVisitor();
+		ArrayList<Query> queryList = new ArrayList<Query>();
 		
 		IQueryCollector collector = new IQueryCollector() {
 			int failures = 0;
@@ -181,6 +182,7 @@ public class MainStatistics {
 
 			@Override
 			public void add(Query q) {
+				queryList.add(q);
 				Op op = Algebra.compile(q);
 				// System.out.println("NEXT QUERY");
 				op.visit(visitor);
@@ -202,6 +204,7 @@ public class MainStatistics {
 		System.out.println("Elapsed" + watch.elapsed(TimeUnit.SECONDS));
 
 		collector.stats();
+		PatternDisplay.rankPattern(queryList, 10, 5,5);//input is (queryList, top number of display, max number of triples in pattern query)
 	}
 
 	private static String get_labels(String str){
