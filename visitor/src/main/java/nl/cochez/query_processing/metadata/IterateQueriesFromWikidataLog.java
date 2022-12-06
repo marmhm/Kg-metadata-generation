@@ -412,6 +412,8 @@ public class IterateQueriesFromWikidataLog {
 				count++;
 				if (count >= 4)
 					go_on = false;
+				if (count >= 10)
+					continue br;
 			}
 			int current = Math.min(top, result.size());
 			if (go_on == true)
