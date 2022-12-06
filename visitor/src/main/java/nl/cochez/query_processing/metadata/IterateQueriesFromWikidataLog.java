@@ -365,8 +365,10 @@ public class IterateQueriesFromWikidataLog {
 		for (int num = 1; num <= tripleNumber; num ++){
 			int count = 0;
 			br2: for (int i = 0; count < Math.min(top, result.size()) && i < result.size(); i++) {
-				// if(!check_with_endpoint(result.get(i).getKey()) || !check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey())))
-				// 	continue br2;
+				if(!check_with_endpoint(result.get(i).getKey()) || !check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
+					count++;
+					continue br2;
+				}
 				if(getBGPtripleNumber(result.get(i).getKey())!=num){
 					continue br2;
 				}
