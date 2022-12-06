@@ -362,10 +362,11 @@ public class IterateQueriesFromWikidataLog {
 			// }
 		}
 		List<Map.Entry<Query, Integer>> result = sortPatternByValue(findFrequentPattern(pattern_query));
-		for (int num = 1; num <= tripleNumber; num ++){
+		br: for (int num = 1; num <= tripleNumber; num ++){
+			boolean go_on = true;
 			int count = 0;
 			br2: for (int i = 0; count < Math.min(top, result.size()) && i < result.size(); i++) {
-				if(!check_with_endpoint(result.get(i).getKey()) || !check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
+				if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
 					count++;
 					continue br2;
 				}
@@ -409,6 +410,118 @@ public class IterateQueriesFromWikidataLog {
 					System.exit(1);
 				}
 				count++;
+				if (count >= 4)
+					go_on = false;
+			}
+			int current = Math.min(top, result.size());
+			if (go_on == true)
+				if (top < 50)
+					top = 50;
+			br3: for (int i = current; count < Math.min(top, result.size()) && i < result.size(); i++) {
+				if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
+					count++;
+					continue br3;
+				}
+				if (getBGPtripleNumber(result.get(i).getKey()) != num) {
+					continue br3;
+				}
+				BufferedWriter bw = null;
+				BufferedWriter bw_all = null;
+				try {
+					bw = new BufferedWriter(new FileWriter("top" + Integer.toString(top) + "_pattern.json", true));
+					bw_all = new BufferedWriter(
+							new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency.json", true));
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+				JsonObject jo = new JsonObject();
+				jo.put("Title", "");
+				// jo.put("Pattern Rank Number",
+				// Integer.toString(count+1)+"("+Integer.toString(i+1)+")");
+				jo.put("SPARQL Query Pattern", result.get(i).getKey().serialize());
+				jo.put("Instance Query", pattern_instance_pair.get(result.get(i).getKey()).serialize());
+				jo.put("Contained Triple's Number", num);
+
+				try {
+					bw.write(jo.toString());
+					bw.newLine();
+					bw.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.exit(1);
+				}
+
+				jo.put("Frequency", result.get(i).getValue());
+				try {
+					bw_all.write(jo.toString());
+					bw_all.newLine();
+					bw_all.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.exit(1);
+				}
+				count++;
+				if (count >= 7)
+					go_on = false;
+				if (count >= 10)
+					continue br;
+			}
+			current = Math.min(top, result.size());
+			if (go_on == true)
+				if (top < 100)
+					top = 100;
+			br4: for (int i = current; count < Math.min(top, result.size()) && i < result.size(); i++) {
+				if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
+					count++;
+					continue br4;
+				}
+				if (getBGPtripleNumber(result.get(i).getKey()) != num) {
+					continue br4;
+				}
+				BufferedWriter bw = null;
+				BufferedWriter bw_all = null;
+				try {
+					bw = new BufferedWriter(new FileWriter("top" + Integer.toString(top) + "_pattern.json", true));
+					bw_all = new BufferedWriter(
+							new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency.json", true));
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+				JsonObject jo = new JsonObject();
+				jo.put("Title", "");
+				// jo.put("Pattern Rank Number",
+				// Integer.toString(count+1)+"("+Integer.toString(i+1)+")");
+				jo.put("SPARQL Query Pattern", result.get(i).getKey().serialize());
+				jo.put("Instance Query", pattern_instance_pair.get(result.get(i).getKey()).serialize());
+				jo.put("Contained Triple's Number", num);
+
+				try {
+					bw.write(jo.toString());
+					bw.newLine();
+					bw.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.exit(1);
+				}
+
+				jo.put("Frequency", result.get(i).getValue());
+				try {
+					bw_all.write(jo.toString());
+					bw_all.newLine();
+					bw_all.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.exit(1);
+				}
+				count++;
+				if (count >= 10)
+					continue br;
 			}
 		}
 	}
