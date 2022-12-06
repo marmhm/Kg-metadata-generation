@@ -168,7 +168,15 @@ public class MainStatistics {
 				System.out.println("languages" + Iterables.limit(Multisets.copyHighestCountFirst(visitor.languages).entrySet(), 100));
 				System.out.println("types" + Iterables.limit(Multisets.copyHighestCountFirst(visitor.types).entrySet(), 100));
 				System.out.println("literal_labels" + Iterables.limit(Multisets.copyHighestCountFirst(visitor.literal_labels).entrySet(), 100));
-				System.out.println("rdf_types" + Iterables.limit(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet(), 100));
+				// System.out.println("rdf_types" + Iterables.limit(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet(), 100));
+				System.out.print("rdf_types: [");
+				for (Entry<String> str : Iterables.limit(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet(), 100)){
+					String label = get_labels("<"+str.getElement()+">");
+					if(label!=null)
+					System.out.print("<"+str.getElement()+">"+"("+label+") X "+str.getCount()+", ");
+					// else
+					// System.out.print("<"+str.getElement()+">"+" X "+str.getCount()+", ");
+				}
 				
 				System.out.println("Number of failures is : " + failures);
 			}
