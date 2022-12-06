@@ -177,7 +177,7 @@ public class MainStatistics {
 					// else
 					// System.out.print("<"+str.getElement()+">"+" X "+str.getCount()+", ");
 				}
-				
+				System.out.println("]");
 				System.out.println("Number of failures is : " + failures);
 			}
 
