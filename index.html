@@ -7,7 +7,8 @@
   </head>
 <body>
 <h1  style="color:white;font-family:verdana;font-size:50px;background-color:tomato;"><center>FAQ</center></h1>
-<p style=" font-size:30px;;background-color:powderblue;">  Take a look on what others have asked from Bio2RDF so far, their question might be your question!</p>
+<p style=" font-size:20px;;background-color:powderblue;">  Take a look on what others have asked from Bio2RDF so far, their question might be your question!</p>
+
 
 
 
@@ -21,6 +22,7 @@
 </style>
 
 
+
   <div class="row">
     <div class="col">
 	    <div class="card card-body">
@@ -28,13 +30,27 @@
 		</div>
     </div>
   </div>	
+  
+
+	
+  <div id="yasgui"></div>
+  <script>
+    const yasgui = new Yasgui(document.getElementById("yasgui"), {
+  requestConfig: { endpoint: "https://bio2rdf.org/sparql/" },
+  copyEndpointOnNewTab: false,
+});
+  </script>
+</body>
 	
 
 <table class="table table-striped">
+
     <tr  class="bg-info">
-        <th  class="bg-info" data-colname="name" data-order="desc">Title</th>
-        <th  data-colname="age" data-order="desc">Pattern</th>
-        <th  data-colname="birthdate" data-order="desc">query</th>
+        <th  class="bg-info" data-colname="name" data-order="desc">Natural Languege query</th>
+        <th  data-colname="age" data-order="desc">SPARQL Query Pattern</th>
+        <th  data-colname="birthdate" data-order="desc">Instance Query</th>
+		
+		
     </tr>
     <tbody id="myTable">
         
@@ -43,34 +59,217 @@
 
 
 <script>
-var myArray = [
-    {'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
-    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}'},
-    {'name':'return all drugs and their name, title, indications, food-intractions,indication-text, and food-intraction-text.  ', 'age':'ASK\nWHERE\n  { ?variable1  n &lt; http://nonsensical.com/1/1587271614525 &gt;  ?ent1\n    FILTER isIRI(?ent1)\n  }\n', 'birthdate':'ASK\nWHERE\n  { ?s  http://nonsensical.com/1/1587271614525  http://nonsensical.com/2/1587271614525 }\n'},
-    {'name':'Dennis', 'age':'25', 'birthdate':'11/29/1993'},
-    {'name':'Tim', 'age':'SELECT  *\nWHERE\n  { { { { { ?variable7  a                   ?ent1 ;\n                      <http://www.w3.org/2000/01/rdf-schema#label>  ?variable5 ;\n                      <http://purl.org/dc/terms/title>  ?variable9 . \n            ?variable7  <http://bio2rdf.org/drugbank_vocabulary:dosage>  ?variable8\n          }\n          ?variable7  <http://bio2rdf.org/drugbank_vocabulary:indication>  ?variable4\n        }\n        ?variable7  <http://purl.org/dc/terms/description>  ?variable1\n      }\n      ?variable7  <http://bio2rdf.org/drugbank_vocabulary:food-interaction>  ?variable10\n    }\n    ?variable8  <http://purl.org/dc/terms/title>  ?variable2 .\n    ?variable4  <http://purl.org/dc/terms/description>  ?variable6 .\n    ?variable10  <http://www.w3.org/1999/02/22-rdf-syntax-ns#value>  ?variable3\n    BIND(lcase(str(?variable5)) AS ?drug_nametext)\n    FILTER isIRI(?ent1)\n  }','birthdate':'SELECT  *\nWHERE\n  { { { { { ?drug  a                     <http://bio2rdf.org/drugbank_vocabulary:Drug>'},
-    {'name':'Erik', 'age':'24', 'birthdate':'10/31/1995'},
-	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
-    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
-	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
-    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
-	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
-    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
-	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
-    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
-	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
-    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
-	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
-    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
-	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
-    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
-	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
-    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
-	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
-    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
-	{'name':'return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates return all predicates', 'age':'select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}select* where {?var1 ?p ?var2}', 'birthdate':'11/10/1989'},
-    {'name':'Mila', 'age':'select* where {?var1 ?p ?var2}', 'birthdate':'10/1/1989'},
-]
+var myArray = [{ 
+  "name" : "return all drugs and their name, title, indications, food-intractions,indication-text, and food-intraction-text." ,
+  "age" : "ASK\nWHERE\n  { ?variable2  ?p  ?variable1}\n" ,
+  "birthdate" : "ASK\nWHERE\n  { ?s  ?p  ?o }\n" ,
+   
+},
+{ 
+  "name" : "Retrive subjects of the triples in the graph" ,
+  "age" : "SELECT  ?variable2\nWHERE\n  { ?variable2  ?p  ?variable1}\nLIMIT   1\n" ,
+  "birthdate" : "SELECT  ?s\nWHERE\n  { ?s  ?p  ?o }\nLIMIT   1\n" ,
+   
+},
+{ 
+  "name" : "Retrive objectss of the triples in the graph" ,
+  "age" : "SELECT  ?variable1\nWHERE\n  { ?variable2  ?y  ?variable1}\nLIMIT   1\n" ,
+  "birthdate" : "SELECT  ?t\nWHERE\n  { ?x  ?y  ?t }\nLIMIT   1\n" ,
+   
+},
+{ 
+  "name" : "Retrive predicatess of the triples in the graph" ,
+  "age" : "SELECT  ?p\nWHERE\n  { ?variable1  ?p  ?variable2}\nOFFSET  1\nLIMIT   1\n" ,
+  "birthdate" : "SELECT  ?p\nWHERE\n  { ?s  ?p  ?v }\nOFFSET  333292500\nLIMIT   31250\n" ,
+   
+},
+{ 
+  "name" : "Retrive language tags of the objectss of the triples in the graph" ,
+  "age" : "SELECT  (lang(?variable2) AS ?lang)\nWHERE\n  { ?variable1  ?p  ?variable2}\nOFFSET  1\nLIMIT   1\n" ,
+  "birthdate" : "SELECT  (lang(?v) AS ?lang)\nWHERE\n  { ?s  ?p  ?v }\nOFFSET  306323750\nLIMIT   31250\n" ,
+   
+},
+{ 
+  "name" : "Retrive predicatess of the triples in the graph" ,
+  "age" : "SELECT  *\nWHERE\n  { ?variable2  ?p  ?variable1}\nLIMIT   1\n" ,
+  "birthdate" : "SELECT  *\nWHERE\n  { ?s  ?p  ?o }\nLIMIT   1\n" ,
+   
+},
+{ 
+  "name" : "Retrive RDF types(classes) of the graph" ,
+  "age" : "SELECT  ?variable2\nWHERE\n  { ?variable1  a  ?variable2}\nOFFSET  1\nLIMIT   1\n" ,
+  "birthdate" : "SELECT  ?c\nWHERE\n  { ?s  a  ?c }\nOFFSET  143230000\nLIMIT   250000\n" ,
+   
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT  (COUNT(?variable2) AS ?x)\nWHERE\n  { ?variable1  a  ?variable2}\n" ,
+  "birthdate" : "SELECT  (COUNT(?c) AS ?x)\nWHERE\n  { ?s  a  ?c }\n" ,
+   
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT  (COUNT(?p) AS ?x)\nWHERE\n  { ?variable2  ?p  ?variable1}\n" ,
+  "birthdate" : "SELECT  (COUNT(?p) AS ?x)\nWHERE\n  { ?s  ?p  ?o }\n" ,
+   
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT  ?variable1\nWHERE\n  { ?variable1  a  ?ent1\n    FILTER isIRI(?ent1)\n  }\nOFFSET  1\nLIMIT   1\n" ,
+  "birthdate" : "SELECT  ?s\nWHERE\n  { ?s  a &lt; http://bio2rdf.org/drugbank_vocabulary:Drug &gt;  }\nOFFSET  4000\nLIMIT   1000\n" ,
+   
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT  ?r (count(*) AS ?count)\nWHERE\n  { ?variable3  ?r  ?variable2\n    { SELECT  ?variable2\n      WHERE\n        { ?variable2  a  ?variable1}\n      OFFSET  1\n      LIMIT   1\n    }\n  }\nGROUP BY ?variable2 ?r\nOFFSET  1\nLIMIT   1\n" ,
+  "birthdate" : "SELECT  ?r (count(*) AS ?count)\nWHERE\n  { ?x  ?r  ?s\n    { SELECT  ?s\n      WHERE\n        { ?s  a  ?o }\n      OFFSET  22757129\n      LIMIT   1000\n    }\n  }\nGROUP BY ?s ?r\nOFFSET  0\nLIMIT   10000\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT DISTINCT  ?variable1 ?p2\nWHERE\n  { ?variable2  ?p  ?variable1\n    OPTIONAL\n      { ?ent1  ?p2  ?variable1}\n    FILTER isIRI(?ent1)\n  }\nLIMIT   1\n" ,
+  "birthdate" : "SELECT DISTINCT  ?o ?p2\nWHERE\n  { ?s  ?p  ?o\n    OPTIONAL\n      {&lt; http://nonsensical.com/1/1583905561800 &gt; \n                  ?p2  ?o\n      }\n  }\nLIMIT   1000\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT  (?p AS ?property) (?variable1 AS ?value) (?variable2 AS ?valueClass)\nWHERE\n  { ?ent1  ?p  ?variable1\n    OPTIONAL\n      { ?variable1  a  ?variable2}\n    FILTER isIRI(?ent1)\n  }\n" ,
+  "birthdate" : "SELECT  (?p AS ?property) (?v AS ?value) (?vc AS ?valueClass)\nWHERE\n  {&lt; http://bio2rdf.org/clinicaltrials_vocabulary:State &gt; \n              ?p  ?v\n    OPTIONAL\n      { ?v  a  ?vc }\n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT DISTINCT  ?variable2 ?p2\nWHERE\n  { ?variable2  ?p  ?variable1\n    OPTIONAL\n      { ?variable2  ?p2  ?ent1}\n    FILTER isIRI(?ent1)\n  }\nLIMIT   1\n" ,
+  "birthdate" : "SELECT DISTINCT  ?s ?p2\nWHERE\n  { ?s  ?p  ?o\n    OPTIONAL\n      { ?s  ?p2 &lt; http://nonsensical.com/1/1608619780113 &gt;  }\n  }\nLIMIT   1000\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT DISTINCT  ?variable2 ?p2\nWHERE\n  { ?variable2  ?p  ?variable1\n    OPTIONAL\n      { ?ent1  ?p2  ?variable2}\n    FILTER isIRI(?ent1)\n  }\nLIMIT   1\n" ,
+  "birthdate" : "SELECT DISTINCT  ?s ?p2\nWHERE\n  { ?s  ?p  ?o\n    OPTIONAL\n      {&lt; http://nonsensical.com/1/1610000603329 &gt; \n                  ?p2  ?s\n      }\n  }\nLIMIT   1000\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT  *\nWHERE\n  { ?variable3 &lt; http://purl.org/dc/terms/description &gt;   ?variable2 ;\n             &lt; http://bio2rdf.org/bio2rdf_vocabulary:identifier &gt;   ?variable1\n    FILTER ( ?variable3 =&lt; http://bio2rdf.org/drugbank:DB00001 &gt;  )\n  }\n" ,
+  "birthdate" : "SELECT  *\nWHERE\n  { ?drug &lt; http://purl.org/dc/terms/description &gt;   ?drugdesc ;\n          &lt; http://bio2rdf.org/bio2rdf_vocabulary:identifier &gt;   ?drugid\n    FILTER ( ?drug =&lt; http://bio2rdf.org/drugbank:DB00001 &gt;  )\n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT  *\nWHERE\n  { ?variable3 &lt; http://purl.org/dc/terms/description &gt;   ?variable2 ;\n             &lt; http://bio2rdf.org/bio2rdf_vocabulary:identifier &gt;   ?variable1\n    FILTER ( ?variable3 =&lt; http://bio2rdf.org/drugbank:DB00004 &gt;  )\n  }\n" ,
+  "birthdate" : "SELECT  *\nWHERE\n  { ?drug &lt; http://purl.org/dc/terms/description &gt;   ?drugdesc ;\n          &lt; http://bio2rdf.org/bio2rdf_vocabulary:identifier &gt;   ?drugid\n    FILTER ( ?drug =&lt; http://bio2rdf.org/drugbank:DB00004 &gt;  )\n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT  *\nWHERE\n  { ?variable3 &lt; http://purl.org/dc/terms/description &gt;   ?variable2 ;\n             &lt; http://bio2rdf.org/bio2rdf_vocabulary:identifier &gt;   ?variable1\n    FILTER ( ?variable3 =&lt; http://bio2rdf.org/drugbank:DB00008 &gt;  )\n  }\n" ,
+  "birthdate" : "SELECT  *\nWHERE\n  { ?drug &lt; http://purl.org/dc/terms/description &gt;   ?drugdesc ;\n          &lt; http://bio2rdf.org/bio2rdf_vocabulary:identifier &gt;   ?drugid\n    FILTER ( ?drug =&lt; http://bio2rdf.org/drugbank:DB00008 &gt;  )\n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT  *\nWHERE\n  { ?variable3 &lt; http://purl.org/dc/terms/description &gt;   ?variable2 ;\n             &lt; http://bio2rdf.org/bio2rdf_vocabulary:identifier &gt;   ?variable1\n    FILTER ( ?variable3 =&lt; http://bio2rdf.org/drugbank:DB00002 &gt;  )\n  }\n" ,
+  "birthdate" : "SELECT  *\nWHERE\n  { ?drug &lt; http://purl.org/dc/terms/description &gt;   ?drugdesc ;\n          &lt; http://bio2rdf.org/bio2rdf_vocabulary:identifier &gt;   ?drugid\n    FILTER ( ?drug =&lt; http://bio2rdf.org/drugbank:DB00002 &gt;  )\n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT  *\nWHERE\n  { ?variable3 &lt; http://purl.org/dc/terms/description &gt;   ?variable2 ;\n             &lt; http://bio2rdf.org/bio2rdf_vocabulary:identifier &gt;   ?variable1\n    FILTER ( ?variable3 =&lt; http://bio2rdf.org/drugbank:DB00003 &gt;  )\n  }\n" ,
+  "birthdate" : "SELECT  *\nWHERE\n  { ?drug &lt; http://purl.org/dc/terms/description &gt;   ?drugdesc ;\n          &lt; http://bio2rdf.org/bio2rdf_vocabulary:identifier &gt;   ?drugid\n    FILTER ( ?drug =&lt; http://bio2rdf.org/drugbank:DB00003 &gt;  )\n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT DISTINCT  ?variable2\nWHERE\n  { ?variable1  a  ?variable2 ;\n              ?p  ?variable3 .\n    ?variable3  a  ?ent1\n    FILTER isIRI(?ent1)\n  }\n" ,
+  "birthdate" : "SELECT DISTINCT  ?c\nWHERE\n  { ?s  a   ?c ;\n        ?p  ?v .\n    ?v  a  &lt; http://semanticscience.org/resource/SIO_010056 &gt; \n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT DISTINCT  ?variable2\nWHERE\n  { ?variable1  a  ?ent1 ;\n              ?p  ?variable3 .\n    ?variable3  a  ?variable2\n    FILTER isIRI(?ent1)\n  }\n" ,
+  "birthdate" : "SELECT DISTINCT  ?c\nWHERE\n  { ?s  a  &lt; http://semanticscience.org/resource/SIO_010056 &gt;  ;\n        ?p  ?v .\n    ?v  a   ?c\n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "PREFIX  rdfs:&lt; http://www.w3.org/2000/01/rdf-schema# &gt; \nPREFIX  owl: &lt; http://www.w3.org/2002/07/owl# &gt; \nPREFIX  rdf: &lt; http://www.w3.org/1999/02/22-rdf-syntax-ns# &gt; \n\nSELECT  (COUNT(?variable2) AS ?numTriples) (COUNT(DISTINCT ?variable2) AS ?numDomIns) (COUNT(DISTINCT ?variable1) AS ?numRanIns)\nFROM&lt; http://bio2rdf.org/irefindex_resource:bio2rdf.dataset.irefindex.R3 &gt; \nWHERE\n  { { SELECT DISTINCT  ?variable2 ?variable1\n      WHERE\n        { ?variable2 &lt; http://bio2rdf.org/irefindex_vocabulary:interactor_a &gt;   ?variable1 ;\n                    rdf:type              ?ent2 .\n          ?variable1  rdf:type            ?ent1}\n    }\n    FILTER isIRI(?ent1)\n    FILTER isIRI(?ent2)\n  }\n" ,
+  "birthdate" : "PREFIX  rdfs:&lt; http://www.w3.org/2000/01/rdf-schema# &gt; \nPREFIX  owl: &lt; http://www.w3.org/2002/07/owl# &gt; \nPREFIX  rdf: &lt; http://www.w3.org/1999/02/22-rdf-syntax-ns# &gt; \n\nSELECT  (COUNT(?i) AS ?numTriples) (COUNT(DISTINCT ?i) AS ?numDomIns) (COUNT(DISTINCT ?o) AS ?numRanIns)\nFROM&lt; http://bio2rdf.org/irefindex_resource:bio2rdf.dataset.irefindex.R3 &gt; \nWHERE\n  { { SELECT DISTINCT  ?i ?o\n      WHERE\n        { ?i &lt; http://bio2rdf.org/irefindex_vocabulary:interactor_a &gt;   ?o ;\n              rdf:type             &lt; http://bio2rdf.org/biogrid_vocabulary:Resource &gt;  .\n          ?o  rdf:type             &lt; http://bio2rdf.org/uniprot_vocabulary:Resource &gt; \n        }\n    }\n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT  *\nWHERE\n  { ?variable3  a                   ?ent2 ;\n             &lt; http://xmlns.com/foaf/0.1/name &gt;   ?variable1\n    OPTIONAL\n      { ?variable2  ?b  ?ent1}\n    FILTER isIRI(?ent1)\n    FILTER isIRI(?ent2)\n  }\n" ,
+  "birthdate" : "SELECT  *\nWHERE\n  { ?x  a                    &lt; http://xmlns.com/foaf/0.1/Person &gt;  ;\n       &lt; http://xmlns.com/foaf/0.1/name &gt;   ?name\n    OPTIONAL\n      { ?a  ?b &lt; http://lsr.bio2rdf.org/sparql &gt;  }\n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "PREFIX  rdfs:&lt; http://www.w3.org/2000/01/rdf-schema# &gt; \nPREFIX  owl: &lt; http://www.w3.org/2002/07/owl# &gt; \nPREFIX  rdf: &lt; http://www.w3.org/1999/02/22-rdf-syntax-ns# &gt; \n\nSELECT  (COUNT(?variable2) AS ?numTriples) (COUNT(DISTINCT ?variable2) AS ?numDomIns) (COUNT(DISTINCT ?variable1) AS ?numRanIns)\nFROM&lt; http://bio2rdf.org/irefindex_resource:bio2rdf.dataset.irefindex.R3 &gt; \nWHERE\n  { { SELECT DISTINCT  ?variable2 ?variable1\n      WHERE\n        { ?variable2 &lt; http://bio2rdf.org/irefindex_vocabulary:interactor_b &gt;   ?variable1 ;\n                    rdf:type              ?ent2 .\n          ?variable1  rdf:type            ?ent1}\n    }\n    FILTER isIRI(?ent1)\n    FILTER isIRI(?ent2)\n  }\n" ,
+  "birthdate" : "PREFIX  rdfs:&lt; http://www.w3.org/2000/01/rdf-schema# &gt; \nPREFIX  owl: &lt; http://www.w3.org/2002/07/owl# &gt; \nPREFIX  rdf: &lt; http://www.w3.org/1999/02/22-rdf-syntax-ns# &gt; \n\nSELECT  (COUNT(?i) AS ?numTriples) (COUNT(DISTINCT ?i) AS ?numDomIns) (COUNT(DISTINCT ?o) AS ?numRanIns)\nFROM&lt; http://bio2rdf.org/irefindex_resource:bio2rdf.dataset.irefindex.R3 &gt; \nWHERE\n  { { SELECT DISTINCT  ?i ?o\n      WHERE\n        { ?i &lt; http://bio2rdf.org/irefindex_vocabulary:interactor_b &gt;   ?o ;\n              rdf:type             &lt; http://bio2rdf.org/mi:0407 &gt;  .\n          ?o  rdf:type             &lt; http://bio2rdf.org/mi:0326 &gt; \n        }\n    }\n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "PREFIX  rdfs:&lt; http://www.w3.org/2000/01/rdf-schema# &gt; \nPREFIX  owl: &lt; http://www.w3.org/2002/07/owl# &gt; \nPREFIX  rdf: &lt; http://www.w3.org/1999/02/22-rdf-syntax-ns# &gt; \n\nSELECT  (COUNT(?variable2) AS ?numTriples) (COUNT(DISTINCT ?variable2) AS ?numDomIns) (COUNT(DISTINCT ?variable1) AS ?numRanIns)\nFROM&lt; http://bio2rdf.org/irefindex_resource:bio2rdf.dataset.irefindex.R3 &gt; \nWHERE\n  { { SELECT DISTINCT  ?variable2 ?variable1\n      WHERE\n        { ?variable2 &lt; http://bio2rdf.org/irefindex_vocabulary:article &gt;   ?variable1 ;\n                    rdf:type              ?ent1 .\n          ?variable1  rdf:type            ?ent2}\n    }\n    FILTER isIRI(?ent1)\n    FILTER isIRI(?ent2)\n  }\n" ,
+  "birthdate" : "PREFIX  rdfs:&lt; http://www.w3.org/2000/01/rdf-schema# &gt; \nPREFIX  owl: &lt; http://www.w3.org/2002/07/owl# &gt; \nPREFIX  rdf: &lt; http://www.w3.org/1999/02/22-rdf-syntax-ns# &gt; \n\nSELECT  (COUNT(?i) AS ?numTriples) (COUNT(DISTINCT ?i) AS ?numDomIns) (COUNT(DISTINCT ?o) AS ?numRanIns)\nFROM&lt; http://bio2rdf.org/irefindex_resource:bio2rdf.dataset.irefindex.R3 &gt; \nWHERE\n  { { SELECT DISTINCT  ?i ?o\n      WHERE\n        { ?i &lt; http://bio2rdf.org/irefindex_vocabulary:article &gt;   ?o ;\n              rdf:type             &lt; http://bio2rdf.org/mi:0914 &gt;  .\n          ?o  rdf:type             &lt; http://bio2rdf.org/irefindex_vocabulary:Pairwise-Interaction &gt; \n        }\n    }\n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "PREFIX  rdfs:&lt; http://www.w3.org/2000/01/rdf-schema# &gt; \nPREFIX  owl: &lt; http://www.w3.org/2002/07/owl# &gt; \nPREFIX  rdf: &lt; http://www.w3.org/1999/02/22-rdf-syntax-ns# &gt; \n\nSELECT  (COUNT(?variable2) AS ?numTriples) (COUNT(DISTINCT ?variable2) AS ?numDomIns) (COUNT(DISTINCT ?variable1) AS ?numRanIns)\nFROM&lt; http://bio2rdf.org/irefindex_resource:bio2rdf.dataset.irefindex.R3 &gt; \nWHERE\n  { { SELECT DISTINCT  ?variable2 ?variable1\n      WHERE\n        { ?variable2 &lt; http://bio2rdf.org/irefindex_vocabulary:interactor_a &gt;   ?variable1 ;\n                    rdf:type              ?ent1 .\n          ?variable1  rdf:type            ?ent2}\n    }\n    FILTER isIRI(?ent1)\n    FILTER isIRI(?ent2)\n  }\n" ,
+  "birthdate" : "PREFIX  rdfs:&lt; http://www.w3.org/2000/01/rdf-schema# &gt; \nPREFIX  owl: &lt; http://www.w3.org/2002/07/owl# &gt; \nPREFIX  rdf: &lt; http://www.w3.org/1999/02/22-rdf-syntax-ns# &gt; \n\nSELECT  (COUNT(?i) AS ?numTriples) (COUNT(DISTINCT ?i) AS ?numDomIns) (COUNT(DISTINCT ?o) AS ?numRanIns)\nFROM&lt; http://bio2rdf.org/irefindex_resource:bio2rdf.dataset.irefindex.R3 &gt; \nWHERE\n  { { SELECT DISTINCT  ?i ?o\n      WHERE\n        { ?i &lt; http://bio2rdf.org/irefindex_vocabulary:interactor_a &gt;   ?o ;\n              rdf:type             &lt; http://bio2rdf.org/pubmed_vocabulary:Resource &gt;  .\n          ?o  rdf:type             &lt; http://bio2rdf.org/irefindex.rogid_vocabulary:Resource &gt; \n        }\n    }\n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "PREFIX  rdfs:&lt; http://www.w3.org/2000/01/rdf-schema# &gt; \nPREFIX  owl: &lt; http://www.w3.org/2002/07/owl# &gt; \nPREFIX  rdf: &lt; http://www.w3.org/1999/02/22-rdf-syntax-ns# &gt; \n\nSELECT  (COUNT(?variable2) AS ?numTriples) (COUNT(DISTINCT ?variable2) AS ?numDomIns) (COUNT(DISTINCT ?variable1) AS ?numRanIns)\nFROM&lt; http://bio2rdf.org/irefindex_resource:bio2rdf.dataset.irefindex.R3 &gt; \nWHERE\n  { { SELECT DISTINCT  ?variable2 ?variable1\n      WHERE\n        { ?variable2 &lt; http://bio2rdf.org/irefindex_vocabulary:taxon-sequence-identical-interaction &gt;   ?variable1 ;\n                    rdf:type              ?ent1 .\n          ?variable1  rdf:type            ?ent2}\n    }\n    FILTER isIRI(?ent1)\n    FILTER isIRI(?ent2)\n  }\n" ,
+  "birthdate" : "PREFIX  rdfs:&lt; http://www.w3.org/2000/01/rdf-schema# &gt; \nPREFIX  owl: &lt; http://www.w3.org/2002/07/owl# &gt; \nPREFIX  rdf: &lt; http://www.w3.org/1999/02/22-rdf-syntax-ns# &gt; \n\nSELECT  (COUNT(?i) AS ?numTriples) (COUNT(DISTINCT ?i) AS ?numDomIns) (COUNT(DISTINCT ?o) AS ?numRanIns)\nFROM&lt; http://bio2rdf.org/irefindex_resource:bio2rdf.dataset.irefindex.R3 &gt; \nWHERE\n  { { SELECT DISTINCT  ?i ?o\n      WHERE\n        { ?i &lt; http://bio2rdf.org/irefindex_vocabulary:taxon-sequence-identical-interaction &gt;   ?o ;\n              rdf:type             &lt; http://bio2rdf.org/mi:0403 &gt;  .\n          ?o  rdf:type             &lt; http://bio2rdf.org/irefindex.rigid_vocabulary:Resource &gt; \n        }\n    }\n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "PREFIX  rdfs:&lt; http://www.w3.org/2000/01/rdf-schema# &gt; \nPREFIX  owl: &lt; http://www.w3.org/2002/07/owl# &gt; \nPREFIX  rdf: &lt; http://www.w3.org/1999/02/22-rdf-syntax-ns# &gt; \n\nSELECT  (COUNT(?variable2) AS ?numTriples) (COUNT(DISTINCT ?variable2) AS ?numDomIns) (COUNT(DISTINCT ?variable1) AS ?numRanIns)\nFROM&lt; http://bio2rdf.org/drugbank_resource:bio2rdf.dataset.drugbank.R3 &gt; \nWHERE\n  { { SELECT DISTINCT  ?variable2 ?variable1\n      WHERE\n        { ?variable2 &lt; http://rdfs.org/ns/void#inDataset &gt;   ?variable1 ;\n                    rdf:type              ?ent2 .\n          ?variable1  rdf:type            ?ent1}\n    }\n    FILTER isIRI(?ent1)\n    FILTER isIRI(?ent2)\n  }\n" ,
+  "birthdate" : "PREFIX  rdfs:&lt; http://www.w3.org/2000/01/rdf-schema# &gt; \nPREFIX  owl: &lt; http://www.w3.org/2002/07/owl# &gt; \nPREFIX  rdf: &lt; http://www.w3.org/1999/02/22-rdf-syntax-ns# &gt; \n\nSELECT  (COUNT(?i) AS ?numTriples) (COUNT(DISTINCT ?i) AS ?numDomIns) (COUNT(DISTINCT ?o) AS ?numRanIns)\nFROM&lt; http://bio2rdf.org/drugbank_resource:bio2rdf.dataset.drugbank.R3 &gt; \nWHERE\n  { { SELECT DISTINCT  ?i ?o\n      WHERE\n        { ?i &lt; http://rdfs.org/ns/void#inDataset &gt;   ?o ;\n              rdf:type             &lt; http://bio2rdf.org/gi_vocabulary:Resource &gt;  .\n          ?o  rdf:type             &lt; http://purl.org/dc/terms/Dataset &gt; \n        }\n    }\n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "PREFIX  rdfs:&lt; http://www.w3.org/2000/01/rdf-schema# &gt; \nPREFIX  owl: &lt; http://www.w3.org/2002/07/owl# &gt; \nPREFIX  rdf: &lt; http://www.w3.org/1999/02/22-rdf-syntax-ns# &gt; \n\nSELECT  (COUNT(?variable2) AS ?numTriples) (COUNT(DISTINCT ?variable2) AS ?numDomIns) (COUNT(DISTINCT ?variable1) AS ?numRanIns)\nFROM&lt; http://bio2rdf.org/irefindex_resource:bio2rdf.dataset.irefindex.R3 &gt; \nWHERE\n  { { SELECT DISTINCT  ?variable2 ?variable1\n      WHERE\n        { ?variable2 &lt; http://bio2rdf.org/irefindex_vocabulary:expansion-method &gt;   ?variable1 ;\n                    rdf:type              ?ent1 .\n          ?variable1  rdf:type            ?ent2}\n    }\n    FILTER isIRI(?ent1)\n    FILTER isIRI(?ent2)\n  }\n" ,
+  "birthdate" : "PREFIX  rdfs:&lt; http://www.w3.org/2000/01/rdf-schema# &gt; \nPREFIX  owl: &lt; http://www.w3.org/2002/07/owl# &gt; \nPREFIX  rdf: &lt; http://www.w3.org/1999/02/22-rdf-syntax-ns# &gt; \n\nSELECT  (COUNT(?i) AS ?numTriples) (COUNT(DISTINCT ?i) AS ?numDomIns) (COUNT(DISTINCT ?o) AS ?numRanIns)\nFROM&lt; http://bio2rdf.org/irefindex_resource:bio2rdf.dataset.irefindex.R3 &gt; \nWHERE\n  { { SELECT DISTINCT  ?i ?o\n      WHERE\n        { ?i &lt; http://bio2rdf.org/irefindex_vocabulary:expansion-method &gt;   ?o ;\n              rdf:type             &lt; http://bio2rdf.org/mi:0407 &gt;  .\n          ?o  rdf:type             &lt; http://bio2rdf.org/irefindex_vocabulary:Resource &gt; \n        }\n    }\n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "ASK\nWHERE\n  { OPTIONAL\n      { ?variable2 &lt; http://www.w3.org/2003/01/geo/wgs84_pos#long &gt;   ?variable1}\n    OPTIONAL\n      { ?variable2 &lt; http://www.w3.org/2003/01/geo/wgs84_pos#geometry &gt;   ?variable1}\n    OPTIONAL\n      { ?variable2 &lt; http://www.georss.org/georss/point &gt;   ?variable1}\n    OPTIONAL\n      { ?variable2 &lt; http://www.opengis.net/ont/geosparql#asWKT &gt;   ?variable1}\n  }\n" ,
+  "birthdate" : "ASK\nWHERE\n  { OPTIONAL\n      { ?s &lt; http://www.w3.org/2003/01/geo/wgs84_pos#long &gt;   ?o }\n    OPTIONAL\n      { ?s &lt; http://www.w3.org/2003/01/geo/wgs84_pos#geometry &gt;   ?o }\n    OPTIONAL\n      { ?s &lt; http://www.georss.org/georss/point &gt;   ?o }\n    OPTIONAL\n      { ?s &lt; http://www.opengis.net/ont/geosparql#asWKT &gt;   ?o }\n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT  *\nWHERE\n  {   { ?ent1  ?variable2  ?variable3\n        OPTIONAL\n          { ?variable2 &lt; http://www.w3.org/2000/01/rdf-schema#label &gt;   ?variable1}\n      }\n    UNION\n      { ?variable4  ?variable2  ?ent1\n        OPTIONAL\n          { ?variable2 &lt; http://www.w3.org/2000/01/rdf-schema#label &gt;   ?variable1}\n      }\n    FILTER isIRI(?ent1)\n  }\n" ,
+  "birthdate" : "SELECT  *\nWHERE\n  {   {&lt; http://bio2rdf.org/kegg_resource:5f47d0b54b4d81097410bcc4cf01cf71 &gt; \n                  ?predicate  ?object\n        OPTIONAL\n          { ?predicate &lt; http://www.w3.org/2000/01/rdf-schema#label &gt;   ?description }\n      }\n    UNION\n      { ?subject  ?predicate &lt; http://bio2rdf.org/kegg_resource:5f47d0b54b4d81097410bcc4cf01cf71 &gt; \n        OPTIONAL\n          { ?predicate &lt; http://www.w3.org/2000/01/rdf-schema#label &gt;   ?description }\n      }\n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT  *\nWHERE\n  { { { ?ent1  ?p  ?variable1\n        OPTIONAL\n          { ?ent1 &lt; http://bio2rdf.org/taxonomy_vocabulary:scientific-name &gt;   ?variable4}\n      }\n      OPTIONAL\n        { ?ent1 &lt; http://bio2rdf.org/taxonomy_vocabulary:common-name &gt;   ?variable3}\n    }\n    OPTIONAL\n      { ?ent1 &lt; http://bio2rdf.org/taxonomy_vocabulary:genbank-common-name &gt;   ?variable2}\n    FILTER isIRI(?ent1)\n  }\n" ,
+  "birthdate" : "SELECT  *\nWHERE\n  { { {&lt; http://bio2rdf.org/taxonomy:7159 &gt; \n                  ?p  ?o\n        OPTIONAL\n          {&lt; http://bio2rdf.org/taxonomy:7159 &gt; \n                     &lt; http://bio2rdf.org/taxonomy_vocabulary:scientific-name &gt;   ?name\n          }\n      }\n      OPTIONAL\n        {&lt; http://bio2rdf.org/taxonomy:7159 &gt; \n                   &lt; http://bio2rdf.org/taxonomy_vocabulary:common-name &gt;   ?commonName\n        }\n    }\n    OPTIONAL\n      {&lt; http://bio2rdf.org/taxonomy:7159 &gt; \n                 &lt; http://bio2rdf.org/taxonomy_vocabulary:genbank-common-name &gt;   ?genbankName\n      }\n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT DISTINCT  ?variable2 ?predicate ?variable1 ?graph\nWHERE\n  {   { SELECT  *\n        WHERE\n          { GRAPH ?graph\n              { ?ent1  ?predicate  ?variable1}}\n        LIMIT   1\n      }\n    UNION\n      { SELECT  *\n        WHERE\n          { GRAPH ?graph\n              { ?variable2  ?predicate  ?ent1}}\n        LIMIT   1\n      }\n    UNION\n      { SELECT  *\n        WHERE\n          { GRAPH ?graph\n              { ?variable2  ?ent1  ?variable1}}\n        LIMIT   1\n      }\n    UNION\n      { SELECT  *\n        WHERE\n          { GRAPH ?ent1\n              { ?variable2  ?predicate  ?variable1}}\n        LIMIT   1\n      }\n    FILTER isIRI(?ent1)\n  }\n" ,
+  "birthdate" : "SELECT DISTINCT  ?subject ?predicate ?object ?graph\nWHERE\n  {   { SELECT  *\n        WHERE\n          { GRAPH ?graph\n              {&lt; http://bio2rdf.org/clinicaltrials:NCT00209495 &gt; \n                          ?predicate  ?object\n              }\n          }\n        LIMIT   1000\n      }\n    UNION\n      { SELECT  *\n        WHERE\n          { GRAPH ?graph\n              { ?subject  ?predicate &lt; http://bio2rdf.org/clinicaltrials:NCT00209495 &gt;  }\n          }\n        LIMIT   1000\n      }\n    UNION\n      { SELECT  *\n        WHERE\n          { GRAPH ?graph\n              { ?subject &lt; http://bio2rdf.org/clinicaltrials:NCT00209495 &gt;   ?object }\n          }\n        LIMIT   1000\n      }\n    UNION\n      { SELECT  *\n        WHERE\n          { GRAPH&lt; http://bio2rdf.org/clinicaltrials:NCT00209495 &gt; \n              { ?subject  ?predicate  ?object }\n          }\n        LIMIT   1000\n      }\n  }\n" ,
+  
+},
+{ 
+  "name" : "" ,
+  "age" : "SELECT  ?variable2 ?variable4 ?variable1\nWHERE\n  { ?variable2 &lt; http://www.w3.org/2000/01/rdf-schema#subClassOf &gt;   ?variable3 .\n    ?variable3  ?p                  ?ent1 ;\n             &lt; http://www.w3.org/2002/07/owl#onProperty &gt;   ?variable4 ;\n             &lt; http://www.w3.org/2002/07/owl#someValuesFrom &gt;   ?variable1\n    FILTER isIRI(?ent1)\n  }\n" ,
+  "birthdate" : "SELECT  ?c ?prop ?o2\nWHERE\n  { ?c &lt; http://www.w3.org/2000/01/rdf-schema#subClassOf &gt;   ?s .\n    ?s  ?p                   &lt; http://www.w3.org/2002/07/owl#Restriction &gt;  ;\n       &lt; http://www.w3.org/2002/07/owl#onProperty &gt;   ?prop ;\n       &lt; http://www.w3.org/2002/07/owl#someValuesFrom &gt;   ?o2\n  }\n" ,
+  
+}]
+
 
 $('#search-input').on('keyup', function(){
    var value= $(this).val()
@@ -136,8 +335,3 @@ function buildTable(data){
 
 
 
-  <div id="yasgui"></div>
-  <script>
-    const yasgui = new Yasgui(document.getElementById("yasgui"));
-  </script>
-</body>
