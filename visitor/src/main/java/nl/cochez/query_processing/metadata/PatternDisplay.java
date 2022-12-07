@@ -260,7 +260,7 @@ public class PatternDisplay {
 		br: for (int num = offset; num <= tripleNumber; num ++){
 			boolean go_on = true;
 			int count = 0;
-			br2: for (int i = 0; count < Math.min(top, result.size()) && i < result.size(); i++) {
+			br2: for (int i = 0; count < Math.min(top+1, result.size()) && i < result.size(); i++) {
 				if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
 					count++;
 					continue br2;
@@ -314,7 +314,7 @@ public class PatternDisplay {
 			if (go_on == true)
 				if (top < 50)
 					top = 50;
-			br3: for (int i = current; count < Math.min(top, result.size()) && i < result.size(); i++) {
+			br3: for (int i = current; count < Math.min(top+1, result.size()) && i < result.size(); i++) {
 				if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
 					count++;
 					continue br3;
@@ -370,7 +370,7 @@ public class PatternDisplay {
 			if (go_on == true)
 				if (top < 100)
 					top = 100;
-			br4: for (int i = current; count < Math.min(top, result.size()) && i < result.size(); i++) {
+			br4: for (int i = current; count < Math.min(top+1, result.size()) && i < result.size(); i++) {
 				if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
 					count++;
 					continue br4;

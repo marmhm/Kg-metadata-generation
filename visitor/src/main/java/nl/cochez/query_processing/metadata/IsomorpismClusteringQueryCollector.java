@@ -275,7 +275,7 @@ public class IsomorpismClusteringQueryCollector implements IQueryCollector {
 
 	// maps from the signatuer to a list of potentially isomorpic graphs
 	private ArrayListMultimap<QuerySignature, GraphWithCountAndIsomorphs> theGraphCollection = ArrayListMultimap.create();
-	public ArrayList<Query> queryList = new ArrayList<Query>();
+	
 
 	private int count = 0;
 	private int failures = 0;
@@ -302,7 +302,8 @@ public class IsomorpismClusteringQueryCollector implements IQueryCollector {
 		// we haven't found a match, so add to these candidates
 		candidates.add(new GraphWithCountAndIsomorphs(graphReadyForIsomorphismcheck, 1));
 	}
-
+	
+	ArrayList<Query> queryList = new ArrayList<Query>();
 	@Override
 	public void add(Query q) {
 		queryList.add(q);
@@ -314,6 +315,12 @@ public class IsomorpismClusteringQueryCollector implements IQueryCollector {
 			this.optimize();
 		}
 	}
+
+	
+	@Override
+			public ArrayList<Query> getQueryList(){
+				return this.queryList;
+			}
 
 	@Override
 	public void reportFailure(String input) {
