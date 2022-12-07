@@ -215,7 +215,7 @@ public class MainStatistics {
 
 		collector.stats();
 		// System.out.println(collector.getQueryList().size());
-		PatternDisplay.rankPattern(collector.getQueryList(), 10, 1,5);//input is (queryList, top number of display, max number of triples in pattern query)
+		PatternDisplay.rankPattern(collector.getQueryList(), 5, 5,10);//input is (queryList, top number of display, max number of triples in pattern query)
 	}
 
 	private static String get_labels(String str){
@@ -243,15 +243,13 @@ public class MainStatistics {
 		for (Entry<String> str : input){
 			String label = get_labels("<"+str.getElement()+">");
 			if(label!=null)
-			System.out.println("<"+str.getElement()+">"+","+get_labels("<"+str.getElement()+">")+","+str.getCount());
-			// else
-			// System.out.print("<"+str.getElement()+">"+" X "+str.getCount()+", ");
+			System.out.println("<"+str.getElement()+">"+"&"+get_labels("<"+str.getElement()+">")+"&"+str.getCount());
 		}
 	}
 
 	private static void print_without_label(Iterable<Entry<String>> input){
 		for (Entry<String> str : input){
-			System.out.println("<"+str.getElement()+">"+",,"+str.getCount());
+			System.out.println("<"+str.getElement()+">"+"&&"+str.getCount());
 		}
 	}
 
@@ -259,9 +257,9 @@ public class MainStatistics {
 		for (Entry<String> str : input){
 			String label = get_labels("<"+str.getElement()+">");
 			if(label!=null)
-				System.out.println("<"+str.getElement()+">"+","+get_labels("<"+str.getElement()+">")+","+str.getCount());
+				System.out.println("<"+str.getElement()+">"+"&"+get_labels("<"+str.getElement()+">")+"&"+str.getCount());
 			else
-				System.out.println("<"+str.getElement()+">"+",,"+str.getCount());
+				System.out.println("<"+str.getElement()+">"+"&&"+str.getCount());
 		}
 	}
 }
