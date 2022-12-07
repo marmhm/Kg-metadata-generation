@@ -1,21 +1,43 @@
 package nl.cochez.query_processing.metadata;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
+import java.net.http.HttpClient;
+import java.net.http.HttpClient.Redirect;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.ext.com.google.common.collect.Iterables;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdfconnection.RDFConnection;
+import org.apache.jena.rdfconnection.RDFConnectionFactory;
+import org.apache.jena.rdfconnection.RDFConnectionRemote;
+import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
 import org.apache.jena.sparql.algebra.Algebra;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.op.OpBGP;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
+import org.apache.jena.sparql.exec.http.QuerySendMode;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.HashMultiset;
@@ -23,6 +45,7 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Multisets;
+import com.google.common.collect.Multiset.Entry;
 
 public class MainStatistics {
 
@@ -96,7 +119,7 @@ public class MainStatistics {
 
 	public static void main(String[] args) throws IOException {
 		Stopwatch watch = Stopwatch.createStarted();
-		String filename = "/home/coder/project/visitor/src/main/java/nl/cochez/query_processing/metadata/reallall-bio2rdf-processed.tsv.gz";
+		String filename = "/home/coder/project/kg-metadata-generation/visitor/src/main/java/nl/cochez/query_processing/metadata/drugbank_test.tsv.gz";
 		if (args.length > 0) {
 			filename = args[0];
 		}
@@ -106,6 +129,7 @@ public class MainStatistics {
 		final StatVisitor visitor = new StatVisitor();
 		
 		IQueryCollector collector = new IQueryCollector() {
+			ArrayList<Query> queryList = new ArrayList<Query>();
 			int failures = 0;
 
 //			@Override
@@ -123,15 +147,34 @@ public class MainStatistics {
 //			}
 			@Override
 			public void stats() {
-				System.out.println("subjects " +  Iterables.limit(Multisets.copyHighestCountFirst(visitor.subjects).entrySet(), 100));
-				System.out.println("predicates " + Iterables.limit(Multisets.copyHighestCountFirst(visitor.predicates).entrySet(), 100));
-				System.out.println("objects " + Iterables.limit(Multisets.copyHighestCountFirst(visitor.objects).entrySet(), 100));
-				System.out.println("literals" + Iterables.limit(Multisets.copyHighestCountFirst(visitor.literal_values).entrySet(), 100));
-				System.out.println("languages" + Iterables.limit(Multisets.copyHighestCountFirst(visitor.languages).entrySet(), 100));
-				System.out.println("types" + Iterables.limit(Multisets.copyHighestCountFirst(visitor.types).entrySet(), 100));
-				System.out.println("literal_labels" + Iterables.limit(Multisets.copyHighestCountFirst(visitor.literal_labels).entrySet(), 100));
-				System.out.println("rdf_types" + Iterables.limit(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet(), 100));
-				
+				PrintStream ps_console = System.out;
+				File file = new File("statistics.txt");
+				FileOutputStream fos = null;
+				try {
+					fos = new FileOutputStream(file, true);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				PrintStream ps = new PrintStream(fos);
+				System.setOut(ps);
+				System.out.println("subject,label,frequency");
+				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.subjects).entrySet(), 100));
+				System.out.println("predicate,label,frequency");
+				print_without_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.predicates).entrySet(), 100));
+				System.out.println("object,label,frequency");
+				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.objects).entrySet(), 100));
+				System.out.println("literal,label,frequency");
+				print_without_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.literal_values).entrySet(), 100));
+				System.out.println("languages,label,frequency");
+				print_without_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.languages).entrySet(), 100));
+				System.out.println("types,label,frequency");
+				print_without_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.types).entrySet(), 100));
+				System.out.println("literal_labels,label,frequency");
+				print_without_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.literal_labels).entrySet(), 100));
+				System.out.println("rdftype,label,frequency");
+				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet(), 100));
+				System.setOut(ps_console);
 				System.out.println("Number of failures is : " + failures);
 			}
 
@@ -144,9 +187,15 @@ public class MainStatistics {
 
 			@Override
 			public void add(Query q) {
+				this.queryList.add(q);
 				Op op = Algebra.compile(q);
 				// System.out.println("NEXT QUERY");
 				op.visit(visitor);
+			}
+
+			@Override
+			public ArrayList<Query> getQueryList(){
+				return this.queryList;
 			}
 		};
 
@@ -165,5 +214,54 @@ public class MainStatistics {
 		System.out.println("Elapsed" + watch.elapsed(TimeUnit.SECONDS));
 
 		collector.stats();
+		// System.out.println(collector.getQueryList().size());
+		PatternDisplay.rankPattern(collector.getQueryList(), 10, 1,5);//input is (queryList, top number of display, max number of triples in pattern query)
+	}
+
+	private static String get_labels(String str){
+		String label_str= null;
+		String queryString = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n SELECT * WHERE {\n   ?s rdfs:label ?o .\n  Values ?s {"
+				+ str + "}}";
+		Map<String, String> map = new HashMap<String, String>();
+		QueryExecution qexec = QueryExecutionFactory.sparqlService("https://bio2rdf.org/sparql", queryString);
+        ResultSet rs = null;
+		try {
+        	rs = qexec.execSelect();
+            while (rs.hasNext()) {
+				QuerySolution rb = rs.nextSolution();
+				RDFNode label = rb.get("o");
+				label_str = label.asLiteral().getString();
+			}
+        }catch (Exception e) {
+        	
+        }
+		qexec.close();
+		return label_str;
+	}
+
+	private static void print_with_label(Iterable<Entry<String>> input){
+		for (Entry<String> str : input){
+			String label = get_labels("<"+str.getElement()+">");
+			if(label!=null)
+			System.out.println("<"+str.getElement()+">"+","+get_labels("<"+str.getElement()+">")+","+str.getCount());
+			// else
+			// System.out.print("<"+str.getElement()+">"+" X "+str.getCount()+", ");
+		}
+	}
+
+	private static void print_without_label(Iterable<Entry<String>> input){
+		for (Entry<String> str : input){
+			System.out.println("<"+str.getElement()+">"+",,"+str.getCount());
+		}
+	}
+
+	private static void print_without_and_with_label(Iterable<Entry<String>> input){
+		for (Entry<String> str : input){
+			String label = get_labels("<"+str.getElement()+">");
+			if(label!=null)
+				System.out.println("<"+str.getElement()+">"+","+get_labels("<"+str.getElement()+">")+","+str.getCount());
+			else
+				System.out.println("<"+str.getElement()+">"+",,"+str.getCount());
+		}
 	}
 }

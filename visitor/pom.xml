@@ -45,7 +45,7 @@
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
-			<version>3.1</version>
+			<version>20020423</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
@@ -66,6 +66,13 @@
 			<artifactId>jgrapht-core</artifactId>
 			<version>1.5.1</version>
 		</dependency>
+
+    <dependency>
+      <groupId>org.jgrapht</groupId>
+      <artifactId>jgrapht-io</artifactId>
+      <version>1.5.1</version>
+    </dependency>
+
     <!-- 62-72by maryam -->
     <dependency>
       <groupId>org.slf4j</groupId>
