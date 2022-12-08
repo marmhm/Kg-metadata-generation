@@ -271,8 +271,9 @@ public class PatternDisplay {
 				BufferedWriter bw = null;
 				BufferedWriter bw_all = null;
 				try {
-					bw = new BufferedWriter(new FileWriter("top"+Integer.toString(top)+"_pattern.json",true));
-					bw_all = new BufferedWriter(new FileWriter("top"+Integer.toString(top)+"_pattern_with_frequency.json",true));
+					bw = new BufferedWriter(new FileWriter("top" + Integer.toString(top) + "_pattern"+"_length"+Integer.toString(num)+".json", true));
+					bw_all = new BufferedWriter(
+							new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency"+"_length"+Integer.toString(num)+".json", true));
 				} catch (IOException e) {
 					e.printStackTrace();
 					System.exit(1);
@@ -325,9 +326,9 @@ public class PatternDisplay {
 				BufferedWriter bw = null;
 				BufferedWriter bw_all = null;
 				try {
-					bw = new BufferedWriter(new FileWriter("top" + Integer.toString(top) + "_pattern.json", true));
+					bw = new BufferedWriter(new FileWriter("top" + Integer.toString(top) + "_pattern"+"_length"+Integer.toString(num)+".json", true));
 					bw_all = new BufferedWriter(
-							new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency.json", true));
+							new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency"+"_length"+Integer.toString(num)+".json", true));
 				} catch (IOException e) {
 					e.printStackTrace();
 					System.exit(1);
@@ -381,9 +382,60 @@ public class PatternDisplay {
 				BufferedWriter bw = null;
 				BufferedWriter bw_all = null;
 				try {
-					bw = new BufferedWriter(new FileWriter("top" + Integer.toString(top) + "_pattern.json", true));
+					bw = new BufferedWriter(new FileWriter("top" + Integer.toString(top) + "_pattern"+"_length"+Integer.toString(num)+".json", true));
 					bw_all = new BufferedWriter(
-							new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency.json", true));
+							new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency"+"_length"+Integer.toString(num)+".json", true));
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+				JsonObject jo = new JsonObject();
+				jo.put("Title", "");
+				// jo.put("Pattern Rank Number",
+				// Integer.toString(count+1)+"("+Integer.toString(i+1)+")");
+				jo.put("SPARQL Query Pattern", result.get(i).getKey().serialize());
+				jo.put("Instance Query", pattern_instance_pair.get(result.get(i).getKey()).serialize());
+				jo.put("Contained Triple's Number", num);
+
+				try {
+					bw.write(jo.toString());
+					bw.newLine();
+					bw.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.exit(1);
+				}
+
+				jo.put("Frequency", result.get(i).getValue());
+				try {
+					bw_all.write(jo.toString());
+					bw_all.newLine();
+					bw_all.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.exit(1);
+				}
+				count++;
+				if (count >= 10)
+					continue br;
+			}
+			current = Math.min(top, result.size());
+			br5: for (int i = current; count < result.size() && i < result.size(); i++) {
+				if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
+					count++;
+					continue br5;
+				}
+				if (getBGPtripleNumber(result.get(i).getKey()) != num) {
+					continue br5;
+				}
+				BufferedWriter bw = null;
+				BufferedWriter bw_all = null;
+				try {
+					bw = new BufferedWriter(new FileWriter("top" + Integer.toString(top) + "_pattern"+"_length"+Integer.toString(num)+".json", true));
+					bw_all = new BufferedWriter(
+							new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency"+"_length"+Integer.toString(num)+".json", true));
 				} catch (IOException e) {
 					e.printStackTrace();
 					System.exit(1);
