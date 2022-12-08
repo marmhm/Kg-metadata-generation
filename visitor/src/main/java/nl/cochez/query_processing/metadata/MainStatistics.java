@@ -165,7 +165,7 @@ public class MainStatistics {
 					e.printStackTrace();
 				}
 				PrintStream ps = new PrintStream(fos);
-				// System.setOut(ps);
+				System.setOut(ps);
 				System.out.println("subject,label,frequency");
 				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.subjects).entrySet(), 100));
 				System.out.println("predicate,label,frequency");
@@ -182,7 +182,7 @@ public class MainStatistics {
 				print_without_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.literal_labels).entrySet(), 100));
 				System.out.println("rdftype,label,frequency");
 				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet(), 100));
-				// System.setOut(ps_console);
+				System.setOut(ps_console);
 				System.out.println("Number of failures is : " + failures);
 			}
 
