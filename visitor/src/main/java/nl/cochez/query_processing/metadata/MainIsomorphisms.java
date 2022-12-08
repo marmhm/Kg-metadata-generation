@@ -33,7 +33,7 @@ public class MainIsomorphisms {
 
 		collector.stats();
 		
-		PatternDisplay.rankPattern(collector.queryList,10,5,5);
+		PatternDisplay.rankPattern(collector.queryList,10,5,5,true);
 	}
 
 }

@@ -39,7 +39,7 @@ import nl.cochez.query_processing.metadata.IsomorpismClusteringQueryCollector.No
 import java.io.IOException;
 
 public class PatternDisplay {
-    public static void rankPattern(ArrayList<Query> queryList, int top,int offset, int tripleNumber) {
+    public static void rankPattern(ArrayList<Query> queryList, int top,int offset, int tripleNumber, boolean checkEndpoint) {
 		List<Query> pattern_query = new ArrayList<Query>();
 		Map<Query, Query> pattern_instance_pair = new HashMap<Query,Query>();
 		br1: for (Query q : queryList) {
@@ -265,6 +265,7 @@ public class PatternDisplay {
 			boolean go_on = true;
 			int count = 0;
 			br2: for (int i = 0; count < Math.min(top+1, result.size()) && i < result.size(); i++) {
+				if (checkEndpoint)
 				if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
 					count++;
 					continue br2;
@@ -320,6 +321,7 @@ public class PatternDisplay {
 				if (top < 50)
 					top = 50;
 			br3: for (int i = current; count < Math.min(top+1, result.size()) && i < result.size(); i++) {
+				if (checkEndpoint)
 				if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
 					count++;
 					continue br3;
@@ -376,6 +378,7 @@ public class PatternDisplay {
 				if (top < 100)
 					top = 100;
 			br4: for (int i = current; count < Math.min(top+1, result.size()) && i < result.size(); i++) {
+				if (checkEndpoint)
 				if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
 					count++;
 					continue br4;
@@ -427,6 +430,7 @@ public class PatternDisplay {
 			}
 			current = Math.min(top, result.size());
 			br5: for (int i = current; count < result.size() && i < result.size(); i++) {
+				if (checkEndpoint)
 				if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
 					count++;
 					continue br5;

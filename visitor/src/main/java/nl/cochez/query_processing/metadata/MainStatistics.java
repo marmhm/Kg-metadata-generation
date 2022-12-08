@@ -11,11 +11,15 @@ import java.net.http.HttpClient;
 import java.net.http.HttpClient.Redirect;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.GZIPInputStream;
@@ -123,6 +127,7 @@ public class MainStatistics {
 	public static void main(String[] args) throws IOException {
 		Stopwatch watch = Stopwatch.createStarted();
 		String filename = "/home/coder/project/kg-metadata-generation/visitor/src/main/java/nl/cochez/query_processing/metadata/reallall-bio2rdf-processed.tsv.gz";
+		// String filename = "/home/coder/project/kg-metadata-generation/visitor/src/main/java/nl/cochez/query_processing/metadata/drugbank_test.tsv.gz";
 		if (args.length > 0) {
 			filename = args[0];
 		}
@@ -218,12 +223,26 @@ public class MainStatistics {
 
 		collector.stats();
 		// System.out.println(collector.getQueryList().size());
-		ExecutorService exe = Executors.newFixedThreadPool(15);
+		Collection<Future<?>> futures = new LinkedList<Future<?>>();
+		ExecutorService exe = Executors.newFixedThreadPool(50);
 		for (AtomicInteger count = new AtomicInteger(); count.intValue()<10; count.incrementAndGet()){
-			exe.submit(() -> PatternDisplay.rankPattern(collector.getQueryList(), 10, count.intValue()+1,count.intValue()+1));
+			// System.out.println(count.intValue());
+			futures.add(exe.submit(() -> PatternDisplay.rankPattern(collector.getQueryList(), 10, count.intValue()+1,count.intValue()+1,false)));
 		}
 		// PatternDisplay.rankPattern(collector.getQueryList(), 10, 1,10);//input is (queryList, top number of display, max number of triples in pattern query)
-		
+		for (Future<?> future:futures) {
+			try {
+				future.get();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		exe.shutdown();
+		// exe.awaitTermination(timeout, unit);
 		System.out.println("Finished!" + watch.elapsed(TimeUnit.SECONDS));
 	}
 
