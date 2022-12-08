@@ -14,7 +14,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.jena.atlas.json.JsonObject;
@@ -119,7 +122,7 @@ public class MainStatistics {
 
 	public static void main(String[] args) throws IOException {
 		Stopwatch watch = Stopwatch.createStarted();
-		String filename = "/home/coder/project/kg-metadata-generation/visitor/src/main/java/nl/cochez/query_processing/metadata/drugbank_test.tsv.gz";
+		String filename = "/home/coder/project/kg-metadata-generation/visitor/src/main/java/nl/cochez/query_processing/metadata/reallall-bio2rdf-processed.tsv.gz";
 		if (args.length > 0) {
 			filename = args[0];
 		}
@@ -157,7 +160,7 @@ public class MainStatistics {
 					e.printStackTrace();
 				}
 				PrintStream ps = new PrintStream(fos);
-				System.setOut(ps);
+				// System.setOut(ps);
 				System.out.println("subject,label,frequency");
 				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.subjects).entrySet(), 100));
 				System.out.println("predicate,label,frequency");
@@ -174,7 +177,7 @@ public class MainStatistics {
 				print_without_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.literal_labels).entrySet(), 100));
 				System.out.println("rdftype,label,frequency");
 				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet(), 100));
-				System.setOut(ps_console);
+				// System.setOut(ps_console);
 				System.out.println("Number of failures is : " + failures);
 			}
 
@@ -215,12 +218,18 @@ public class MainStatistics {
 
 		collector.stats();
 		// System.out.println(collector.getQueryList().size());
-		PatternDisplay.rankPattern(collector.getQueryList(), 5, 5,10);//input is (queryList, top number of display, max number of triples in pattern query)
+		ExecutorService exe = Executors.newFixedThreadPool(15);
+		for (AtomicInteger count = new AtomicInteger(); count.intValue()<10; count.incrementAndGet()){
+			exe.submit(() -> PatternDisplay.rankPattern(collector.getQueryList(), 10, count.intValue()+1,count.intValue()+1));
+		}
+		// PatternDisplay.rankPattern(collector.getQueryList(), 10, 1,10);//input is (queryList, top number of display, max number of triples in pattern query)
+		
+		System.out.println("Finished!" + watch.elapsed(TimeUnit.SECONDS));
 	}
 
 	private static String get_labels(String str){
 		String label_str= null;
-		String queryString = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n SELECT * WHERE {\n   ?s rdfs:label ?o .\n  Values ?s {"
+		String queryString = "PREFIX dct: <http://purl.org/dc/terms/>\n SELECT * WHERE {\n   ?s dct:title ?o .\n  Values ?s {"
 				+ str + "}}";
 		Map<String, String> map = new HashMap<String, String>();
 		QueryExecution qexec = QueryExecutionFactory.sparqlService("https://bio2rdf.org/sparql", queryString);
