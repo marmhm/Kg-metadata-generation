@@ -227,7 +227,7 @@ public class MainStatistics {
 		ExecutorService exe = Executors.newFixedThreadPool(50);
 		for (AtomicInteger count = new AtomicInteger(); count.intValue()<10; count.incrementAndGet()){
 			// System.out.println(count.intValue());
-			futures.add(exe.submit(() -> PatternDisplay.rankPattern(collector.getQueryList(), 10, count.intValue()+1,count.intValue()+1,false)));
+			futures.add(exe.submit(() -> PatternDisplay.rankPattern(collector.getQueryList(), 10, count.intValue()+1,count.intValue()+1,true)));
 		}
 		// PatternDisplay.rankPattern(collector.getQueryList(), 10, 1,10);//input is (queryList, top number of display, max number of triples in pattern query)
 		for (Future<?> future:futures) {
