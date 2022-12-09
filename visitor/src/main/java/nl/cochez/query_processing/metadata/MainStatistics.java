@@ -126,7 +126,7 @@ public class MainStatistics {
 
 	public static void main(String[] args) throws IOException {
 		Stopwatch watch = Stopwatch.createStarted();
-		String filename = "/home/coder/project/kg-metadata-generation/visitor/src/main/java/nl/cochez/query_processing/metadata/reallall-bio2rdf-processed.tsv.gz";
+		String filename = "/home/coder/project/visitor/src/main/java/nl/cochez/query_processing/metadata/reallall-bio2rdf-processed.tsv.gz";
 		// String filename = "/home/coder/project/kg-metadata-generation/visitor/src/main/java/nl/cochez/query_processing/metadata/drugbank_test.tsv.gz";
 		if (args.length > 0) {
 			filename = args[0];
@@ -167,21 +167,29 @@ public class MainStatistics {
 				PrintStream ps = new PrintStream(fos);
 				System.setOut(ps);
 				System.out.println("subject,label,frequency");
+				System.out.println(Multisets.copyHighestCountFirst(visitor.subjects).entrySet().size());
 				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.subjects).entrySet(), 100));
 				System.out.println("predicate,label,frequency");
-				print_without_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.predicates).entrySet(), 100));
+				System.out.println(Multisets.copyHighestCountFirst(visitor.predicates).entrySet().size());
+				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.predicates).entrySet(), 100));
 				System.out.println("object,label,frequency");
-				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.objects).entrySet(), 100));
+				System.out.println(Multisets.copyHighestCountFirst(visitor.objects).entrySet().size());
+				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.objects).entrySet(), 200));
 				System.out.println("literal,label,frequency");
+				System.out.println(Multisets.copyHighestCountFirst(visitor.literal_values).entrySet().size());
 				print_without_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.literal_values).entrySet(), 100));
 				System.out.println("languages,label,frequency");
+				System.out.println(Multisets.copyHighestCountFirst(visitor.languages).entrySet().size());
 				print_without_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.languages).entrySet(), 100));
 				System.out.println("types,label,frequency");
+				System.out.println(Multisets.copyHighestCountFirst(visitor.types).entrySet().size());
 				print_without_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.types).entrySet(), 100));
 				System.out.println("literal_labels,label,frequency");
+				System.out.println(Multisets.copyHighestCountFirst(visitor.literal_labels).entrySet().size());
 				print_without_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.literal_labels).entrySet(), 100));
 				System.out.println("rdftype,label,frequency");
-				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet(), 100));
+				System.out.println(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet().size());
+				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet(), 300));
 				System.setOut(ps_console);
 				System.out.println("Number of failures is : " + failures);
 			}
@@ -271,13 +279,13 @@ public class MainStatistics {
 		for (Entry<String> str : input){
 			String label = get_labels("<"+str.getElement()+">");
 			if(label!=null)
-			System.out.println("<"+str.getElement()+">"+"&"+get_labels("<"+str.getElement()+">")+"&"+str.getCount());
+			System.out.println("<"+str.getElement()+">"+" & "+get_labels("<"+str.getElement()+">")+" & "+str.getCount());
 		}
 	}
 
 	private static void print_without_label(Iterable<Entry<String>> input){
 		for (Entry<String> str : input){
-			System.out.println("<"+str.getElement()+">"+"&&"+str.getCount());
+			System.out.println("<"+str.getElement()+">"+"& &"+str.getCount());
 		}
 	}
 
@@ -285,9 +293,9 @@ public class MainStatistics {
 		for (Entry<String> str : input){
 			String label = get_labels("<"+str.getElement()+">");
 			if(label!=null)
-				System.out.println("<"+str.getElement()+">"+"&"+get_labels("<"+str.getElement()+">")+"&"+str.getCount());
+				System.out.println("<"+str.getElement()+">"+" & "+get_labels("<"+str.getElement()+">")+" & "+str.getCount());
 			else
-				System.out.println("<"+str.getElement()+">"+"&&"+str.getCount());
+				System.out.println("<"+str.getElement()+">"+" & & "+str.getCount());
 		}
 	}
 }
