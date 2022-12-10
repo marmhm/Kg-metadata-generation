@@ -48,8 +48,11 @@ public class PatternDisplay {
     public static void rankPattern(ArrayList<Query> queryList, int top,int offset, int tripleNumber, boolean checkEndpoint) {
 		List<Query> pattern_query = new ArrayList<Query>();
 		Map<Query, Query> pattern_instance_pair = new HashMap<Query,Query>();
+		Map<Integer, Integer> pattern_numbers = new HashMap<Integer, Integer>();
+		Map<Integer, Integer> instance_numbers = new HashMap<Integer, Integer>();
 		br1: for (Query q : queryList) {
 			// System.out.println(q.queryType().name());
+			List<Triple> triples = new ArrayList<Triple>();
 			Map<String, String> replace_map = new HashMap<String, String>();
 			Op ope = Algebra.compile(q);
 			Set<String> var_set = new HashSet<String>();
@@ -61,6 +64,7 @@ public class PatternDisplay {
 				@Override
 				public void visit(OpBGP opBGP) {
 					for (Triple t : opBGP.getPattern()) {
+						triples.add(t);
 						if (t.getSubject().isVariable() || t.getSubject().toString().startsWith("?")) {
 							var_set.add(t.getSubject().toString());
 						}
@@ -284,7 +288,18 @@ public class PatternDisplay {
 				continue;
 			}
 
-			
+			int length = triples.size();
+			// if(pattern_numbers.containsKey(length)){
+			// pattern_numbers.put(length, pattern_numbers.get(length)+1);
+			// }
+			// else{
+			// pattern_numbers.put(length,1);
+			// }
+			if (instance_numbers.containsKey(length)) {
+				instance_numbers.put(length, instance_numbers.get(length) + 1);
+			} else {
+				instance_numbers.put(length, 1);
+			}
 			// try {
 			// 	pattern_query.add(QueryFactory.create(replace_query_string));
 			// } catch (Exception e) {
@@ -294,15 +309,50 @@ public class PatternDisplay {
 			// 	// System.exit(1);
 			// }
 		}
+
+		// System.out.println("Statistics of number of pattern in each length:"+pattern_numbers);
+		System.out.println("Statistics of number of instance in each length:"+instance_numbers);
 		List<Map.Entry<Query, Integer>> result = sortPatternByValue(findFrequentPattern(pattern_query));
+		for(Entry<Query,Integer> res: result){
+			AllOpVisitor get_pattern_visitor = new AllOpVisitor(){
+
+				@Override
+				public void visit(OpBGP opBGP) {
+					// TODO Auto-generated method stub
+					int length = opBGP.getPattern().size();
+					if(pattern_numbers.containsKey(length)){
+						pattern_numbers.put(length, pattern_numbers.get(length)+1);
+					}
+					else{
+						pattern_numbers.put(length,1);
+					}
+				}
+	
+				@Override
+				public void visit(OpSlice opSlice) {
+					// TODO Auto-generated method stub
+					opSlice.getSubOp().visit(this);
+				}
+			
+			};
+			try {
+				Algebra.compile(res.getKey()).visit(get_pattern_visitor);
+			} catch (Exception e) {
+				//TODO: handle exception
+				System.out.println(res.getKey().serialize());
+			}
+			// Algebra.compile(res.getKey()).visit(get_pattern_visitor);
+		}
+		System.out.println("Statistics of number of pattern in each length:"+pattern_numbers);
 		Map<Integer,Integer> count_map = new HashMap<Integer,Integer>();
 		for (int i =1;i<=10;i++){
 			count_map.put(i, 0);
 		}
 		br1: for (int i = 0; !(check_count_all(count_map,top,offset,tripleNumber)) && i < result.size();i++){
-			if(!result.get(i).getKey().isSelectType())
-				if(!check_ASK_CONSTRUCT_DESCRIBE(result.get(i).getKey()))
-					continue br1;
+			if (checkEndpoint)
+				if (!result.get(i).getKey().isSelectType())
+					if (!check_ASK_CONSTRUCT_DESCRIBE(result.get(i).getKey()))
+						continue br1;
 			if (checkEndpoint)
 				if (check_with_endpoint(result.get(i).getKey())) {
 					continue br1;
@@ -690,7 +740,7 @@ public class PatternDisplay {
 			} catch(Exception e){
 				return false;
 			}
-			if (temp_pattern.containsAll(list_pattern) && list_pattern.containsAll(temp_pattern)) {
+			if (temp_pattern.containsAll(list_pattern) && list_pattern.containsAll(temp_pattern) && temp_pattern.size() == list_pattern.size()) {
 				return true;
 			}
 		}
@@ -801,6 +851,8 @@ public class PatternDisplay {
 				results = qexec.execConstruct();
 			} catch (Exception e) {
 			}
+			if (results == null)
+				return false;
 			if (results.isEmpty())
 				return false;
 			return true;
@@ -818,6 +870,8 @@ public class PatternDisplay {
 				results = qexec.execDescribe();
 			} catch (Exception e) {
 			}
+			if (results == null)
+				return false;
 			if (results.isEmpty())
 				return false;
 			return true;
