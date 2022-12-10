@@ -155,8 +155,15 @@ public class PatternDisplay {
 					}
 					Query pattern_q = selectBuilder.build();
 					pattern_query.add(pattern_q);
-					if(!pattern_instance_pair.containsKey(pattern_q))
-						pattern_instance_pair.put(pattern_q, q);
+					if(!pattern_instance_pair.containsKey(pattern_q)){
+						if(checkEndpoint){
+							if(check_with_endpoint(q))
+								pattern_instance_pair.put(pattern_q, q);
+						}
+						else{
+							pattern_instance_pair.put(pattern_q, q);
+						}
+					}
 				} catch (Exception e) {
 					//TODO: handle exception
 					continue br1;
@@ -185,8 +192,15 @@ public class PatternDisplay {
 					}
 					Query pattern_q = selectBuilder.build();
 					pattern_query.add(pattern_q);
-					if(!pattern_instance_pair.containsKey(pattern_q))
-						pattern_instance_pair.put(pattern_q, q);
+					if(!pattern_instance_pair.containsKey(pattern_q)){
+						if(checkEndpoint){
+							if(check_with_endpoint(q))
+								pattern_instance_pair.put(pattern_q, q);
+						}
+						else{
+							pattern_instance_pair.put(pattern_q, q);
+						}
+					}
 				} catch (Exception e) {
 					//TODO: handle exception
 					continue br1;
@@ -215,8 +229,15 @@ public class PatternDisplay {
 					}
 					Query pattern_q = selectBuilder.build();
 					pattern_query.add(pattern_q);
-					if(!pattern_instance_pair.containsKey(pattern_q))
-						pattern_instance_pair.put(pattern_q, q);
+					if(!pattern_instance_pair.containsKey(pattern_q)){
+						if(checkEndpoint){
+							if(check_with_endpoint(q))
+								pattern_instance_pair.put(pattern_q, q);
+						}
+						else{
+							pattern_instance_pair.put(pattern_q, q);
+						}
+					}
 				} catch (Exception e) {
 					continue br1;
 				}
@@ -244,8 +265,15 @@ public class PatternDisplay {
 					}
 					Query pattern_q = selectBuilder.build();
 					pattern_query.add(pattern_q);
-					if(!pattern_instance_pair.containsKey(pattern_q))
-						pattern_instance_pair.put(pattern_q, q);
+					if(!pattern_instance_pair.containsKey(pattern_q)){
+						if(checkEndpoint){
+							if(check_with_endpoint(q))
+								pattern_instance_pair.put(pattern_q, q);
+						}
+						else{
+							pattern_instance_pair.put(pattern_q, q);
+						}
+					}
 				} catch (Exception e) {
 					continue br1;
 				}
@@ -271,13 +299,12 @@ public class PatternDisplay {
 		for (int i =1;i<=10;i++){
 			count_map.put(i, 0);
 		}
-		br1: for (int i = 0; !(check_count_all(count_map,top)) && i < result.size();i++){
-			if(result.get(i).getKey().isAskType() || result.get(i).getKey().isConstructType() || result.get(i).getKey().isDescribeType())
+		br1: for (int i = 0; !(check_count_all(count_map,top,offset,tripleNumber)) && i < result.size();i++){
+			if(!result.get(i).getKey().isSelectType())
 				if(!check_ASK_CONSTRUCT_DESCRIBE(result.get(i).getKey()))
 					continue br1;
-			Map<Var, org.apache.jena.graph.Node> var_value_pairs = get_result_of_vars(result.get(i).getKey());
 			if (checkEndpoint)
-				if (var_value_pairs.isEmpty()) {
+				if (check_with_endpoint(result.get(i).getKey())) {
 					continue br1;
 				}
 			
@@ -330,6 +357,8 @@ public class PatternDisplay {
 			}
 			count_map.put(num, count_map.get(num) + 1);
 		}
+		System.out.print("Statistics of each length: ");
+		System.out.println(count_map);
 		// br: for (int num = offset; num <= tripleNumber; num ++){
 		// 	boolean go_on = true;
 		// 	count = 0;
@@ -559,8 +588,8 @@ public class PatternDisplay {
 		return false;
 	}
 
-	private static boolean check_count_all(Map<Integer,Integer> count_map, int top){
-		for (int i =1;i<=10;i++){
+	private static boolean check_count_all(Map<Integer,Integer> count_map, int top, int offset, int tripleNumber){
+		for (int i =offset;i<=tripleNumber;i++){
 			if(count_map.get(i)<top){
 				return false;
 			}
@@ -722,6 +751,8 @@ public class PatternDisplay {
 	}
 
 	private static boolean check_with_endpoint(Query query) { // check if query will return results via bio2rdf SPARQL endpoint
+		if(!query.isSelectType())
+			return check_ASK_CONSTRUCT_DESCRIBE(query);
 		SelectBuilder selectBuilder = new SelectBuilder();
         HandlerBlock handlerBlock = new HandlerBlock(query);
         selectBuilder.getHandlerBlock().addAll(handlerBlock);
