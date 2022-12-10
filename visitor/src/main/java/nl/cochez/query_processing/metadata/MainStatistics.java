@@ -126,8 +126,8 @@ public class MainStatistics {
 
 	public static void main(String[] args) throws IOException {
 		Stopwatch watch = Stopwatch.createStarted();
-		// String filename = "/home/coder/project/visitor/src/main/java/nl/cochez/query_processing/metadata/reallall-bio2rdf-processed.tsv.gz";
-		String filename = "/Users/xuwang/Documents/github/kg-metadata-generation/drugbank_test.tsv.gz";
+		String filename = "/home/coder/project/kg-metadata-generation/visitor/src/main/java/nl/cochez/query_processing/metadata/reallall-bio2rdf-processed.tsv.gz";
+		// String filename = "/Users/xuwang/Documents/github/kg-metadata-generation/drugbank_test.tsv.gz";
 		if (args.length > 0) {
 			filename = args[0];
 		}
@@ -237,7 +237,7 @@ public class MainStatistics {
 		// 	// System.out.println(count.intValue());
 		// 	futures.add(exe.submit(() -> PatternDisplay.rankPattern(collector.getQueryList(), 10, count.intValue()+1,count.intValue()+1,true)));
 		// }
-		PatternDisplay.rankPattern(collector.getQueryList(), 10, 1,10,false);//input is (queryList, top number of display, max number of triples in pattern query)
+		PatternDisplay.rankPattern(collector.getQueryList(), 10, 1,10,true);//input is (queryList, top number of display, max number of triples in pattern query)
 		// for (Future<?> future:futures) {
 		// 	try {
 		// 		future.get();
