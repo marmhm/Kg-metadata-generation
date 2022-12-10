@@ -42,11 +42,11 @@
 
     
 		<!-- https://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 			<version>20020423</version>
-		</dependency>
+		</dependency> -->
 
 		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
 		<dependency>

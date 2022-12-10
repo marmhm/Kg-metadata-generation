@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,17 +14,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.algebra.Algebra;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.op.OpBGP;
 import org.apache.jena.sparql.algebra.op.OpSlice;
 import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -35,6 +39,8 @@ import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
 import java.util.ArrayList;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.QuerySolution;
+
 import nl.cochez.query_processing.metadata.IsomorpismClusteringQueryCollector.Node;
 import java.io.IOException;
 
@@ -149,8 +155,15 @@ public class PatternDisplay {
 					}
 					Query pattern_q = selectBuilder.build();
 					pattern_query.add(pattern_q);
-					if(!pattern_instance_pair.containsKey(pattern_q))
-						pattern_instance_pair.put(pattern_q, q);
+					if(!pattern_instance_pair.containsKey(pattern_q)){
+						if(checkEndpoint){
+							if(check_with_endpoint(q))
+								pattern_instance_pair.put(pattern_q, q);
+						}
+						else{
+							pattern_instance_pair.put(pattern_q, q);
+						}
+					}
 				} catch (Exception e) {
 					//TODO: handle exception
 					continue br1;
@@ -179,8 +192,15 @@ public class PatternDisplay {
 					}
 					Query pattern_q = selectBuilder.build();
 					pattern_query.add(pattern_q);
-					if(!pattern_instance_pair.containsKey(pattern_q))
-						pattern_instance_pair.put(pattern_q, q);
+					if(!pattern_instance_pair.containsKey(pattern_q)){
+						if(checkEndpoint){
+							if(check_with_endpoint(q))
+								pattern_instance_pair.put(pattern_q, q);
+						}
+						else{
+							pattern_instance_pair.put(pattern_q, q);
+						}
+					}
 				} catch (Exception e) {
 					//TODO: handle exception
 					continue br1;
@@ -209,8 +229,15 @@ public class PatternDisplay {
 					}
 					Query pattern_q = selectBuilder.build();
 					pattern_query.add(pattern_q);
-					if(!pattern_instance_pair.containsKey(pattern_q))
-						pattern_instance_pair.put(pattern_q, q);
+					if(!pattern_instance_pair.containsKey(pattern_q)){
+						if(checkEndpoint){
+							if(check_with_endpoint(q))
+								pattern_instance_pair.put(pattern_q, q);
+						}
+						else{
+							pattern_instance_pair.put(pattern_q, q);
+						}
+					}
 				} catch (Exception e) {
 					continue br1;
 				}
@@ -238,8 +265,15 @@ public class PatternDisplay {
 					}
 					Query pattern_q = selectBuilder.build();
 					pattern_query.add(pattern_q);
-					if(!pattern_instance_pair.containsKey(pattern_q))
-						pattern_instance_pair.put(pattern_q, q);
+					if(!pattern_instance_pair.containsKey(pattern_q)){
+						if(checkEndpoint){
+							if(check_with_endpoint(q))
+								pattern_instance_pair.put(pattern_q, q);
+						}
+						else{
+							pattern_instance_pair.put(pattern_q, q);
+						}
+					}
 				} catch (Exception e) {
 					continue br1;
 				}
@@ -261,226 +295,306 @@ public class PatternDisplay {
 			// }
 		}
 		List<Map.Entry<Query, Integer>> result = sortPatternByValue(findFrequentPattern(pattern_query));
-		br: for (int num = offset; num <= tripleNumber; num ++){
-			boolean go_on = true;
-			int count = 0;
-			br2: for (int i = 0; count < Math.min(top+1, result.size()) && i < result.size(); i++) {
-				if (checkEndpoint)
-				if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
-					count++;
-					continue br2;
+		Map<Integer,Integer> count_map = new HashMap<Integer,Integer>();
+		for (int i =1;i<=10;i++){
+			count_map.put(i, 0);
+		}
+		br1: for (int i = 0; !(check_count_all(count_map,top,offset,tripleNumber)) && i < result.size();i++){
+			if(!result.get(i).getKey().isSelectType())
+				if(!check_ASK_CONSTRUCT_DESCRIBE(result.get(i).getKey()))
+					continue br1;
+			if (checkEndpoint)
+				if (check_with_endpoint(result.get(i).getKey())) {
+					continue br1;
 				}
-				if(getBGPtripleNumber(result.get(i).getKey())!=num){
-					continue br2;
-				}
-				BufferedWriter bw = null;
-				BufferedWriter bw_all = null;
-				try {
-					bw = new BufferedWriter(new FileWriter("top" + Integer.toString(top) + "_pattern"+"_length"+Integer.toString(num)+".json", true));
-					bw_all = new BufferedWriter(
-							new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency"+"_length"+Integer.toString(num)+".json", true));
-				} catch (IOException e) {
-					e.printStackTrace();
-					System.exit(1);
-				}
-				JsonObject jo = new JsonObject();
-				jo.put("Title", "");
-				// jo.put("Pattern Rank Number", Integer.toString(count+1)+"("+Integer.toString(i+1)+")");
-				jo.put("SPARQL Query Pattern", result.get(i).getKey().serialize());
-				jo.put("Instance Query", pattern_instance_pair.get(result.get(i).getKey()).serialize());
-				jo.put("Contained Triple's Number", num);
+			
+			int num = getBGPtripleNumber(result.get(i).getKey());
+			if (num < offset || num > tripleNumber)
+				continue br1;
+			if (check_count(count_map, num, top)) {
+				continue br1;
+			}
+			BufferedWriter bw = null;
+			BufferedWriter bw_all = null;
+			try {
+				bw = new BufferedWriter(new FileWriter(
+						"top" + Integer.toString(top) + "_pattern" + "_length" + Integer.toString(num) + ".json",
+						true));
+				bw_all = new BufferedWriter(
+						new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency" + "_length"
+								+ Integer.toString(num) + ".json", true));
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+			JsonObject jo = new JsonObject();
+			jo.put("Title", "");
+			// jo.put("Pattern Rank Number",
+			// Integer.toString(count+1)+"("+Integer.toString(i+1)+")");
+			jo.put("SPARQL Query Pattern", result.get(i).getKey().serialize());
+			jo.put("Instance Query", pattern_instance_pair.get(result.get(i).getKey()).serialize());
+			jo.put("Contained Triple's Number", num);
+
+			try {
+				bw.write(jo.toString());
+				bw.newLine();
+				bw.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.exit(1);
+			}
+
+			jo.put("Frequency", result.get(i).getValue());
+			try {
+				bw_all.write(jo.toString());
+				bw_all.newLine();
+				bw_all.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.exit(1);
+			}
+			count_map.put(num, count_map.get(num) + 1);
+		}
+		System.out.print("Statistics of each length: ");
+		System.out.println(count_map);
+		// br: for (int num = offset; num <= tripleNumber; num ++){
+		// 	boolean go_on = true;
+		// 	count = 0;
+		// 	br2: for (int i = 0; count < Math.min(top+1, result.size()) && i < result.size(); i++) {
+		// 		if (checkEndpoint)
+		// 		if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
+		// 			count++;
+		// 			continue br2;
+		// 		}
+		// 		if(getBGPtripleNumber(result.get(i).getKey())!=num){
+		// 			continue br2;
+		// 		}
+		// 		BufferedWriter bw = null;
+		// 		BufferedWriter bw_all = null;
+		// 		try {
+		// 			bw = new BufferedWriter(new FileWriter("top" + Integer.toString(top) + "_pattern"+"_length"+Integer.toString(num)+".json", true));
+		// 			bw_all = new BufferedWriter(
+		// 					new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency"+"_length"+Integer.toString(num)+".json", true));
+		// 		} catch (IOException e) {
+		// 			e.printStackTrace();
+		// 			System.exit(1);
+		// 		}
+		// 		JsonObject jo = new JsonObject();
+		// 		jo.put("Title", "");
+		// 		// jo.put("Pattern Rank Number", Integer.toString(count+1)+"("+Integer.toString(i+1)+")");
+		// 		jo.put("SPARQL Query Pattern", result.get(i).getKey().serialize());
+		// 		jo.put("Instance Query", pattern_instance_pair.get(result.get(i).getKey()).serialize());
+		// 		jo.put("Contained Triple's Number", num);
 				
-				try {
-					bw.write(jo.toString());
-					bw.newLine();
-					bw.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.exit(1);
-				}
+		// 		try {
+		// 			bw.write(jo.toString());
+		// 			bw.newLine();
+		// 			bw.flush();
+		// 		} catch (IOException e) {
+		// 			// TODO Auto-generated catch block
+		// 			e.printStackTrace();
+		// 			System.exit(1);
+		// 		}
 	
-				jo.put("Frequency", result.get(i).getValue());
-				try {
-					bw_all.write(jo.toString());
-					bw_all.newLine();
-					bw_all.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.exit(1);
-				}
-				count++;
-				if (count >= 4)
-					go_on = false;
-				if (count >= 10)
-					continue br;
-			}
-			int current = Math.min(top, result.size());
-			if (go_on == true)
-				if (top < 50)
-					top = 50;
-			br3: for (int i = current; count < Math.min(top+1, result.size()) && i < result.size(); i++) {
-				if (checkEndpoint)
-				if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
-					count++;
-					continue br3;
-				}
-				if (getBGPtripleNumber(result.get(i).getKey()) != num) {
-					continue br3;
-				}
-				BufferedWriter bw = null;
-				BufferedWriter bw_all = null;
-				try {
-					bw = new BufferedWriter(new FileWriter("top" + Integer.toString(top) + "_pattern"+"_length"+Integer.toString(num)+".json", true));
-					bw_all = new BufferedWriter(
-							new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency"+"_length"+Integer.toString(num)+".json", true));
-				} catch (IOException e) {
-					e.printStackTrace();
-					System.exit(1);
-				}
-				JsonObject jo = new JsonObject();
-				jo.put("Title", "");
-				// jo.put("Pattern Rank Number",
-				// Integer.toString(count+1)+"("+Integer.toString(i+1)+")");
-				jo.put("SPARQL Query Pattern", result.get(i).getKey().serialize());
-				jo.put("Instance Query", pattern_instance_pair.get(result.get(i).getKey()).serialize());
-				jo.put("Contained Triple's Number", num);
+		// 		jo.put("Frequency", result.get(i).getValue());
+		// 		try {
+		// 			bw_all.write(jo.toString());
+		// 			bw_all.newLine();
+		// 			bw_all.flush();
+		// 		} catch (IOException e) {
+		// 			// TODO Auto-generated catch block
+		// 			e.printStackTrace();
+		// 			System.exit(1);
+		// 		}
+		// 		count++;
+		// 		if (count >= 4)
+		// 			go_on = false;
+		// 		if (count >= 10)
+		// 			continue br;
+		// 	}
+		// 	int current = Math.min(top, result.size());
+		// 	if (go_on == true)
+		// 		if (top < 50)
+		// 			top = 50;
+		// 	br3: for (int i = current; count < Math.min(top+1, result.size()) && i < result.size(); i++) {
+		// 		if (checkEndpoint)
+		// 		if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
+		// 			count++;
+		// 			continue br3;
+		// 		}
+		// 		if (getBGPtripleNumber(result.get(i).getKey()) != num) {
+		// 			continue br3;
+		// 		}
+		// 		BufferedWriter bw = null;
+		// 		BufferedWriter bw_all = null;
+		// 		try {
+		// 			bw = new BufferedWriter(new FileWriter("top" + Integer.toString(top) + "_pattern"+"_length"+Integer.toString(num)+".json", true));
+		// 			bw_all = new BufferedWriter(
+		// 					new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency"+"_length"+Integer.toString(num)+".json", true));
+		// 		} catch (IOException e) {
+		// 			e.printStackTrace();
+		// 			System.exit(1);
+		// 		}
+		// 		JsonObject jo = new JsonObject();
+		// 		jo.put("Title", "");
+		// 		// jo.put("Pattern Rank Number",
+		// 		// Integer.toString(count+1)+"("+Integer.toString(i+1)+")");
+		// 		jo.put("SPARQL Query Pattern", result.get(i).getKey().serialize());
+		// 		jo.put("Instance Query", pattern_instance_pair.get(result.get(i).getKey()).serialize());
+		// 		jo.put("Contained Triple's Number", num);
 
-				try {
-					bw.write(jo.toString());
-					bw.newLine();
-					bw.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.exit(1);
-				}
+		// 		try {
+		// 			bw.write(jo.toString());
+		// 			bw.newLine();
+		// 			bw.flush();
+		// 		} catch (IOException e) {
+		// 			// TODO Auto-generated catch block
+		// 			e.printStackTrace();
+		// 			System.exit(1);
+		// 		}
 
-				jo.put("Frequency", result.get(i).getValue());
-				try {
-					bw_all.write(jo.toString());
-					bw_all.newLine();
-					bw_all.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.exit(1);
-				}
-				count++;
-				if (count >= 7)
-					go_on = false;
-				if (count >= 10)
-					continue br;
-			}
-			current = Math.min(top, result.size());
-			if (go_on == true)
-				if (top < 100)
-					top = 100;
-			br4: for (int i = current; count < Math.min(top+1, result.size()) && i < result.size(); i++) {
-				if (checkEndpoint)
-				if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
-					count++;
-					continue br4;
-				}
-				if (getBGPtripleNumber(result.get(i).getKey()) != num) {
-					continue br4;
-				}
-				BufferedWriter bw = null;
-				BufferedWriter bw_all = null;
-				try {
-					bw = new BufferedWriter(new FileWriter("top" + Integer.toString(top) + "_pattern"+"_length"+Integer.toString(num)+".json", true));
-					bw_all = new BufferedWriter(
-							new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency"+"_length"+Integer.toString(num)+".json", true));
-				} catch (IOException e) {
-					e.printStackTrace();
-					System.exit(1);
-				}
-				JsonObject jo = new JsonObject();
-				jo.put("Title", "");
-				// jo.put("Pattern Rank Number",
-				// Integer.toString(count+1)+"("+Integer.toString(i+1)+")");
-				jo.put("SPARQL Query Pattern", result.get(i).getKey().serialize());
-				jo.put("Instance Query", pattern_instance_pair.get(result.get(i).getKey()).serialize());
-				jo.put("Contained Triple's Number", num);
+		// 		jo.put("Frequency", result.get(i).getValue());
+		// 		try {
+		// 			bw_all.write(jo.toString());
+		// 			bw_all.newLine();
+		// 			bw_all.flush();
+		// 		} catch (IOException e) {
+		// 			// TODO Auto-generated catch block
+		// 			e.printStackTrace();
+		// 			System.exit(1);
+		// 		}
+		// 		count++;
+		// 		if (count >= 7)
+		// 			go_on = false;
+		// 		if (count >= 10)
+		// 			continue br;
+		// 	}
+		// 	current = Math.min(top, result.size());
+		// 	if (go_on == true)
+		// 		if (top < 100)
+		// 			top = 100;
+		// 	br4: for (int i = current; count < Math.min(top+1, result.size()) && i < result.size(); i++) {
+		// 		if (checkEndpoint)
+		// 		if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
+		// 			count++;
+		// 			continue br4;
+		// 		}
+		// 		if (getBGPtripleNumber(result.get(i).getKey()) != num) {
+		// 			continue br4;
+		// 		}
+		// 		BufferedWriter bw = null;
+		// 		BufferedWriter bw_all = null;
+		// 		try {
+		// 			bw = new BufferedWriter(new FileWriter("top" + Integer.toString(top) + "_pattern"+"_length"+Integer.toString(num)+".json", true));
+		// 			bw_all = new BufferedWriter(
+		// 					new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency"+"_length"+Integer.toString(num)+".json", true));
+		// 		} catch (IOException e) {
+		// 			e.printStackTrace();
+		// 			System.exit(1);
+		// 		}
+		// 		JsonObject jo = new JsonObject();
+		// 		jo.put("Title", "");
+		// 		// jo.put("Pattern Rank Number",
+		// 		// Integer.toString(count+1)+"("+Integer.toString(i+1)+")");
+		// 		jo.put("SPARQL Query Pattern", result.get(i).getKey().serialize());
+		// 		jo.put("Instance Query", pattern_instance_pair.get(result.get(i).getKey()).serialize());
+		// 		jo.put("Contained Triple's Number", num);
 
-				try {
-					bw.write(jo.toString());
-					bw.newLine();
-					bw.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.exit(1);
-				}
+		// 		try {
+		// 			bw.write(jo.toString());
+		// 			bw.newLine();
+		// 			bw.flush();
+		// 		} catch (IOException e) {
+		// 			// TODO Auto-generated catch block
+		// 			e.printStackTrace();
+		// 			System.exit(1);
+		// 		}
 
-				jo.put("Frequency", result.get(i).getValue());
-				try {
-					bw_all.write(jo.toString());
-					bw_all.newLine();
-					bw_all.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.exit(1);
-				}
-				count++;
-				if (count >= 10)
-					continue br;
-			}
-			current = Math.min(top, result.size());
-			br5: for (int i = current; count < result.size() && i < result.size(); i++) {
-				if (checkEndpoint)
-				if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
-					count++;
-					continue br5;
-				}
-				if (getBGPtripleNumber(result.get(i).getKey()) != num) {
-					continue br5;
-				}
-				BufferedWriter bw = null;
-				BufferedWriter bw_all = null;
-				try {
-					bw = new BufferedWriter(new FileWriter("top" + Integer.toString(top) + "_pattern"+"_length"+Integer.toString(num)+".json", true));
-					bw_all = new BufferedWriter(
-							new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency"+"_length"+Integer.toString(num)+".json", true));
-				} catch (IOException e) {
-					e.printStackTrace();
-					System.exit(1);
-				}
-				JsonObject jo = new JsonObject();
-				jo.put("Title", "");
-				// jo.put("Pattern Rank Number",
-				// Integer.toString(count+1)+"("+Integer.toString(i+1)+")");
-				jo.put("SPARQL Query Pattern", result.get(i).getKey().serialize());
-				jo.put("Instance Query", pattern_instance_pair.get(result.get(i).getKey()).serialize());
-				jo.put("Contained Triple's Number", num);
+		// 		jo.put("Frequency", result.get(i).getValue());
+		// 		try {
+		// 			bw_all.write(jo.toString());
+		// 			bw_all.newLine();
+		// 			bw_all.flush();
+		// 		} catch (IOException e) {
+		// 			// TODO Auto-generated catch block
+		// 			e.printStackTrace();
+		// 			System.exit(1);
+		// 		}
+		// 		count++;
+		// 		if (count >= 10)
+		// 			continue br;
+		// 	}
+		// 	current = Math.min(top, result.size());
+		// 	br5: for (int i = current; count < result.size() && i < result.size(); i++) {
+		// 		if (checkEndpoint)
+		// 		if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
+		// 			count++;
+		// 			continue br5;
+		// 		}
+		// 		if (getBGPtripleNumber(result.get(i).getKey()) != num) {
+		// 			continue br5;
+		// 		}
+		// 		BufferedWriter bw = null;
+		// 		BufferedWriter bw_all = null;
+		// 		try {
+		// 			bw = new BufferedWriter(new FileWriter("top" + Integer.toString(top) + "_pattern"+"_length"+Integer.toString(num)+".json", true));
+		// 			bw_all = new BufferedWriter(
+		// 					new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency"+"_length"+Integer.toString(num)+".json", true));
+		// 		} catch (IOException e) {
+		// 			e.printStackTrace();
+		// 			System.exit(1);
+		// 		}
+		// 		JsonObject jo = new JsonObject();
+		// 		jo.put("Title", "");
+		// 		// jo.put("Pattern Rank Number",
+		// 		// Integer.toString(count+1)+"("+Integer.toString(i+1)+")");
+		// 		jo.put("SPARQL Query Pattern", result.get(i).getKey().serialize());
+		// 		jo.put("Instance Query", pattern_instance_pair.get(result.get(i).getKey()).serialize());
+		// 		jo.put("Contained Triple's Number", num);
 
-				try {
-					bw.write(jo.toString());
-					bw.newLine();
-					bw.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.exit(1);
-				}
+		// 		try {
+		// 			bw.write(jo.toString());
+		// 			bw.newLine();
+		// 			bw.flush();
+		// 		} catch (IOException e) {
+		// 			// TODO Auto-generated catch block
+		// 			e.printStackTrace();
+		// 			System.exit(1);
+		// 		}
 
-				jo.put("Frequency", result.get(i).getValue());
-				try {
-					bw_all.write(jo.toString());
-					bw_all.newLine();
-					bw_all.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.exit(1);
-				}
-				count++;
-				if (count >= 10)
-					continue br;
+		// 		jo.put("Frequency", result.get(i).getValue());
+		// 		try {
+		// 			bw_all.write(jo.toString());
+		// 			bw_all.newLine();
+		// 			bw_all.flush();
+		// 		} catch (IOException e) {
+		// 			// TODO Auto-generated catch block
+		// 			e.printStackTrace();
+		// 			System.exit(1);
+		// 		}
+		// 		count++;
+		// 		if (count >= 10)
+		// 			continue br;
+		// 	}
+		// }
+	}
+
+	private static boolean check_count(Map<Integer,Integer> count_map,int num, int top){
+		if (count_map.get(num) >= top) {
+			return true;
+		}
+		return false;
+	}
+
+	private static boolean check_count_all(Map<Integer,Integer> count_map, int top, int offset, int tripleNumber){
+		for (int i =offset;i<=tripleNumber;i++){
+			if(count_map.get(i)<top){
+				return false;
 			}
 		}
+		return true;
 	}
 
 	private static int getBGPtripleNumber(Query q){
@@ -637,6 +751,8 @@ public class PatternDisplay {
 	}
 
 	private static boolean check_with_endpoint(Query query) { // check if query will return results via bio2rdf SPARQL endpoint
+		if(!query.isSelectType())
+			return check_ASK_CONSTRUCT_DESCRIBE(query);
 		SelectBuilder selectBuilder = new SelectBuilder();
         HandlerBlock handlerBlock = new HandlerBlock(query);
         selectBuilder.getHandlerBlock().addAll(handlerBlock);
@@ -654,6 +770,91 @@ public class PatternDisplay {
         }
         return false;
 	}
+
+	private static boolean check_ASK_CONSTRUCT_DESCRIBE(Query query){
+		if (query.isAskType()) {
+			AskBuilder selectBuilder = new AskBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			selectBuilder.getHandlerBlock().addAll(handlerBlock);
+			selectBuilder.setLimit(1);
+			selectBuilder.setBase(null);
+			// selectBuilder.addVar("*");
+			QueryExecution qexec = QueryExecutionFactory.sparqlService("https://bio2rdf.org/sparql",
+					selectBuilder.build());
+			ResultSet results = null;
+			try {
+				return qexec.execAsk();
+			} catch (Exception e) {
+			}
+			return false;
+		} else if (query.isConstructType()) {
+			ConstructBuilder selectBuilder = new ConstructBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			selectBuilder.getHandlerBlock().addAll(handlerBlock);
+			selectBuilder.setLimit(1);
+			selectBuilder.setBase(null);
+			// selectBuilder.addVar("*");
+			QueryExecution qexec = QueryExecutionFactory.sparqlService("https://bio2rdf.org/sparql",
+					selectBuilder.build());
+			Model results = null;
+			try {
+				results = qexec.execConstruct();
+			} catch (Exception e) {
+			}
+			if (results.isEmpty())
+				return false;
+			return true;
+		} else if (query.isDescribeType()) {
+			DescribeBuilder selectBuilder = new DescribeBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			selectBuilder.getHandlerBlock().addAll(handlerBlock);
+			selectBuilder.setLimit(1);
+			selectBuilder.setBase(null);
+			// selectBuilder.addVar("*");
+			QueryExecution qexec = QueryExecutionFactory.sparqlService("https://bio2rdf.org/sparql",
+					selectBuilder.build());
+			Model results = null;
+			try {
+				results = qexec.execDescribe();
+			} catch (Exception e) {
+			}
+			if (results.isEmpty())
+				return false;
+			return true;
+		}
+		return false;
+	}
+
+	public static Map<Var,org.apache.jena.graph.Node> get_result_of_vars(Query query){ // get var-value pairs for pattern query via endpoint 
+		Map<Var,org.apache.jena.graph.Node> var_results = new HashMap<Var,org.apache.jena.graph.Node>();
+		if (query.isSelectType()){
+			SelectBuilder selectBuilder = new SelectBuilder();
+        	HandlerBlock handlerBlock = new HandlerBlock(query);
+			selectBuilder.getHandlerBlock().addAll(handlerBlock);
+			selectBuilder.setLimit(1);
+			selectBuilder.setBase(null);
+			// selectBuilder.addVar("*");
+			QueryExecution qexec = QueryExecutionFactory.sparqlService("https://bio2rdf.org/sparql",
+					selectBuilder.build());
+			ResultSet results = null;
+			try {
+				results = qexec.execSelect();
+			} catch (Exception e) {
+				return var_results;
+			}
+			if (results.hasNext()) {
+				QuerySolution qs = results.next();
+				Iterator<String> it_var = qs.varNames();
+				while (it_var.hasNext()) {
+					String var = it_var.next();
+					var_results.put(Var.alloc(var), new NodeFactory().createURI(qs.get(var).toString()));
+				}
+			}
+		}
+		
+        return var_results;
+	}
+	
 	private static Graph toGraph(Query pattern){
 		Graph<Node, RelationshipEdge> graph = new DefaultDirectedGraph<Node, RelationshipEdge>(RelationshipEdge.class);
 		AllBGPOpVisitor visitor = new AllBGPOpVisitor() {
