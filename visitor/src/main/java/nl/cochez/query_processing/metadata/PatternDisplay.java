@@ -14,17 +14,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import org.apache.jena.atlas.json.JsonObject;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.algebra.Algebra;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.op.OpBGP;
 import org.apache.jena.sparql.algebra.op.OpSlice;
 import org.apache.jena.sparql.core.BasicPattern;
+import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -269,55 +272,63 @@ public class PatternDisplay {
 			count_map.put(i, 0);
 		}
 		br1: for (int i = 0; !(check_count_all(count_map,top)) && i < result.size();i++){
+			if(result.get(i).getKey().isAskType() || result.get(i).getKey().isConstructType() || result.get(i).getKey().isDescribeType())
+				if(!check_ASK_CONSTRUCT_DESCRIBE(result.get(i).getKey()))
+					continue br1;
+			Map<Var, org.apache.jena.graph.Node> var_value_pairs = get_result_of_vars(result.get(i).getKey());
 			if (checkEndpoint)
-				if(!check_with_endpoint(pattern_instance_pair.get(result.get(i).getKey()))){
+				if (var_value_pairs.isEmpty()) {
 					continue br1;
 				}
-				
-				int num =getBGPtripleNumber(result.get(i).getKey());
-				if (num < offset || num > tripleNumber)
-					continue br1;
-				if (check_count(count_map, num, top)) {
-					continue br1;
-				}
-				BufferedWriter bw = null;
-				BufferedWriter bw_all = null;
-				try {
-					bw = new BufferedWriter(new FileWriter("top" + Integer.toString(top) + "_pattern"+"_length"+Integer.toString(num)+".json", true));
-					bw_all = new BufferedWriter(
-							new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency"+"_length"+Integer.toString(num)+".json", true));
-				} catch (IOException e) {
-					e.printStackTrace();
-					System.exit(1);
-				}
-				JsonObject jo = new JsonObject();
-				jo.put("Title", "");
-				// jo.put("Pattern Rank Number", Integer.toString(count+1)+"("+Integer.toString(i+1)+")");
-				jo.put("SPARQL Query Pattern", result.get(i).getKey().serialize());
-				jo.put("Instance Query", pattern_instance_pair.get(result.get(i).getKey()).serialize());
-				jo.put("Contained Triple's Number", num);
+			
+			int num = getBGPtripleNumber(result.get(i).getKey());
+			if (num < offset || num > tripleNumber)
+				continue br1;
+			if (check_count(count_map, num, top)) {
+				continue br1;
+			}
+			BufferedWriter bw = null;
+			BufferedWriter bw_all = null;
+			try {
+				bw = new BufferedWriter(new FileWriter(
+						"top" + Integer.toString(top) + "_pattern" + "_length" + Integer.toString(num) + ".json",
+						true));
+				bw_all = new BufferedWriter(
+						new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency" + "_length"
+								+ Integer.toString(num) + ".json", true));
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+			JsonObject jo = new JsonObject();
+			jo.put("Title", "");
+			// jo.put("Pattern Rank Number",
+			// Integer.toString(count+1)+"("+Integer.toString(i+1)+")");
+			jo.put("SPARQL Query Pattern", result.get(i).getKey().serialize());
+			jo.put("Instance Query", pattern_instance_pair.get(result.get(i).getKey()).serialize());
+			jo.put("Contained Triple's Number", num);
 
-				try {
-					bw.write(jo.toString());
-					bw.newLine();
-					bw.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.exit(1);
-				}
-	
-				jo.put("Frequency", result.get(i).getValue());
-				try {
-					bw_all.write(jo.toString());
-					bw_all.newLine();
-					bw_all.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.exit(1);
-				}
-				count_map.put(num, count_map.get(num)+1);
+			try {
+				bw.write(jo.toString());
+				bw.newLine();
+				bw.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.exit(1);
+			}
+
+			jo.put("Frequency", result.get(i).getValue());
+			try {
+				bw_all.write(jo.toString());
+				bw_all.newLine();
+				bw_all.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.exit(1);
+			}
+			count_map.put(num, count_map.get(num) + 1);
 		}
 		// br: for (int num = offset; num <= tripleNumber; num ++){
 		// 	boolean go_on = true;
@@ -729,28 +740,87 @@ public class PatternDisplay {
         return false;
 	}
 
-	private static Map<String,String> get_result_of_vars(Query query){ // get var-value pairs for pattern query via endpoint 
-		Map<String,String> var_results = new HashMap<String,String>();
-		SelectBuilder selectBuilder = new SelectBuilder();
-        HandlerBlock handlerBlock = new HandlerBlock(query);
-        selectBuilder.getHandlerBlock().addAll(handlerBlock);
-		selectBuilder.setLimit(1);
-		selectBuilder.setBase(null);
-        QueryExecution qexec = QueryExecutionFactory.sparqlService("https://bio2rdf.org/sparql", selectBuilder.build());
-        ResultSet results = null;
-		try {
-        	results = qexec.execSelect();
-        }catch (Exception e) {
-        	return var_results;
-        }
-        if (results.hasNext()) {
-        	QuerySolution qs = results.next();
-			Iterator<String> it_var = qs.varNames();
-			while(it_var.hasNext()){
-				String var = it_var.next();
-				var_results.put(var, qs.get(var).toString());
+	private static boolean check_ASK_CONSTRUCT_DESCRIBE(Query query){
+		if (query.isAskType()) {
+			AskBuilder selectBuilder = new AskBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			selectBuilder.getHandlerBlock().addAll(handlerBlock);
+			selectBuilder.setLimit(1);
+			selectBuilder.setBase(null);
+			// selectBuilder.addVar("*");
+			QueryExecution qexec = QueryExecutionFactory.sparqlService("https://bio2rdf.org/sparql",
+					selectBuilder.build());
+			ResultSet results = null;
+			try {
+				return qexec.execAsk();
+			} catch (Exception e) {
 			}
-        }
+			return false;
+		} else if (query.isConstructType()) {
+			ConstructBuilder selectBuilder = new ConstructBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			selectBuilder.getHandlerBlock().addAll(handlerBlock);
+			selectBuilder.setLimit(1);
+			selectBuilder.setBase(null);
+			// selectBuilder.addVar("*");
+			QueryExecution qexec = QueryExecutionFactory.sparqlService("https://bio2rdf.org/sparql",
+					selectBuilder.build());
+			Model results = null;
+			try {
+				results = qexec.execConstruct();
+			} catch (Exception e) {
+			}
+			if (results.isEmpty())
+				return false;
+			return true;
+		} else if (query.isDescribeType()) {
+			DescribeBuilder selectBuilder = new DescribeBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			selectBuilder.getHandlerBlock().addAll(handlerBlock);
+			selectBuilder.setLimit(1);
+			selectBuilder.setBase(null);
+			// selectBuilder.addVar("*");
+			QueryExecution qexec = QueryExecutionFactory.sparqlService("https://bio2rdf.org/sparql",
+					selectBuilder.build());
+			Model results = null;
+			try {
+				results = qexec.execDescribe();
+			} catch (Exception e) {
+			}
+			if (results.isEmpty())
+				return false;
+			return true;
+		}
+		return false;
+	}
+
+	public static Map<Var,org.apache.jena.graph.Node> get_result_of_vars(Query query){ // get var-value pairs for pattern query via endpoint 
+		Map<Var,org.apache.jena.graph.Node> var_results = new HashMap<Var,org.apache.jena.graph.Node>();
+		if (query.isSelectType()){
+			SelectBuilder selectBuilder = new SelectBuilder();
+        	HandlerBlock handlerBlock = new HandlerBlock(query);
+			selectBuilder.getHandlerBlock().addAll(handlerBlock);
+			selectBuilder.setLimit(1);
+			selectBuilder.setBase(null);
+			// selectBuilder.addVar("*");
+			QueryExecution qexec = QueryExecutionFactory.sparqlService("https://bio2rdf.org/sparql",
+					selectBuilder.build());
+			ResultSet results = null;
+			try {
+				results = qexec.execSelect();
+			} catch (Exception e) {
+				return var_results;
+			}
+			if (results.hasNext()) {
+				QuerySolution qs = results.next();
+				Iterator<String> it_var = qs.varNames();
+				while (it_var.hasNext()) {
+					String var = it_var.next();
+					var_results.put(Var.alloc(var), new NodeFactory().createURI(qs.get(var).toString()));
+				}
+			}
+		}
+		
         return var_results;
 	}
 	
