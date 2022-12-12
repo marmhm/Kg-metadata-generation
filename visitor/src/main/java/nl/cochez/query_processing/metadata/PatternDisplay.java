@@ -1,6 +1,9 @@
 package nl.cochez.query_processing.metadata;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.Collections;
 import java.util.Comparator;
@@ -551,6 +554,7 @@ public class PatternDisplay {
 	}
 
 	private static boolean check_with_endpoint(Query query) { // check if query will return results via bio2rdf SPARQL endpoint
+		boolean check = false;
 		if(!query.isSelectType())
 			return check_ASK_CONSTRUCT_DESCRIBE(query);
 		SelectBuilder selectBuilder = new SelectBuilder();
@@ -563,15 +567,18 @@ public class PatternDisplay {
         try {
         	results = qexec.execSelect();
         }catch (Exception e) {
+			qexec.close();
         	return false;
         }
         if (results.hasNext()) {
-        	return true;
+        	check = true;
         }
-        return false;
+		qexec.close();
+        return check;
 	}
 
 	private static boolean check_ASK_CONSTRUCT_DESCRIBE(Query query){
+		boolean check = false;
 		if (query.isAskType()) {
 			AskBuilder selectBuilder = new AskBuilder();
 			HandlerBlock handlerBlock = new HandlerBlock(query);
@@ -583,10 +590,9 @@ public class PatternDisplay {
 					selectBuilder.build());
 			ResultSet results = null;
 			try {
-				return qexec.execAsk();
+				check = qexec.execAsk();
 			} catch (Exception e) {
 			}
-			return false;
 		} else if (query.isConstructType()) {
 			ConstructBuilder selectBuilder = new ConstructBuilder();
 			HandlerBlock handlerBlock = new HandlerBlock(query);
@@ -601,11 +607,17 @@ public class PatternDisplay {
 				results = qexec.execConstruct();
 			} catch (Exception e) {
 			}
-			if (results == null)
+			if (results == null){
+				qexec.close();
 				return false;
-			if (results.isEmpty())
+			}
+			if (results.isEmpty()){
+				qexec.close();
 				return false;
-			return true;
+			}
+				
+			check = true;
+			qexec.close();
 		} else if (query.isDescribeType()) {
 			DescribeBuilder selectBuilder = new DescribeBuilder();
 			HandlerBlock handlerBlock = new HandlerBlock(query);
@@ -620,13 +632,18 @@ public class PatternDisplay {
 				results = qexec.execDescribe();
 			} catch (Exception e) {
 			}
-			if (results == null)
+			if (results == null){
+				qexec.close();
 				return false;
-			if (results.isEmpty())
+			}
+			if (results.isEmpty()){
+				qexec.close();
 				return false;
-			return true;
+			}
+			check = true;
+			qexec.close();
 		}
-		return false;
+		return check;
 	}
 
 	public static Map<Var,org.apache.jena.graph.Node> get_result_of_vars(Query query){ // get var-value pairs for pattern query via endpoint 
@@ -644,6 +661,7 @@ public class PatternDisplay {
 			try {
 				results = qexec.execSelect();
 			} catch (Exception e) {
+				qexec.close();
 				return var_results;
 			}
 			if (results.hasNext()) {
@@ -654,6 +672,7 @@ public class PatternDisplay {
 					var_results.put(Var.alloc(var), new NodeFactory().createURI(qs.get(var).toString()));
 				}
 			}
+			qexec.close();
 		}
 		
         return var_results;
@@ -715,9 +734,44 @@ public class PatternDisplay {
 		return graph;
 	}
 
-	private static Integer StoreOrRead(Query query,Map<Query, Integer> dict_query){
-		if(dict_query.containsKey(query){
-			
+	private static boolean StoreOrRead(Query query,Map<Query, Boolean> dict_query){
+		if(dict_query.containsKey(query)){
+			return dict_query.get(query);
+		}
+		boolean bl = check_with_endpoint(query);
+		dict_query.put(query, bl);
+		return bl;
+	}
+
+	private static Map<Query,Boolean> getDict(){
+		Map<Query,Boolean> dict_query = new HashMap<Query,Boolean>();
+		try {
+			BufferedReader br = new BufferedReader(new FileReader("query_dict.index"));
+			String line = null;
+			while((line = br.readLine())!=null){
+				String[] splitline= line.split(" & ");
+				dict_query.put(QueryFactory.create(splitline[0]), Boolean.parseBoolean(splitline[1]));
+			}
+			br.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return dict_query;
+	}
+
+	private static void storeDict(Map<Query, Boolean> dict_query){
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter("query_dict.index",true));
+			for(Entry<Query,Boolean> dq:dict_query.entrySet()){
+				bw.write(dq.getKey().serialize().replace("\n", "\\n").replace("\r", "\\r")+" & "+Boolean.toString(dq.getValue()));
+				bw.newLine();
+				bw.flush();
+			}
+			bw.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 }
