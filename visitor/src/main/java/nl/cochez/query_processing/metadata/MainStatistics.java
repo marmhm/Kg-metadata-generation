@@ -127,7 +127,7 @@ public class MainStatistics {
 	public static void main(String[] args) throws IOException {
 		Stopwatch watch = Stopwatch.createStarted();
 		String filename = "/home/coder/project/kg-metadata-generation/visitor/src/main/java/nl/cochez/query_processing/metadata/reallall-bio2rdf-processed.tsv.gz";
-		// String filename = "/Users/xuwang/Documents/github/kg-metadata-generation/drugbank_test.tsv.gz";
+		// String filename = "/home/coder/project/kg-metadata-generation/drugbank_test.tsv.gz";
 		if (args.length > 0) {
 			filename = args[0];
 		}
@@ -168,13 +168,13 @@ public class MainStatistics {
 				System.setOut(ps);
 				System.out.println("subject,label,frequency");
 				System.out.println(Multisets.copyHighestCountFirst(visitor.subjects).entrySet().size());
-				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.subjects).entrySet(), 100));
+				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.subjects).entrySet(), 100),"s");
 				System.out.println("predicate,label,frequency");
 				System.out.println(Multisets.copyHighestCountFirst(visitor.predicates).entrySet().size());
-				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.predicates).entrySet(), 100));
+				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.predicates).entrySet(), 100),"p");
 				System.out.println("object,label,frequency");
 				System.out.println(Multisets.copyHighestCountFirst(visitor.objects).entrySet().size());
-				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.objects).entrySet(), 200));
+				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.objects).entrySet(), 200),"o");
 				System.out.println("literal,label,frequency");
 				System.out.println(Multisets.copyHighestCountFirst(visitor.literal_values).entrySet().size());
 				print_without_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.literal_values).entrySet(), 100));
@@ -189,7 +189,7 @@ public class MainStatistics {
 				print_without_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.literal_labels).entrySet(), 100));
 				System.out.println("rdftype,label,frequency");
 				System.out.println(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet().size());
-				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet(), 300));
+				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet(), 300),"o");
 				System.setOut(ps_console);
 				System.out.println("Number of failures is : " + failures);
 			}
@@ -237,7 +237,7 @@ public class MainStatistics {
 		// 	// System.out.println(count.intValue());
 		// 	futures.add(exe.submit(() -> PatternDisplay.rankPattern(collector.getQueryList(), 10, count.intValue()+1,count.intValue()+1,true)));
 		// }
-		PatternDisplay.rankPattern(collector.getQueryList(), 10, 1,10,true);//input is (queryList, top number of display, max number of triples in pattern query)
+		PatternDisplay.rankPattern(collector.getQueryList(), 10, 1,10,false);//input is (queryList, top number of display, max number of triples in pattern query)
 		// for (Future<?> future:futures) {
 		// 	try {
 		// 		future.get();
@@ -257,13 +257,13 @@ public class MainStatistics {
 	private static String get_labels(String str){
 		String label_str= null;
 		String queryString = "PREFIX dct: <http://purl.org/dc/terms/>\n SELECT * WHERE {\n   ?s dct:title ?o .\n  Values ?s {"
-				+ str + "}}";
+				+ str + "}}  LIMIT 1";
 		Map<String, String> map = new HashMap<String, String>();
 		QueryExecution qexec = QueryExecutionFactory.sparqlService("https://bio2rdf.org/sparql", queryString);
         ResultSet rs = null;
 		try {
         	rs = qexec.execSelect();
-            while (rs.hasNext()) {
+            if (rs.hasNext()) {
 				QuerySolution rb = rs.nextSolution();
 				RDFNode label = rb.get("o");
 				label_str = label.asLiteral().getString();
@@ -275,11 +275,80 @@ public class MainStatistics {
 		return label_str;
 	}
 
-	private static void print_with_label(Iterable<Entry<String>> input){
+	private static boolean check_exist_subject(String input){
+		boolean exist = false;
+		String queryString = "PREFIX dct: <http://purl.org/dc/terms/>\n SELECT * WHERE {\n   ?s ?p ?o .\n  Values ?s {<"
+		+ input + ">}}  LIMIT 1";
+				QueryExecution qexec = QueryExecutionFactory.sparqlService("https://bio2rdf.org/sparql", queryString);
+				ResultSet rs = null;
+		try {
+        	rs = qexec.execSelect();
+            if (rs.hasNext()) {
+				exist = true;
+			}
+        }catch (Exception e) {
+        	
+        }
+		qexec.close();
+		return exist;
+	}
+
+	private static boolean check_exist_predicate(String input){
+		boolean exist = false;
+		String queryString = "PREFIX dct: <http://purl.org/dc/terms/>\n SELECT * WHERE {\n   ?s ?p ?o .\n  Values ?p {<"
+				+ input + ">}}  LIMIT 1";
+				QueryExecution qexec = QueryExecutionFactory.sparqlService("https://bio2rdf.org/sparql", queryString);
+				ResultSet rs = null;
+		try {
+        	rs = qexec.execSelect();
+            if (rs.hasNext()) {
+				exist = true;
+			}
+        }catch (Exception e) {
+        	
+        }
+		qexec.close();
+		return exist;
+	}
+
+	private static boolean check_exist_object(String input){
+		boolean exist = false;
+		String queryString = "PREFIX dct: <http://purl.org/dc/terms/>\n SELECT * WHERE {\n   ?s ?p ?o .\n  Values ?o {<"
+		+ input + ">}} LIMIT 1";
+				QueryExecution qexec = QueryExecutionFactory.sparqlService("https://bio2rdf.org/sparql", queryString);
+				ResultSet rs = null;
+		try {
+        	rs = qexec.execSelect();
+            if (rs.hasNext()) {
+				exist = true;
+			}
+        }catch (Exception e) {
+        	
+        }
+		qexec.close();
+		return exist;
+	}
+
+	private static void print_with_label(Iterable<Entry<String>> input, String type){
 		for (Entry<String> str : input){
 			String label = get_labels("<"+str.getElement()+">");
 			if(label!=null)
 			System.out.println("<"+str.getElement()+">"+" & "+get_labels("<"+str.getElement()+">")+" & "+str.getCount());
+			else if (type == "s"){
+				 if(check_exist_subject(str.getElement())){
+					System.out.println("<"+str.getElement()+">"+" & & "+str.getCount());
+				 }
+			}
+			else if (type == "p"){
+				if(check_exist_predicate(str.getElement())){
+					System.out.println("<"+str.getElement()+">"+" & & "+str.getCount());
+				 }
+			}
+			else if (type == "o"){
+				if(check_exist_object(str.getElement())){
+					System.out.println("<"+str.getElement()+">"+" & & "+str.getCount());
+				 }
+			}
 		}
 	}
 
