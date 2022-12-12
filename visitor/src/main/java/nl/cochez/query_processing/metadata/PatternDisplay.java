@@ -2,6 +2,7 @@ package nl.cochez.query_processing.metadata;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -50,6 +51,8 @@ import java.io.IOException;
 public class PatternDisplay {
     public static void rankPattern(ArrayList<Query> queryList, int top,int offset, int tripleNumber, boolean checkEndpoint) {
 		List<Query> pattern_query = new ArrayList<Query>();
+		List<Query> invalid_pattern_query = new ArrayList<Query>();
+		Map<Query,Boolean> dict_query = getDict();
 		Map<Query, Query> pattern_instance_pair = new HashMap<Query,Query>();
 		Map<Query, Integer> patter_length_map = new HashMap<Query,Integer>();
 		Map<Integer, Integer> pattern_numbers = new HashMap<Integer, Integer>();
@@ -162,11 +165,14 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
-					pattern_query.add(pattern_q);
+					invalid_pattern_query.add(pattern_q);
 					if(!pattern_instance_pair.containsKey(pattern_q)){
 						if(checkEndpoint){
-							if(check_with_endpoint(q))
+							if(StoreOrRead(q,dict_query)){
+								pattern_query.add(pattern_q);
 								pattern_instance_pair.put(pattern_q, q);
+								patter_length_map.put(pattern_q, triples.size());
+							}
 						}
 						else{
 							pattern_instance_pair.put(pattern_q, q);
@@ -200,11 +206,14 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
-					pattern_query.add(pattern_q);
+					invalid_pattern_query.add(pattern_q);
 					if(!pattern_instance_pair.containsKey(pattern_q)){
 						if(checkEndpoint){
-							if(check_with_endpoint(q))
+							if(StoreOrRead(q,dict_query)){
+								pattern_query.add(pattern_q);
 								pattern_instance_pair.put(pattern_q, q);
+								patter_length_map.put(pattern_q, triples.size());
+							}
 						}
 						else{
 							pattern_instance_pair.put(pattern_q, q);
@@ -238,11 +247,14 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
-					pattern_query.add(pattern_q);
+					invalid_pattern_query.add(pattern_q);
 					if(!pattern_instance_pair.containsKey(pattern_q)){
 						if(checkEndpoint){
-							if(check_with_endpoint(q))
+							if(StoreOrRead(q,dict_query)){
+								pattern_query.add(pattern_q);
 								pattern_instance_pair.put(pattern_q, q);
+								patter_length_map.put(pattern_q, triples.size());
+							}
 						}
 						else{
 							pattern_instance_pair.put(pattern_q, q);
@@ -275,11 +287,14 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
-					pattern_query.add(pattern_q);
+					invalid_pattern_query.add(pattern_q);
 					if(!pattern_instance_pair.containsKey(pattern_q)){
 						if(checkEndpoint){
-							if(check_with_endpoint(q))
+							if(StoreOrRead(q,dict_query)){
+								pattern_query.add(pattern_q);
 								pattern_instance_pair.put(pattern_q, q);
+								patter_length_map.put(pattern_q, triples.size());
+							}
 						}
 						else{
 							pattern_instance_pair.put(pattern_q, q);
@@ -306,7 +321,7 @@ public class PatternDisplay {
 
 		// System.out.println("Statistics of number of pattern in each length:"+pattern_numbers);
 		System.out.println("Statistics of number of instance in each length:"+instance_numbers);
-		List<Map.Entry<Query, Integer>> result = sortPatternByValue(findFrequentPattern(pattern_query));
+		List<Map.Entry<Query, Integer>> result = sortPatternByValue(findFrequentPattern(invalid_pattern_query));
 		for (Entry<Query, Integer> res : result) {
 			int length = patter_length_map.get(res.getKey());
 			if (pattern_numbers.containsKey(length)) {
@@ -321,13 +336,14 @@ public class PatternDisplay {
 		for (int i =1;i<=10;i++){
 			count_map.put(i, 0);
 		}
+		result = sortPatternByValue(findFrequentPattern(pattern_query));
 		br1: for (int i = 0; !(check_count_all(count_map,top,offset,tripleNumber)) && i < result.size();i++){
 			if (checkEndpoint)
 				if (!result.get(i).getKey().isSelectType())
-					if (!check_ASK_CONSTRUCT_DESCRIBE(result.get(i).getKey()))
+					if (!StoreOrRead(result.get(i).getKey(),dict_query))
 						continue br1;
 			if (checkEndpoint)
-				if (check_with_endpoint(result.get(i).getKey())) {
+				if (StoreOrRead(result.get(i).getKey(),dict_query)) {
 					continue br1;
 				}
 			
@@ -382,6 +398,7 @@ public class PatternDisplay {
 		}
 		System.out.print("Statistics of each length: ");
 		System.out.println(count_map);
+		storeDict(dict_query);
 	}
 
 	private static boolean check_count(Map<Integer,Integer> count_map,int num, int top){
@@ -555,8 +572,9 @@ public class PatternDisplay {
 
 	private static boolean check_with_endpoint(Query query) { // check if query will return results via bio2rdf SPARQL endpoint
 		boolean check = false;
-		if(!query.isSelectType())
+		if(!query.isSelectType()){
 			return check_ASK_CONSTRUCT_DESCRIBE(query);
+		}
 		SelectBuilder selectBuilder = new SelectBuilder();
         HandlerBlock handlerBlock = new HandlerBlock(query);
         selectBuilder.getHandlerBlock().addAll(handlerBlock);
@@ -743,25 +761,30 @@ public class PatternDisplay {
 		return bl;
 	}
 
-	private static Map<Query,Boolean> getDict(){
-		Map<Query,Boolean> dict_query = new HashMap<Query,Boolean>();
-		try {
-			BufferedReader br = new BufferedReader(new FileReader("query_dict.index"));
-			String line = null;
-			while((line = br.readLine())!=null){
-				String[] splitline= line.split(" & ");
-				dict_query.put(QueryFactory.create(splitline[0]), Boolean.parseBoolean(splitline[1]));
+	private static Map<Query, Boolean> getDict() {
+		Map<Query, Boolean> dict_query = new HashMap<Query, Boolean>();
+		if (!new File("query_dict.index").exists()) {
+			return dict_query;
+		} else {
+			try {
+				BufferedReader br = new BufferedReader(new FileReader("query_dict.index"));
+				String line = null;
+				while ((line = br.readLine()) != null) {
+					String[] splitline = line.split(" & ");
+					dict_query.put(QueryFactory.create(splitline[0]), Boolean.parseBoolean(splitline[1]));
+				}
+				br.close();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			br.close();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		return dict_query;
 	}
 
 	private static void storeDict(Map<Query, Boolean> dict_query){
 		try {
+			new File("query_dict.index").delete();
 			BufferedWriter bw = new BufferedWriter(new FileWriter("query_dict.index",true));
 			for(Entry<Query,Boolean> dq:dict_query.entrySet()){
 				bw.write(dq.getKey().serialize().replace("\n", "\\n").replace("\r", "\\r")+" & "+Boolean.toString(dq.getValue()));
