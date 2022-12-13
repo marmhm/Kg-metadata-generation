@@ -168,13 +168,13 @@ public class MainStatistics {
 				System.setOut(ps);
 				System.out.println("subject,label,frequency");
 				System.out.println(Multisets.copyHighestCountFirst(visitor.subjects).entrySet().size());
-				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.subjects).entrySet(), 100),"s");
+				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.subjects).entrySet(), Multisets.copyHighestCountFirst(visitor.subjects).entrySet().size()),"s",100);
 				System.out.println("predicate,label,frequency");
 				System.out.println(Multisets.copyHighestCountFirst(visitor.predicates).entrySet().size());
-				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.predicates).entrySet(), 100),"p");
+				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.predicates).entrySet(), Multisets.copyHighestCountFirst(visitor.predicates).entrySet().size()),"p",100);
 				System.out.println("object,label,frequency");
 				System.out.println(Multisets.copyHighestCountFirst(visitor.objects).entrySet().size());
-				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.objects).entrySet(), 200),"o");
+				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.objects).entrySet(), Multisets.copyHighestCountFirst(visitor.objects).entrySet().size()),"o",100);
 				System.out.println("literal,label,frequency");
 				System.out.println(Multisets.copyHighestCountFirst(visitor.literal_values).entrySet().size());
 				print_without_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.literal_values).entrySet(), 100));
@@ -189,7 +189,7 @@ public class MainStatistics {
 				print_without_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.literal_labels).entrySet(), 100));
 				System.out.println("rdftype,label,frequency");
 				System.out.println(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet().size());
-				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet(), 300),"o");
+				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet(), Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet().size()),"o",100);
 				System.setOut(ps_console);
 				System.out.println("Number of failures is : " + failures);
 			}
@@ -329,30 +329,37 @@ public class MainStatistics {
 		return exist;
 	}
 
-	private static void print_with_label(Iterable<Entry<String>> input, String type){
-		for (Entry<String> str : input){
-			String label = get_labels("<"+str.getElement()+">");
-			if(label!=null)
-			System.out.println("<"+str.getElement()+">"+" & "+get_labels("<"+str.getElement()+">")+" & "+str.getCount());
-			else if (type == "s"){
-				 if(check_exist_subject(str.getElement())){
-					System.out.println("<"+str.getElement()+">"+" & & "+str.getCount());
-				 }
-			}
-			else if (type == "p"){
-				if(check_exist_predicate(str.getElement())){
-					System.out.println("<"+str.getElement()+">"+" & & "+str.getCount());
-				 }
-			}
-			else if (type == "o"){
-				if(check_exist_object(str.getElement())){
-					System.out.println("<"+str.getElement()+">"+" & & "+str.getCount());
-				 }
+	private static void print_with_label(Iterable<Entry<String>> input, String type, int limit){
+		int count = 0;
+		for (Entry<String> str : input) {
+			if (count >=limit)
+			break;
+			String label = get_labels("<" + str.getElement() + ">");
+			if (label != null) {
+				System.out.println("<" + str.getElement() + ">" + " & " + get_labels("<" + str.getElement() + ">")
+						+ " & " + str.getCount());
+				count ++;
+			} else if (type == "s") {
+				if (check_exist_subject(str.getElement())) {
+					System.out.println("<" + str.getElement() + ">" + " & & " + str.getCount());
+					count ++;
+				}
+			} else if (type == "p") {
+				if (check_exist_predicate(str.getElement())) {
+					System.out.println("<" + str.getElement() + ">" + " & & " + str.getCount());
+					count ++;
+				}
+			} else if (type == "o") {
+				if (check_exist_object(str.getElement())) {
+					System.out.println("<" + str.getElement() + ">" + " & & " + str.getCount());
+					count ++;
+				}
 			}
 		}
 	}
 
 	private static void print_without_label(Iterable<Entry<String>> input){
+		int count = 0;
 		for (Entry<String> str : input){
 			System.out.println("<"+str.getElement()+">"+"& &"+str.getCount());
 		}
