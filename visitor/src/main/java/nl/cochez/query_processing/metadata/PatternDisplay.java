@@ -398,7 +398,7 @@ public class PatternDisplay {
 		}
 		System.out.print("Statistics of each length: ");
 		System.out.println(count_map);
-		storeDict(dict_query);
+		// storeDict(dict_query);
 	}
 
 	private static boolean check_count(Map<Integer,Integer> count_map,int num, int top){
@@ -758,6 +758,17 @@ public class PatternDisplay {
 		}
 		boolean bl = check_with_endpoint(query);
 		dict_query.put(query, bl);
+		try {
+			new File("query_dict.index").delete();
+			BufferedWriter bw = new BufferedWriter(new FileWriter("query_dict.index", true));
+			bw.write(query.serialize().replace("\n", "\\n").replace("\r", "\\r") + " & " + Boolean.toString(bl));
+			bw.newLine();
+			bw.flush();
+			bw.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 		return bl;
 	}
 
@@ -782,19 +793,19 @@ public class PatternDisplay {
 		return dict_query;
 	}
 
-	private static void storeDict(Map<Query, Boolean> dict_query){
-		try {
-			new File("query_dict.index").delete();
-			BufferedWriter bw = new BufferedWriter(new FileWriter("query_dict.index",true));
-			for(Entry<Query,Boolean> dq:dict_query.entrySet()){
-				bw.write(dq.getKey().serialize().replace("\n", "\\n").replace("\r", "\\r")+" & "+Boolean.toString(dq.getValue()));
-				bw.newLine();
-				bw.flush();
-			}
-			bw.close();
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-	}
+	// private static void storeDict(Map<Query, Boolean> dict_query){
+	// 	try {
+	// 		new File("query_dict.index").delete();
+	// 		BufferedWriter bw = new BufferedWriter(new FileWriter("query_dict.index",true));
+	// 		for(Entry<Query,Boolean> dq:dict_query.entrySet()){
+	// 			bw.write(dq.getKey().serialize().replace("\n", "\\n").replace("\r", "\\r")+" & "+Boolean.toString(dq.getValue()));
+	// 			bw.newLine();
+	// 			bw.flush();
+	// 		}
+	// 		bw.close();
+	// 	} catch (Exception e) {
+	// 		// TODO: handle exception
+	// 		e.printStackTrace();
+	// 	}
+	// }
 }
