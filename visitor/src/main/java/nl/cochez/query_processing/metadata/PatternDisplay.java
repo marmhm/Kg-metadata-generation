@@ -52,7 +52,7 @@ public class PatternDisplay {
     public static void rankPattern(ArrayList<Query> queryList, int top,int offset, int tripleNumber, boolean checkEndpoint) {
 		List<Query> pattern_query = new ArrayList<Query>();
 		List<Query> invalid_pattern_query = new ArrayList<Query>();
-		Map<Query,Boolean> dict_query = getDict();
+		Map<String,Boolean> dict_query = getDict();
 		Map<Query, Query> pattern_instance_pair = new HashMap<Query,Query>();
 		Map<Query, Integer> patter_length_map = new HashMap<Query,Integer>();
 		Map<Integer, Integer> pattern_numbers = new HashMap<Integer, Integer>();
@@ -166,17 +166,18 @@ public class PatternDisplay {
 					}
 					Query pattern_q = selectBuilder.build();
 					invalid_pattern_query.add(pattern_q);
+					patter_length_map.put(pattern_q, triples.size());
 					if(!pattern_instance_pair.containsKey(pattern_q)){
 						if(checkEndpoint){
 							if(StoreOrRead(q,dict_query)){
 								pattern_query.add(pattern_q);
 								pattern_instance_pair.put(pattern_q, q);
-								patter_length_map.put(pattern_q, triples.size());
+								// patter_length_map.put(pattern_q, triples.size());
 							}
 						}
 						else{
 							pattern_instance_pair.put(pattern_q, q);
-							patter_length_map.put(pattern_q, triples.size());
+							// patter_length_map.put(pattern_q, triples.size());
 						}
 					}
 				} catch (Exception e) {
@@ -207,17 +208,18 @@ public class PatternDisplay {
 					}
 					Query pattern_q = selectBuilder.build();
 					invalid_pattern_query.add(pattern_q);
+					patter_length_map.put(pattern_q, triples.size());
 					if(!pattern_instance_pair.containsKey(pattern_q)){
 						if(checkEndpoint){
 							if(StoreOrRead(q,dict_query)){
 								pattern_query.add(pattern_q);
 								pattern_instance_pair.put(pattern_q, q);
-								patter_length_map.put(pattern_q, triples.size());
+								// patter_length_map.put(pattern_q, triples.size());
 							}
 						}
 						else{
 							pattern_instance_pair.put(pattern_q, q);
-							patter_length_map.put(pattern_q, triples.size());
+							// patter_length_map.put(pattern_q, triples.size());
 						}
 					}
 				} catch (Exception e) {
@@ -248,17 +250,18 @@ public class PatternDisplay {
 					}
 					Query pattern_q = selectBuilder.build();
 					invalid_pattern_query.add(pattern_q);
+					patter_length_map.put(pattern_q, triples.size());
 					if(!pattern_instance_pair.containsKey(pattern_q)){
 						if(checkEndpoint){
 							if(StoreOrRead(q,dict_query)){
 								pattern_query.add(pattern_q);
 								pattern_instance_pair.put(pattern_q, q);
-								patter_length_map.put(pattern_q, triples.size());
+								// patter_length_map.put(pattern_q, triples.size());
 							}
 						}
 						else{
 							pattern_instance_pair.put(pattern_q, q);
-							patter_length_map.put(pattern_q, triples.size());
+							// patter_length_map.put(pattern_q, triples.size());
 						}
 					}
 				} catch (Exception e) {
@@ -288,17 +291,18 @@ public class PatternDisplay {
 					}
 					Query pattern_q = selectBuilder.build();
 					invalid_pattern_query.add(pattern_q);
+					patter_length_map.put(pattern_q, triples.size());
 					if(!pattern_instance_pair.containsKey(pattern_q)){
 						if(checkEndpoint){
 							if(StoreOrRead(q,dict_query)){
 								pattern_query.add(pattern_q);
 								pattern_instance_pair.put(pattern_q, q);
-								patter_length_map.put(pattern_q, triples.size());
+								// patter_length_map.put(pattern_q, triples.size());
 							}
 						}
 						else{
 							pattern_instance_pair.put(pattern_q, q);
-							patter_length_map.put(pattern_q, triples.size());
+							// patter_length_map.put(pattern_q, triples.size());
 						}
 					}
 				} catch (Exception e) {
@@ -338,14 +342,14 @@ public class PatternDisplay {
 		}
 		result = sortPatternByValue(findFrequentPattern(pattern_query));
 		br1: for (int i = 0; !(check_count_all(count_map,top,offset,tripleNumber)) && i < result.size();i++){
-			if (checkEndpoint)
-				if (!result.get(i).getKey().isSelectType())
-					if (!StoreOrRead(result.get(i).getKey(),dict_query))
-						continue br1;
-			if (checkEndpoint)
-				if (StoreOrRead(result.get(i).getKey(),dict_query)) {
-					continue br1;
-				}
+			// if (checkEndpoint)
+			// 	if (!result.get(i).getKey().isSelectType())
+			// 		if (!StoreOrRead(result.get(i).getKey(),dict_query))
+			// 			continue br1;
+			// if (checkEndpoint)
+			// 	if (StoreOrRead(result.get(i).getKey(),dict_query)) {
+			// 		continue br1;
+			// 	}
 			
 			int num = getBGPtripleNumber(result.get(i).getKey());
 			if (num < offset || num > tripleNumber)
@@ -752,14 +756,13 @@ public class PatternDisplay {
 		return graph;
 	}
 
-	private static boolean StoreOrRead(Query query,Map<Query, Boolean> dict_query){
-		if(dict_query.containsKey(query)){
-			return dict_query.get(query);
+	private static boolean StoreOrRead(Query query,Map<String, Boolean> dict_query){
+		if(dict_query.containsKey(query.serialize())){
+			return dict_query.get(query.serialize());
 		}
 		boolean bl = check_with_endpoint(query);
-		dict_query.put(query, bl);
+		dict_query.put(query.serialize(), bl);
 		try {
-			new File("query_dict.index").delete();
 			BufferedWriter bw = new BufferedWriter(new FileWriter("query_dict.index", true));
 			bw.write(query.serialize().replace("\n", "\\n").replace("\r", "\\r") + " & " + Boolean.toString(bl));
 			bw.newLine();
@@ -772,8 +775,8 @@ public class PatternDisplay {
 		return bl;
 	}
 
-	private static Map<Query, Boolean> getDict() {
-		Map<Query, Boolean> dict_query = new HashMap<Query, Boolean>();
+	private static Map<String, Boolean> getDict() {
+		Map<String, Boolean> dict_query = new HashMap<String, Boolean>();
 		if (!new File("query_dict.index").exists()) {
 			return dict_query;
 		} else {
@@ -782,7 +785,7 @@ public class PatternDisplay {
 				String line = null;
 				while ((line = br.readLine()) != null) {
 					String[] splitline = line.split(" & ");
-					dict_query.put(QueryFactory.create(splitline[0]), Boolean.parseBoolean(splitline[1]));
+					dict_query.put(QueryFactory.create(splitline[0].replace("\\n", "\n").replace("\\r", "\r")).serialize(), Boolean.parseBoolean(splitline[1]));
 				}
 				br.close();
 			} catch (Exception e) {

@@ -230,27 +230,7 @@ public class MainStatistics {
 		System.out.println("Elapsed" + watch.elapsed(TimeUnit.SECONDS));
 
 		collector.stats();
-		// System.out.println(collector.getQueryList().size());
-		// Collection<Future<?>> futures = new LinkedList<Future<?>>();
-		// ExecutorService exe = Executors.newFixedThreadPool(10);
-		// for (AtomicInteger count = new AtomicInteger(); count.intValue()<10; count.incrementAndGet()){
-		// 	// System.out.println(count.intValue());
-		// 	futures.add(exe.submit(() -> PatternDisplay.rankPattern(collector.getQueryList(), 10, count.intValue()+1,count.intValue()+1,true)));
-		// }
-		PatternDisplay.rankPattern(collector.getQueryList(), 10, 1,10,false);//input is (queryList, top number of display, max number of triples in pattern query)
-		// for (Future<?> future:futures) {
-		// 	try {
-		// 		future.get();
-		// 	} catch (InterruptedException e) {
-		// 		// TODO Auto-generated catch block
-		// 		e.printStackTrace();
-		// 	} catch (ExecutionException e) {
-		// 		// TODO Auto-generated catch block
-		// 		e.printStackTrace();
-		// 	}
-		// }
-		// exe.shutdown();
-		// exe.awaitTermination(timeout, unit);
+		PatternDisplay.rankPattern(collector.getQueryList(), 10, 1,10,true);//input is (queryList, top number of display, max number of triples in pattern query)
 		System.out.println("Finished!" + watch.elapsed(TimeUnit.SECONDS));
 	}
 
