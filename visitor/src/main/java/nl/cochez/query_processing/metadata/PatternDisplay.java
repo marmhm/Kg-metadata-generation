@@ -57,7 +57,8 @@ public class PatternDisplay {
 		Map<Query, Integer> patter_length_map = new HashMap<Query,Integer>();
 		Map<Integer, Integer> pattern_numbers = new HashMap<Integer, Integer>();
 		Map<Integer, Integer> instance_numbers = new HashMap<Integer, Integer>();
-		br1: for (Query q : queryList) {
+		HashMap<Query, Integer> instance_freq = sortInstanceByValue(findFrequentPattern(queryList));
+		br1: for (Query q : instance_freq.keySet()) {
 			// System.out.println(q.queryType().name());
 			List<Triple> triples = new ArrayList<Triple>();
 			Map<String, String> replace_map = new HashMap<String, String>();
@@ -317,9 +318,9 @@ public class PatternDisplay {
 
 			int length = triples.size();
 			if (instance_numbers.containsKey(length)) {
-				instance_numbers.put(length, instance_numbers.get(length) + 1);
+				instance_numbers.put(length, instance_numbers.get(length) + instance_freq.get(q));
 			} else {
-				instance_numbers.put(length, 1);
+				instance_numbers.put(length, instance_freq.get(q));
 			}
 		}
 
@@ -438,6 +439,36 @@ public class PatternDisplay {
 		}
 		
 		return num.size();
+	}
+
+	private static HashMap<Query, Integer> findFrequentQuery(List<Query> inputArr) {
+		HashMap<Query, Integer> numberMap = new HashMap<Query, Integer>();
+		int frequency = -1;
+
+		int value;
+		for (int i = 0; i < inputArr.size(); i++) {
+
+			value = -1;
+			if (numberMap.containsKey(inputArr.get(i)))
+				if (listOflistContains(inputArr.get(i), numberMap.keySet())) {
+					value = numberMap.get(inputArr.get(i));
+				}
+			if (value != -1) {
+
+				value += 1;
+				if (value > frequency) {
+
+					frequency = value;
+				}
+
+				numberMap.put(inputArr.get(i), value);
+			} else {
+
+				numberMap.put(inputArr.get(i), 1);
+			}
+
+		}
+		return numberMap;
 	}
 
 	private static HashMap<Query, Integer> findFrequentPattern(List<Query> inputArr) {
@@ -572,6 +603,20 @@ public class PatternDisplay {
 			temp.put(aa.getKey(), aa.getValue());
 		}
 		return list;
+	}
+
+	public static HashMap<Query, Integer> sortInstanceByValue(HashMap<Query, Integer> hm) {
+		List<Map.Entry<Query, Integer>> list = new LinkedList<Map.Entry<Query, Integer>>(hm.entrySet());
+		Collections.sort(list, new Comparator<Map.Entry<Query, Integer>>() {
+			public int compare(Map.Entry<Query, Integer> o1, Map.Entry<Query, Integer> o2) {
+				return (o2.getValue()).compareTo(o1.getValue());
+			}
+		});
+		HashMap<Query, Integer> temp = new LinkedHashMap<Query, Integer>();
+		for (Map.Entry<Query, Integer> aa : list) {
+			temp.put(aa.getKey(), aa.getValue());
+		}
+		return temp;
 	}
 
 	private static boolean check_with_endpoint(Query query) { // check if query will return results via bio2rdf SPARQL endpoint
