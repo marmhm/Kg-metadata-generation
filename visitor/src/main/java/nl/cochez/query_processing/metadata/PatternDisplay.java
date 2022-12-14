@@ -54,10 +54,10 @@ import java.io.IOException;
 
 public class PatternDisplay {
     public static void rankPattern(ArrayList<Query> queryList, int top,int offset, int tripleNumber, boolean checkEndpoint) {
-		List<Query> pattern_query = new ArrayList<Query>();
+		// List<Query> pattern_query = new ArrayList<Query>();
 		List<Query> invalid_pattern_query = new ArrayList<Query>();
 		Map<String,Boolean> dict_query = getDict();
-		Map<Query, Query> pattern_instance_pair = new HashMap<Query,Query>();
+		// Map<Query, Query> pattern_instance_pair = new HashMap<Query,Query>();
 		HashMap<Query, HashMultiset<Query>> pattern_instance = new HashMap<Query, HashMultiset<Query>>();
 		Map<Query, Integer> patter_length_map = new HashMap<Query,Integer>();
 		Map<Integer, Integer> pattern_numbers = new HashMap<Integer, Integer>();
@@ -191,19 +191,19 @@ public class PatternDisplay {
 					}
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
-					if(!pattern_instance_pair.containsKey(pattern_q)){
-						if(checkEndpoint){
-							if(StoreOrRead(q,dict_query)){
-								pattern_query.add(pattern_q);
-								pattern_instance_pair.put(pattern_q, q);
-								// patter_length_map.put(pattern_q, triples.size());
-							}
-						}
-						else{
-							pattern_instance_pair.put(pattern_q, q);
-							// patter_length_map.put(pattern_q, triples.size());
-						}
-					}
+					// if(!pattern_instance_pair.containsKey(pattern_q)){
+					// 	if(checkEndpoint){
+					// 		if(StoreOrRead(q,dict_query)){
+					// 			pattern_query.add(pattern_q);
+					// 			pattern_instance_pair.put(pattern_q, q);
+					// 			// patter_length_map.put(pattern_q, triples.size());
+					// 		}
+					// 	}
+					// 	else{
+					// 		pattern_instance_pair.put(pattern_q, q);
+					// 		// patter_length_map.put(pattern_q, triples.size());
+					// 	}
+					// }
 				} catch (Exception e) {
 					//TODO: handle exception
 					continue br1;
@@ -240,19 +240,19 @@ public class PatternDisplay {
 					}
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
-					if(!pattern_instance_pair.containsKey(pattern_q)){
-						if(checkEndpoint){
-							if(StoreOrRead(q,dict_query)){
-								pattern_query.add(pattern_q);
-								pattern_instance_pair.put(pattern_q, q);
-								// patter_length_map.put(pattern_q, triples.size());
-							}
-						}
-						else{
-							pattern_instance_pair.put(pattern_q, q);
-							// patter_length_map.put(pattern_q, triples.size());
-						}
-					}
+					// if(!pattern_instance_pair.containsKey(pattern_q)){
+					// 	if(checkEndpoint){
+					// 		if(StoreOrRead(q,dict_query)){
+					// 			pattern_query.add(pattern_q);
+					// 			pattern_instance_pair.put(pattern_q, q);
+					// 			// patter_length_map.put(pattern_q, triples.size());
+					// 		}
+					// 	}
+					// 	else{
+					// 		pattern_instance_pair.put(pattern_q, q);
+					// 		// patter_length_map.put(pattern_q, triples.size());
+					// 	}
+					// }
 				} catch (Exception e) {
 					//TODO: handle exception
 					continue br1;
@@ -289,19 +289,19 @@ public class PatternDisplay {
 					}
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
-					if(!pattern_instance_pair.containsKey(pattern_q)){
-						if(checkEndpoint){
-							if(StoreOrRead(q,dict_query)){
-								pattern_query.add(pattern_q);
-								pattern_instance_pair.put(pattern_q, q);
-								// patter_length_map.put(pattern_q, triples.size());
-							}
-						}
-						else{
-							pattern_instance_pair.put(pattern_q, q);
-							// patter_length_map.put(pattern_q, triples.size());
-						}
-					}
+					// if(!pattern_instance_pair.containsKey(pattern_q)){
+					// 	if(checkEndpoint){
+					// 		if(StoreOrRead(q,dict_query)){
+					// 			pattern_query.add(pattern_q);
+					// 			pattern_instance_pair.put(pattern_q, q);
+					// 			// patter_length_map.put(pattern_q, triples.size());
+					// 		}
+					// 	}
+					// 	else{
+					// 		pattern_instance_pair.put(pattern_q, q);
+					// 		// patter_length_map.put(pattern_q, triples.size());
+					// 	}
+					// }
 				} catch (Exception e) {
 					continue br1;
 				}
@@ -337,19 +337,19 @@ public class PatternDisplay {
 					}
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
-					if(!pattern_instance_pair.containsKey(pattern_q)){
-						if(checkEndpoint){
-							if(StoreOrRead(q,dict_query)){
-								pattern_query.add(pattern_q);
-								pattern_instance_pair.put(pattern_q, q);
-								// patter_length_map.put(pattern_q, triples.size());
-							}
-						}
-						else{
-							pattern_instance_pair.put(pattern_q, q);
-							// patter_length_map.put(pattern_q, triples.size());
-						}
-					}
+					// if(!pattern_instance_pair.containsKey(pattern_q)){
+					// 	if(checkEndpoint){
+					// 		if(StoreOrRead(q,dict_query)){
+					// 			pattern_query.add(pattern_q);
+					// 			pattern_instance_pair.put(pattern_q, q);
+					// 			// patter_length_map.put(pattern_q, triples.size());
+					// 		}
+					// 	}
+					// 	else{
+					// 		pattern_instance_pair.put(pattern_q, q);
+					// 		// patter_length_map.put(pattern_q, triples.size());
+					// 	}
+					// }
 				} catch (Exception e) {
 					continue br1;
 				}
@@ -408,22 +408,33 @@ public class PatternDisplay {
 		for (int i =1;i<=10;i++){
 			count_map.put(i, 0);
 		}
-		result = sortPatternByValue(findFrequentPattern(pattern_query));
-		br1: for (int i = 0; !(check_count_all(count_map,top,offset,tripleNumber)) && i < result.size();i++){
-			// if (checkEndpoint)
-			// 	if (!result.get(i).getKey().isSelectType())
-			// 		if (!StoreOrRead(result.get(i).getKey(),dict_query))
-			// 			continue br1;
-			// if (checkEndpoint)
-			// 	if (StoreOrRead(result.get(i).getKey(),dict_query)) {
-			// 		continue br1;
-			// 	}
+		result = sortPatternByValue(findFrequentPattern(new ArrayList<Query>(pattern_instance.keySet())));
+		br2: for (int i = 0; !(check_count_all(count_map,top,offset,tripleNumber)) && i < result.size();i++){
+			Query pattern_query = result.get(i).getKey();
+			if (checkEndpoint)
+				if (!result.get(i).getKey().isSelectType())
+					if (!StoreOrRead(result.get(i).getKey(),dict_query))
+						continue br2;
+			if (checkEndpoint)
+				if (!StoreOrRead(result.get(i).getKey(),dict_query)) {
+					continue br2;
+				}
+			Query query = null;
+			br3: for (Query q : pattern_instance.get(pattern_query)) {
+				if (checkEndpoint)
+					if (StoreOrRead(q, dict_query)) {
+						query = q;
+						break br3;
+					}
+			}
+			if(query == null)
+				continue br2;
 			
 			int num = getBGPtripleNumber(result.get(i).getKey());
 			if (num < offset || num > tripleNumber)
-				continue br1;
+				continue br2;
 			if (check_count(count_map, num, top)) {
-				continue br1;
+				continue br2;
 			}
 			BufferedWriter bw = null;
 			BufferedWriter bw_all = null;
@@ -442,8 +453,8 @@ public class PatternDisplay {
 			jo.put("Title", "");
 			// jo.put("Pattern Rank Number",
 			// Integer.toString(count+1)+"("+Integer.toString(i+1)+")");
-			jo.put("SPARQL Query Pattern", result.get(i).getKey().serialize());
-			jo.put("Instance Query", pattern_instance_pair.get(result.get(i).getKey()).serialize());
+			jo.put("SPARQL Query Pattern", pattern_query.serialize());
+			jo.put("Instance Query", query.serialize());
 			jo.put("Contained Triple's Number", num);
 
 			try {
