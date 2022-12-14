@@ -17668,3 +17668,28 @@ SELECT DISTINCT  ?o\nWHERE\n  { ?s  a  ?o }\nOFFSET  0\nLIMIT   1000\n & true
 SELECT DISTINCT  ?g\nWHERE\n  { GRAPH ?g\n      { ?s  ?p  ?o }\n  }\nOFFSET  0\nLIMIT   50\n & true
 PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\nSELECT  (COUNT(?o) AS ?count)\nWHERE\n  { ?s  rdfs:seeAlso  ?o }\n & true
 ASK\nWHERE\n  { <http://nonsensical.com/1/1565501029734>\n              <http://nonsensical.com/2/1565501029734>  <http://nonsensical.com/3/1565501029734>\n  }\n & false
+SELECT  ?c\nWHERE\n  { ?s  a  ?c }\nOFFSET  18230000\nLIMIT   250000\n & true
+SELECT  ?p\nWHERE\n  { ?s  ?p  ?v }\nOFFSET  20000\nLIMIT   20000\n & true
+SELECT  (lang(?v) AS ?lang)\nWHERE\n  { ?s  ?p  ?v }\nOFFSET  680000\nLIMIT   160000\n & true
+SELECT  ?s\nWHERE\n  { ?s  ?p  ?v }\nOFFSET  20000\nLIMIT   20000\n & true
+SELECT DISTINCT  ?o ?p2WHERE\nWHERE\n  { ?s  ?p  ?o\n    OPTIONAL\n      { <http://nonsensical.com/1/1561783755176>\n                  ?p2  ?o\n      }\n  }\nLIMIT   1000\n & true
+SELECT DISTINCT  ?s ?p2WHERE\nWHERE\n  { ?s  ?p  ?o\n    OPTIONAL\n      { ?s  ?p2  <http://nonsensical.com/1/1570855666489> }\n  }\nLIMIT   1000\n & true
+SELECT DISTINCT  ?s ?p2WHERE\nWHERE\n  { ?s  ?p  ?o\n    OPTIONAL\n      { <http://nonsensical.com/1/1560403423771>\n                  ?p2  ?s\n      }\n  }\nLIMIT   1000\n & true
+SELECT DISTINCT  ?s\nWHERE\n  { ?s  a  ?o }\nOFFSET  1600000\nLIMIT   400000\n & true
+SELECT DISTINCT  ?o\nWHERE\n  { ?s  a  ?o }\nOFFSET  1000\nLIMIT   1000\n & false
+SELECT  (?p AS ?propUri) (COUNT(?p) AS ?no)\nWHERE\n  { ?s  a   <http://bio2rdf.org/irefindex_vocabulary:Taxon-Sequence-Identical-Group> ;\n        ?p  ?o\n    FILTER isLiteral(?o)\n  }\nGROUP BY ?p\n & true
+SELECT DISTINCT  ?c\nWHERE\n  { ?s  a   <http://bio2rdf.org/sgd_vocabulary:GlycineCount> ;\n        ?p  ?v .\n    ?v  a   ?c\n  }\n & true
+SELECT  ?s ?p ?oWHERE\nWHERE\n  { SELECT  ?s ?p ?o\n    WHERE\n      { ?s  ?p  ?o }\n    OFFSET  126431620\n    LIMIT   1\n  }\nOFFSET  0\nLIMIT   10000\n & true
+SELECT  (?p AS ?property) (?v AS ?value) (?vc AS ?valueClass)\nWHERE\n  { <http://semanticscience.org/resource/SIO_010056>\n              ?p  ?v\n    OPTIONAL\n      { ?v  a  ?vc }\n  }\n & true
+SELECT  (?p AS ?propUri) (COUNT(?p) AS ?no)\nWHERE\n  { ?s  a   <http://bio2rdf.org/prosite_vocabulary:Resource> .\n    ?o  ?p  ?s\n    FILTER ( ! isLiteral(?o) )\n  }\nGROUP BY ?p\n & true
+SELECT DISTINCT  ?c\nWHERE\n  { ?s  a   ?c ;\n        ?p  ?v .\n    ?v  a   <http://bio2rdf.org/wormbase_vocabulary:Complete_unilateral_suppression-Genetic-Interaction>\n  }\n & false
+SELECT  (?p AS ?propUri) (COUNT(?p) AS ?no)\nWHERE\n  { ?s  a   <http://bio2rdf.org/kegg_vocabulary:Module> ;\n        ?p  ?o\n    FILTER ( ! isLiteral(?o) )\n  }\nGROUP BY ?p\n & true
+SELECT DISTINCT  ?c\nWHERE\n  { ?s  a   ?c ;\n        ?p  ?v .\n    ?v  a   <http://purl.org/goodrelations/v1#ActualProductOrServicesInstance>\n  }\n & true
+SELECT  *\nWHERE\n  { ?s  a  <http://www.w3.org/2000/01/rdf-schema#Resource> ;\n        a  ?o\n    FILTER ( ! isLiteral(?o) )\n  }\nLIMIT   1\n & true
+SELECT  ?s ?p ?oWHERE\nWHERE\n  { ?s  a   <http://bio2rdf.org/drugbank_vocabulary:Drug> ;\n        ?p  ?o\n  }\nOFFSET  6000\nLIMIT   1000\n & true
+SELECT DISTINCT  ?property\nWHERE\n  {   { <http://www.openlinksw.com/schemas/oplweb#isProductCategory>\n                  ?property  ?object\n        FILTER isURI(?object)\n      }\n    UNION\n      { ?subject  ?property  <http://www.openlinksw.com/schemas/oplweb#isProductCategory>\n        FILTER isURI(?subject)\n      }\n  }\n & true
+SELECT DISTINCT  ?p\nWHERE\n  { ?s  a   <http://bio2rdf.org/mgi_vocabulary:Gene> ;\n        ?p  ?o\n  }\n & true
+SELECT  (count(*) AS ?no)\nWHERE\n  { ?s  a  <http://www.w3.org/2000/01/rdf-schema#Resource> ;\n        a  ?o\n    FILTER ( ! isLiteral(?o) )\n  }\n & true
+SELECT  ?sWHERE\nWHERE\n  { ?s  a  <http://bio2rdf.org/drugbank_vocabulary:Drug> }\nOFFSET  3000\nLIMIT   1000\n & true
+SELECT  ?sWHERE\nWHERE\n  { ?s  a  <http://bio2rdf.org/drugbank_vocabulary:Drug> }\nLIMIT   1000\n & true
+SELECT DISTINCT  ?p ?oWHERE\nWHERE\n  { <http://bio2rdf.org/drugbank:DB00110>\n              ?p  ?o\n  }\n & true
