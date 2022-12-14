@@ -411,12 +411,18 @@ public class PatternDisplay {
 		result = sortPatternByValue(findFrequentPattern(new ArrayList<Query>(pattern_instance.keySet())));
 		br2: for (int i = 0; !(check_count_all(count_map,top,offset,tripleNumber)) && i < result.size();i++){
 			Query pattern_query = result.get(i).getKey();
+			int num = getBGPtripleNumber(pattern_query);
+			if (num < offset || num > tripleNumber)
+				continue br2;
+			if (check_count(count_map, num, top)) {
+				continue br2;
+			}
 			if (checkEndpoint)
-				if (!result.get(i).getKey().isSelectType())
-					if (!StoreOrRead(result.get(i).getKey(),dict_query))
+				if (!pattern_query.isSelectType())
+					if (!StoreOrRead(pattern_query,dict_query))
 						continue br2;
 			if (checkEndpoint)
-				if (!StoreOrRead(result.get(i).getKey(),dict_query)) {
+				if (!StoreOrRead(pattern_query,dict_query)) {
 					continue br2;
 				}
 			Query query = null;
@@ -430,12 +436,7 @@ public class PatternDisplay {
 			if(query == null)
 				continue br2;
 			
-			int num = getBGPtripleNumber(result.get(i).getKey());
-			if (num < offset || num > tripleNumber)
-				continue br2;
-			if (check_count(count_map, num, top)) {
-				continue br2;
-			}
+			
 			BufferedWriter bw = null;
 			BufferedWriter bw_all = null;
 			try {
