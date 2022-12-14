@@ -888,7 +888,7 @@ public class PatternDisplay {
 		dict_query.put(query, bl);
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter("query_dict.index", true));
-			bw.write(query.serialize().replace("\n", " ").replace("\r", " ") + " & " + Boolean.toString(bl));
+			bw.write(query.serialize().replace("\n", "\\n").replace("\r", "\\r") + " & " + Boolean.toString(bl));
 			bw.newLine();
 			bw.flush();
 			bw.close();
