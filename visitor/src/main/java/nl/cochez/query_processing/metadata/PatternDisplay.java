@@ -54,10 +54,22 @@ public class PatternDisplay {
 		List<Query> invalid_pattern_query = new ArrayList<Query>();
 		Map<String,Boolean> dict_query = getDict();
 		Map<Query, Query> pattern_instance_pair = new HashMap<Query,Query>();
+		Map<Query, Set<Query>> pattern_instance = new HashMap<Query, Set<Query>>();
 		Map<Query, Integer> patter_length_map = new HashMap<Query,Integer>();
 		Map<Integer, Integer> pattern_numbers = new HashMap<Integer, Integer>();
 		Map<Integer, Integer> instance_numbers = new HashMap<Integer, Integer>();
-		HashMap<Query, Integer> instance_freq = sortInstanceByValue(findFrequentPattern(queryList));
+		HashMap<Query, Integer> instance_freq = sortInstanceByValue(findFrequentQuery(queryList));
+		try {
+			BufferedWriter bw1 = new BufferedWriter(new FileWriter("unique_query_frequency.csv",true));
+			for(Entry<Query,Integer> uqf:instance_freq.entrySet()){
+				bw1.write(uqf.getKey().serialize().replace("\r", "\\r").replace("\n", "\\n")+" & "+Integer.toString(uqf.getValue()));
+				bw1.newLine();
+				bw1.flush();
+			}
+			bw1.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		br1: for (Query q : instance_freq.keySet()) {
 			// System.out.println(q.queryType().name());
 			List<Triple> triples = new ArrayList<Triple>();
@@ -166,6 +178,9 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
+					// if(pattern_instance.containsKey(pattern_q)){
+					// 	pattern_instance.get(pattern_q).add(q);
+					// }
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
 					if(!pattern_instance_pair.containsKey(pattern_q)){
@@ -327,6 +342,17 @@ public class PatternDisplay {
 		// System.out.println("Statistics of number of pattern in each length:"+pattern_numbers);
 		System.out.println("Statistics of number of instance in each length:"+instance_numbers);
 		List<Map.Entry<Query, Integer>> result = sortPatternByValue(findFrequentPattern(invalid_pattern_query));
+		try {
+			BufferedWriter bw2 = new BufferedWriter(new FileWriter("allPattern_frequency.csv",true));
+			for(Entry<Query,Integer> uqf:result){
+				bw2.write(uqf.getKey().serialize().replace("\r", "\\r").replace("\n", "\\n")+" & "+Integer.toString(uqf.getValue()));
+				bw2.newLine();
+				bw2.flush();
+			}
+			bw2.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		for (Entry<Query, Integer> res : result) {
 			int length = patter_length_map.get(res.getKey());
 			if (pattern_numbers.containsKey(length)) {
@@ -450,9 +476,9 @@ public class PatternDisplay {
 
 			value = -1;
 			if (numberMap.containsKey(inputArr.get(i)))
-				if (listOflistContains(inputArr.get(i), numberMap.keySet())) {
-					value = numberMap.get(inputArr.get(i));
-				}
+				// if (numberMap.keySet().contains(inputArr.get(i))) {
+				value = numberMap.get(inputArr.get(i));
+				// }
 			if (value != -1) {
 
 				value += 1;
