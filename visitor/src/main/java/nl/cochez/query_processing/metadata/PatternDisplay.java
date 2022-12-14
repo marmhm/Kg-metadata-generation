@@ -56,7 +56,7 @@ public class PatternDisplay {
     public static void rankPattern(ArrayList<Query> queryList, int top,int offset, int tripleNumber, boolean checkEndpoint) {
 		// List<Query> pattern_query = new ArrayList<Query>();
 		List<Query> invalid_pattern_query = new ArrayList<Query>();
-		Map<String,Boolean> dict_query = getDict();
+		Map<Query,Boolean> dict_query = getDict();
 		// Map<Query, Query> pattern_instance_pair = new HashMap<Query,Query>();
 		HashMap<Query, HashMultiset<Query>> pattern_instance = new HashMap<Query, HashMultiset<Query>>();
 		Map<Query, Integer> patter_length_map = new HashMap<Query,Integer>();
@@ -879,15 +879,15 @@ public class PatternDisplay {
 		return graph;
 	}
 
-	private static boolean StoreOrRead(Query query,Map<String, Boolean> dict_query){
-		if(dict_query.containsKey(query.serialize())){
-			return dict_query.get(query.serialize());
+	private static boolean StoreOrRead(Query query,Map<Query, Boolean> dict_query){
+		if(dict_query.containsKey(query)){
+			return dict_query.get(query);
 		}
 		boolean bl = check_with_endpoint(query);
-		dict_query.put(query.serialize(), bl);
+		dict_query.put(query, bl);
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter("query_dict.index", true));
-			bw.write(query.serialize().replace("\n", "\\n").replace("\r", "\\r") + " & " + Boolean.toString(bl));
+			bw.write(query.serialize().replace("\n", " ").replace("\r", " ") + " & " + Boolean.toString(bl));
 			bw.newLine();
 			bw.flush();
 			bw.close();
@@ -898,8 +898,8 @@ public class PatternDisplay {
 		return bl;
 	}
 
-	private static Map<String, Boolean> getDict() {
-		Map<String, Boolean> dict_query = new HashMap<String, Boolean>();
+	private static Map<Query, Boolean> getDict() {
+		Map<Query, Boolean> dict_query = new HashMap<Query, Boolean>();
 		if (!new File("query_dict.index").exists()) {
 			return dict_query;
 		} else {
@@ -908,7 +908,7 @@ public class PatternDisplay {
 				String line = null;
 				while ((line = br.readLine()) != null) {
 					String[] splitline = line.split(" & ");
-					dict_query.put(QueryFactory.create(splitline[0].replace("\\n", "\n").replace("\\r", "\r")).serialize(), Boolean.parseBoolean(splitline[1]));
+					dict_query.put(QueryFactory.create(splitline[0].replace("\\n", "\n").replace("\\r", "\r")), Boolean.parseBoolean(splitline[1]));
 				}
 				br.close();
 			} catch (Exception e) {
