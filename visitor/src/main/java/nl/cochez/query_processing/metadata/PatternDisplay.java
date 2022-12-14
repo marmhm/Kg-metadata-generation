@@ -187,6 +187,7 @@ public class PatternDisplay {
 					}
 					else{
 						pattern_instance.put(pattern_q, HashMultiset.create());
+						pattern_instance.get(pattern_q).add(q);
 					}
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
@@ -235,6 +236,7 @@ public class PatternDisplay {
 					}
 					else{
 						pattern_instance.put(pattern_q, HashMultiset.create());
+						pattern_instance.get(pattern_q).add(q);
 					}
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
@@ -283,6 +285,7 @@ public class PatternDisplay {
 					}
 					else{
 						pattern_instance.put(pattern_q, HashMultiset.create());
+						pattern_instance.get(pattern_q).add(q);
 					}
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
@@ -330,6 +333,7 @@ public class PatternDisplay {
 					}
 					else{
 						pattern_instance.put(pattern_q, HashMultiset.create());
+						pattern_instance.get(pattern_q).add(q);
 					}
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
@@ -382,7 +386,7 @@ public class PatternDisplay {
 		try {
 			BufferedWriter bw1 = new BufferedWriter(new FileWriter("patter_allQuery.csv",true));
 			for(Entry<Query, HashMultiset<Query>> uqf:pattern_instance.entrySet()){
-				bw1.write(uqf.getKey().serialize().replace("\r", "\\r").replace("\n", "\\n")+" & "+uqf.getValue().toString());
+				bw1.write(uqf.getKey().serialize().replace("\r", "\\r").replace("\n", "\\n")+" & "+uqf.getValue().toString().replace("\r", "\\r").replace("\n", "\\n"));
 				bw1.newLine();
 				bw1.flush();
 			}
