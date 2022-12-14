@@ -35,6 +35,10 @@ import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
+
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
+
 import org.apache.jena.arq.querybuilder.AskBuilder;
 import org.apache.jena.arq.querybuilder.ConstructBuilder;
 import org.apache.jena.arq.querybuilder.DescribeBuilder;
@@ -54,7 +58,7 @@ public class PatternDisplay {
 		List<Query> invalid_pattern_query = new ArrayList<Query>();
 		Map<String,Boolean> dict_query = getDict();
 		Map<Query, Query> pattern_instance_pair = new HashMap<Query,Query>();
-		Map<Query, Set<Query>> pattern_instance = new HashMap<Query, Set<Query>>();
+		HashMap<Query, HashMultiset<Query>> pattern_instance = new HashMap<Query, HashMultiset<Query>>();
 		Map<Query, Integer> patter_length_map = new HashMap<Query,Integer>();
 		Map<Integer, Integer> pattern_numbers = new HashMap<Integer, Integer>();
 		Map<Integer, Integer> instance_numbers = new HashMap<Integer, Integer>();
@@ -178,9 +182,12 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
-					// if(pattern_instance.containsKey(pattern_q)){
-					// 	pattern_instance.get(pattern_q).add(q);
-					// }
+					if(pattern_instance.containsKey(pattern_q)){
+						pattern_instance.get(pattern_q).add(q);
+					}
+					else{
+						pattern_instance.put(pattern_q, HashMultiset.create());
+					}
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
 					if(!pattern_instance_pair.containsKey(pattern_q)){
@@ -223,6 +230,12 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
+					if(pattern_instance.containsKey(pattern_q)){
+						pattern_instance.get(pattern_q).add(q);
+					}
+					else{
+						pattern_instance.put(pattern_q, HashMultiset.create());
+					}
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
 					if(!pattern_instance_pair.containsKey(pattern_q)){
@@ -265,6 +278,12 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
+					if(pattern_instance.containsKey(pattern_q)){
+						pattern_instance.get(pattern_q).add(q);
+					}
+					else{
+						pattern_instance.put(pattern_q, HashMultiset.create());
+					}
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
 					if(!pattern_instance_pair.containsKey(pattern_q)){
@@ -306,6 +325,12 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
+					if(pattern_instance.containsKey(pattern_q)){
+						pattern_instance.get(pattern_q).add(q);
+					}
+					else{
+						pattern_instance.put(pattern_q, HashMultiset.create());
+					}
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
 					if(!pattern_instance_pair.containsKey(pattern_q)){
@@ -350,6 +375,18 @@ public class PatternDisplay {
 				bw2.flush();
 			}
 			bw2.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		try {
+			BufferedWriter bw1 = new BufferedWriter(new FileWriter("patter_allQuery.csv",true));
+			for(Entry<Query, HashMultiset<Query>> uqf:pattern_instance.entrySet()){
+				bw1.write(uqf.getKey().serialize().replace("\r", "\\r").replace("\n", "\\n")+" & "+uqf.getValue().toString());
+				bw1.newLine();
+				bw1.flush();
+			}
+			bw1.close();
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
