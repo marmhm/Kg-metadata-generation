@@ -54,10 +54,23 @@ public class PatternDisplay {
 		List<Query> invalid_pattern_query = new ArrayList<Query>();
 		Map<String,Boolean> dict_query = getDict();
 		Map<Query, Query> pattern_instance_pair = new HashMap<Query,Query>();
+		Map<Query, Set<Query>> pattern_instance = new HashMap<Query, Set<Query>>();
 		Map<Query, Integer> patter_length_map = new HashMap<Query,Integer>();
 		Map<Integer, Integer> pattern_numbers = new HashMap<Integer, Integer>();
 		Map<Integer, Integer> instance_numbers = new HashMap<Integer, Integer>();
-		br1: for (Query q : queryList) {
+		HashMap<Query, Integer> instance_freq = sortInstanceByValue(findFrequentQuery(queryList));
+		try {
+			BufferedWriter bw1 = new BufferedWriter(new FileWriter("unique_query_frequency.csv",true));
+			for(Entry<Query,Integer> uqf:instance_freq.entrySet()){
+				bw1.write(uqf.getKey().serialize().replace("\r", "\\r").replace("\n", "\\n")+" & "+Integer.toString(uqf.getValue()));
+				bw1.newLine();
+				bw1.flush();
+			}
+			bw1.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		br1: for (Query q : instance_freq.keySet()) {
 			// System.out.println(q.queryType().name());
 			List<Triple> triples = new ArrayList<Triple>();
 			Map<String, String> replace_map = new HashMap<String, String>();
@@ -165,6 +178,9 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
+					// if(pattern_instance.containsKey(pattern_q)){
+					// 	pattern_instance.get(pattern_q).add(q);
+					// }
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
 					if(!pattern_instance_pair.containsKey(pattern_q)){
@@ -317,15 +333,26 @@ public class PatternDisplay {
 
 			int length = triples.size();
 			if (instance_numbers.containsKey(length)) {
-				instance_numbers.put(length, instance_numbers.get(length) + 1);
+				instance_numbers.put(length, instance_numbers.get(length) + instance_freq.get(q));
 			} else {
-				instance_numbers.put(length, 1);
+				instance_numbers.put(length, instance_freq.get(q));
 			}
 		}
 
 		// System.out.println("Statistics of number of pattern in each length:"+pattern_numbers);
 		System.out.println("Statistics of number of instance in each length:"+instance_numbers);
 		List<Map.Entry<Query, Integer>> result = sortPatternByValue(findFrequentPattern(invalid_pattern_query));
+		try {
+			BufferedWriter bw2 = new BufferedWriter(new FileWriter("allPattern_frequency.csv",true));
+			for(Entry<Query,Integer> uqf:result){
+				bw2.write(uqf.getKey().serialize().replace("\r", "\\r").replace("\n", "\\n")+" & "+Integer.toString(uqf.getValue()));
+				bw2.newLine();
+				bw2.flush();
+			}
+			bw2.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		for (Entry<Query, Integer> res : result) {
 			int length = patter_length_map.get(res.getKey());
 			if (pattern_numbers.containsKey(length)) {
@@ -438,6 +465,36 @@ public class PatternDisplay {
 		}
 		
 		return num.size();
+	}
+
+	private static HashMap<Query, Integer> findFrequentQuery(List<Query> inputArr) {
+		HashMap<Query, Integer> numberMap = new HashMap<Query, Integer>();
+		int frequency = -1;
+
+		int value;
+		for (int i = 0; i < inputArr.size(); i++) {
+
+			value = -1;
+			if (numberMap.containsKey(inputArr.get(i)))
+				// if (numberMap.keySet().contains(inputArr.get(i))) {
+				value = numberMap.get(inputArr.get(i));
+				// }
+			if (value != -1) {
+
+				value += 1;
+				if (value > frequency) {
+
+					frequency = value;
+				}
+
+				numberMap.put(inputArr.get(i), value);
+			} else {
+
+				numberMap.put(inputArr.get(i), 1);
+			}
+
+		}
+		return numberMap;
 	}
 
 	private static HashMap<Query, Integer> findFrequentPattern(List<Query> inputArr) {
@@ -572,6 +629,20 @@ public class PatternDisplay {
 			temp.put(aa.getKey(), aa.getValue());
 		}
 		return list;
+	}
+
+	public static HashMap<Query, Integer> sortInstanceByValue(HashMap<Query, Integer> hm) {
+		List<Map.Entry<Query, Integer>> list = new LinkedList<Map.Entry<Query, Integer>>(hm.entrySet());
+		Collections.sort(list, new Comparator<Map.Entry<Query, Integer>>() {
+			public int compare(Map.Entry<Query, Integer> o1, Map.Entry<Query, Integer> o2) {
+				return (o2.getValue()).compareTo(o1.getValue());
+			}
+		});
+		HashMap<Query, Integer> temp = new LinkedHashMap<Query, Integer>();
+		for (Map.Entry<Query, Integer> aa : list) {
+			temp.put(aa.getKey(), aa.getValue());
+		}
+		return temp;
 	}
 
 	private static boolean check_with_endpoint(Query query) { // check if query will return results via bio2rdf SPARQL endpoint
