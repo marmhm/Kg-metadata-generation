@@ -881,7 +881,7 @@ public class PatternDisplay {
 	}
 
 	private static boolean StoreOrRead(Query query,Map<Query, Boolean> dict_query){
-		if(dict_query.containsKey(query)){
+		if(dict_query.keySet().contains(query)){
 			return dict_query.get(query);
 		}
 		boolean bl = check_with_endpoint(query);
@@ -909,7 +909,7 @@ public class PatternDisplay {
 				String line = null;
 				while ((line = br.readLine()) != null) {
 					String[] splitline = line.split(" & ");
-					dict_query.put(QueryFactory.create(splitline[0].replace("\\n", "\n").replace("\\r", "\r")), Boolean.parseBoolean(splitline[1]));
+					dict_query.put(construcQuery(splitline[0].replace("\\n", "\n").replace("\\r", "\r")), Boolean.parseBoolean(splitline[1]));
 				}
 				br.close();
 			} catch (Exception e) {
@@ -920,19 +920,36 @@ public class PatternDisplay {
 		return dict_query;
 	}
 
-	// private static void storeDict(Map<Query, Boolean> dict_query){
-	// 	try {
-	// 		new File("query_dict.index").delete();
-	// 		BufferedWriter bw = new BufferedWriter(new FileWriter("query_dict.index",true));
-	// 		for(Entry<Query,Boolean> dq:dict_query.entrySet()){
-	// 			bw.write(dq.getKey().serialize().replace("\n", "\\n").replace("\r", "\\r")+" & "+Boolean.toString(dq.getValue()));
-	// 			bw.newLine();
-	// 			bw.flush();
-	// 		}
-	// 		bw.close();
-	// 	} catch (Exception e) {
-	// 		// TODO: handle exception
-	// 		e.printStackTrace();
-	// 	}
-	// }
+	private static Query construcQuery(String queryString){
+		Query query = QueryFactory.create(queryString);
+		if(query.isSelectType()){
+			SelectBuilder builder = new SelectBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			builder.getHandlerBlock().addAll(handlerBlock);
+			builder.setBase(null);
+			query = builder.build();
+		}
+		else if(query.isAskType()){
+			AskBuilder builder = new AskBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			builder.getHandlerBlock().addAll(handlerBlock);
+			builder.setBase(null);
+			query = builder.build();
+		}
+		else if (query.isConstructType()){
+			ConstructBuilder builder = new ConstructBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			builder.getHandlerBlock().addAll(handlerBlock);
+			builder.setBase(null);
+			query = builder.build();
+		}
+		else if (query.isDescribeType()){
+			DescribeBuilder builder = new DescribeBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			builder.getHandlerBlock().addAll(handlerBlock);
+			builder.setBase(null);
+			query = builder.build();
+		}
+		return query;
+	}
 }
