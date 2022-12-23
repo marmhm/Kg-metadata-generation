@@ -83,7 +83,7 @@ public abstract class AllOpVisitor implements OpVisitor {
 	// For example: SELECT ?entity WHERE {VALUES ?entity {
 	// <http://dbpedia.org/resource/Angular> } }
 	@Override
-	public final void visit(OpTable opTable) {
+	public void visit(OpTable opTable) {
 		// does not contain BGP => ignored
 	}
 
@@ -118,7 +118,7 @@ public abstract class AllOpVisitor implements OpVisitor {
 	}
 
 	@Override
-	public final void visit(OpLabel opLabel) {
+	public void visit(OpLabel opLabel) {
 		opLabel.getSubOp().visit(this);
 	}
 
@@ -128,7 +128,7 @@ public abstract class AllOpVisitor implements OpVisitor {
 	}
 
 	@Override
-	public final void visit(OpExtend opExtend) {
+	public void visit(OpExtend opExtend) {
 		opExtend.getSubOp().visit(this);
 	}
 
@@ -209,7 +209,7 @@ public abstract class AllOpVisitor implements OpVisitor {
 //	}
 
 	@Override
-	public final void visit(OpGroup opGroup) {
+	public void visit(OpGroup opGroup) {
 		opGroup.getSubOp().visit(this);
 	}
 
