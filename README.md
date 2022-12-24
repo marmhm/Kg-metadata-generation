@@ -9,13 +9,13 @@ https://web.informatik.uni-mannheim.de/AnyBURL/
 
 ## Use case and data sets
 
-Bio2RDF Drug Bank data set:
+Bio2RDF data set:
 
-* https://download.bio2rdf.org/#/release/4/drugbank/
+* https://download.bio2rdf.org/#/current/
 
 Logs of Bio2RDF user's SPARQL queries: 
 
-* https://umids-download.137.120.31.102.nip.io/bio2rdf/logs/
+* https://download.dumontierlab.com/bio2rdf/logs/
 
 ## Use Python to parse SPARQL
 
