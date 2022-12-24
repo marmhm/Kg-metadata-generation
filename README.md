@@ -17,6 +17,11 @@ Logs of Bio2RDF user's SPARQL queries:
 
 * https://download.dumontierlab.com/bio2rdf/logs/
 
+Logs of wikidata user's SPARQL queries: 
+
+* https://iccl.inf.tu-dresden.de/web/Wikidata\_SPARQL\_Logs/en
+
+
 ## Use Python to parse SPARQL
 
 Install the packages:
