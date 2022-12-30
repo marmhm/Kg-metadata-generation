@@ -146,7 +146,7 @@ public class PatternDisplay {
 				@Override
 				public void visit(OpGroup opGroup){
 					for(ExprAggregator exp : opGroup.getAggregators()){
-						System.out.println(extend_dict.get(exp.getVar()).getVarName()+" "+exp.getAggregator().getName().toLowerCase()); 
+						// System.out.println(extend_dict.get(exp.getVar()).getVarName()+" "+exp.getAggregator().getName().toLowerCase()); 
 						if(count_count.containsKey(exp.getAggregator().getName().toLowerCase())){
 							count_count.put(exp.getAggregator().getName().toLowerCase(), count_count.get(exp.getAggregator().getName().toLowerCase())+1);
 							replace_map.put("?"+extend_dict.get(exp.getVar()).getVarName(), "?"+exp.getAggregator().getName().toLowerCase()+Integer.toString(count_count.get(exp.getAggregator().getName().toLowerCase())));
@@ -161,11 +161,11 @@ public class PatternDisplay {
 	
 				@Override
 				public void visit(OpTable opTable){
-					Iterator<Binding> rows = opTable.getTable().rows();
-					for(;rows.hasNext();){
-						Binding row = rows.next();
-						System.out.println(row.vars().next()+" "+row.get(row.vars().next()).toString());
-					}
+					// Iterator<Binding> rows = opTable.getTable().rows();
+					// for(;rows.hasNext();){
+					// 	Binding row = rows.next();
+					// System.out.println(row.vars().next()+" "+row.get(row.vars().next()).toString());
+					// }
 				}
 			};
 			ope.visit(allbgp);
@@ -1014,7 +1014,11 @@ public class PatternDisplay {
                 bindvars.add(el.getVar().getVarName());
             }
         };
-		query.getQueryPattern().visit(visitor);
+		try {
+			query.getQueryPattern().visit(visitor);
+		} catch (Exception e) {
+			//TODO: handle exception
+		}
 		return bindvars;
 	}
 }
