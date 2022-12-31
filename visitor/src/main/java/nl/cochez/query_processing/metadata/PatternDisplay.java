@@ -17,8 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+
+import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.graph.NodeFactory;
+import org.apache.jena.graph.Node_Variable;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -29,10 +32,22 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.algebra.Algebra;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.op.OpBGP;
+import org.apache.jena.sparql.algebra.op.OpExtend;
+import org.apache.jena.sparql.algebra.op.OpGroup;
 import org.apache.jena.sparql.algebra.op.OpSlice;
+import org.apache.jena.sparql.algebra.op.OpTable;
+import org.apache.jena.sparql.algebra.table.TableData;
 import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.sparql.core.Var;
+import org.apache.jena.sparql.engine.binding.Binding;
+import org.apache.jena.sparql.engine.binding.BindingBuilder;
+import org.apache.jena.sparql.expr.ExprAggregator;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
+import org.apache.jena.sparql.serializer.FormatterElement;
+import org.apache.jena.sparql.serializer.SerializationContext;
+import org.apache.jena.sparql.syntax.Element;
+import org.apache.jena.sparql.syntax.ElementGroup;
+import org.apache.jena.sparql.syntax.ElementBind;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 
@@ -50,6 +65,8 @@ import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QuerySolution;
 
 import nl.cochez.query_processing.metadata.IsomorpismClusteringQueryCollector.Node;
+import nl.cochez.query_processing.metadata.OpAsQuery.Converter;
+
 import java.io.IOException;
 
 public class PatternDisplay {
@@ -78,12 +95,17 @@ public class PatternDisplay {
 			// System.out.println(q.queryType().name());
 			List<Triple> triples = new ArrayList<Triple>();
 			Map<String, String> replace_map = new HashMap<String, String>();
-			Op ope = Algebra.compile(q);
 			Set<String> var_set = new HashSet<String>();
 			Set<String> entity_set = new HashSet<String>();
 			Set<String> literal_set = new HashSet<String>();
 			Set<String> predicate_set = new HashSet<String>();
 			Set<Long> number_set = new HashSet<Long>();
+			Set<String> bind_set = get_bind_vars(q);
+			Set<String> values_set = new HashSet<String>();
+			// Set<String> count_set = new HashSet<String>();
+			Map<String, Integer> count_count = new HashMap<String, Integer>();
+			HashMap<Var, Var> extend_dict = new HashMap<Var, Var>();
+			Op ope = Algebra.compile(q);
 			AllOpVisitor allbgp = new AllOpVisitor() {
 				@Override
 				public void visit(OpBGP opBGP) {
@@ -120,6 +142,38 @@ public class PatternDisplay {
 					number_set.add(opSlice.getLength());
 					opSlice.getSubOp().visit(this);
 				}
+
+				public void visit(OpExtend opExtend){
+					for(Var var : opExtend.getVarExprList().getExprs().keySet()){
+						extend_dict.put(opExtend.getVarExprList().getExprs().get(var).asVar(), var);
+					}
+					opExtend.getSubOp().visit(this);
+				}
+	
+				@Override
+				public void visit(OpGroup opGroup){
+					for(ExprAggregator exp : opGroup.getAggregators()){
+						// System.out.println(extend_dict.get(exp.getVar()).getVarName()+" "+exp.getAggregator().getName().toLowerCase()); 
+						if(count_count.containsKey(exp.getAggregator().getName().toLowerCase())){
+							count_count.put(exp.getAggregator().getName().toLowerCase(), count_count.get(exp.getAggregator().getName().toLowerCase())+1);
+							replace_map.put("?"+extend_dict.get(exp.getVar()).getVarName(), "?"+exp.getAggregator().getName().toLowerCase()+Integer.toString(count_count.get(exp.getAggregator().getName().toLowerCase())));
+						}
+						else{
+							count_count.put(exp.getAggregator().getName().toLowerCase(), 1);
+							replace_map.put("?"+extend_dict.get(exp.getVar()).getVarName(), "?"+exp.getAggregator().getName().toLowerCase()+Integer.toString(count_count.get(exp.getAggregator().getName().toLowerCase())));
+						}
+					}
+					opGroup.getSubOp().visit(this);
+				}
+	
+				@Override
+				public void visit(OpTable opTable){
+					// Iterator<Binding> rows = opTable.getTable().rows();
+					// for(;rows.hasNext();){
+					// 	Binding row = rows.next();
+					// System.out.println(row.vars().next()+" "+row.get(row.vars().next()).toString());
+					// }
+				}
 			};
 			ope.visit(allbgp);
 			String replace_query_string = "";
@@ -148,11 +202,15 @@ public class PatternDisplay {
 			}
 			count = 1;
 			for (String predicate : predicate_set){
-				replace_map.put(predicate, "?predicate" + Integer.toString(count));
+				replace_map.put(predicate, "?predicate" + Integer.toString(count++));
 			}
 			count = 1;
 			for (Long num : number_set)
 				replace_query_string = replace_query_string.replace(" " + Long.toString(num), " 1");
+			count = 1;
+			for(String bind: bind_set){
+				replace_map.put("?"+bind, "?bind" + Integer.toString(count++));
+			}
 			for (String var : replace_map.keySet()) {
 				replace_query_string = replace_query_string.replace(var + " ", replace_map.get(var) + " ")
 						.replace(var + "\n", replace_map.get(var) + "\n").replace(var + ")", replace_map.get(var) + ")")
@@ -182,6 +240,7 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
+					generalize_VALUES(pattern_q);
 					if(pattern_instance.containsKey(pattern_q)){
 						pattern_instance.get(pattern_q).add(q);
 					}
@@ -231,6 +290,7 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
+					generalize_VALUES(pattern_q);
 					if(pattern_instance.containsKey(pattern_q)){
 						pattern_instance.get(pattern_q).add(q);
 					}
@@ -280,6 +340,7 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
+					generalize_VALUES(pattern_q);
 					if(pattern_instance.containsKey(pattern_q)){
 						pattern_instance.get(pattern_q).add(q);
 					}
@@ -328,6 +389,7 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
+					generalize_VALUES(pattern_q);
 					if(pattern_instance.containsKey(pattern_q)){
 						pattern_instance.get(pattern_q).add(q);
 					}
@@ -359,7 +421,7 @@ public class PatternDisplay {
 				System.out.println(q.serialize());
 				continue;
 			}
-
+			
 			int length = triples.size();
 			if (instance_numbers.containsKey(length)) {
 				instance_numbers.put(length, instance_numbers.get(length) + instance_freq.get(q));
@@ -951,5 +1013,88 @@ public class PatternDisplay {
 			query = builder.build();
 		}
 		return query;
+	}
+
+	private static Set<String> get_bind_vars(Query query){
+		HashSet<String> bindvars = new HashSet<String>();
+		SerializationContext cxt = new SerializationContext();
+        IndentedLineBuffer b = new IndentedLineBuffer();
+        FormatterElement visitor = new FormatterElement(b, cxt){
+            @Override
+            public void visit(ElementBind el) {
+                bindvars.add(el.getVar().getVarName());
+            }
+        };
+		try {
+			query.getQueryPattern().visit(visitor);
+		} catch (Exception e) {
+			//TODO: handle exception
+		}
+		return bindvars;
+	}
+
+	private static void generalize_VALUES(Query q){
+		List<Integer> rowCount = new ArrayList<Integer>();
+			List<Var> bindVars = new ArrayList<Var>();
+			List<Binding> rowlist = new ArrayList<>();
+			try {
+				List<Element> elements = ((ElementGroup) q.getQueryPattern()).getElements();
+			for (Element ele : elements) {
+				if (ele.toString().startsWith("VALUES")) {
+					Op op = Algebra.compile(ele);
+					AllOpVisitor visitorBind = new AllOpVisitor() {
+						@Override
+						public void visit(OpBGP opBGP) {
+							// Do nothing
+						}
+
+						@Override
+						public void visit(OpSlice opSlice) {
+							opSlice.getSubOp().visit(this);
+						}
+
+						@Override
+						public void visit(OpTable opTable) {
+							Iterator<Binding> rows = opTable.getTable().rows();
+							for (; rows.hasNext();) {
+								Binding row = rows.next();
+								// BindingBuilder.create().add(null, null)
+								System.out.println(row.vars().next() + " " + row.get(row.vars().next()).toString());
+								Iterator<Var> varIte = row.vars();
+								BindingBuilder bindingBuilder = BindingBuilder.create();
+								for (; varIte.hasNext();) {
+									Var var = varIte.next();
+									if (!bindVars.contains(var)) {
+										bindVars.add(var);
+										// Binding varRow = BindingBuilder.create().add(null, null);
+										// varRow
+										// rowlist.add(BindingBuilder.create().add(row.vars().next(), new
+										// Node_Variable("ValuesVar")).build());
+									}
+									bindingBuilder.add(var,
+											new Node_Variable("ValuesVar" + Integer.toString(rowCount.size() + 1)));
+									rowCount.add(1);
+								}
+								Binding newBinding = bindingBuilder.build();
+								if (!rowlist.contains(newBinding)) {
+									rowlist.add(newBinding);
+								}
+							}
+						}
+
+					};
+					op.visit(visitorBind);
+					op = OpTable.create(new TableData(bindVars,rowlist));
+					Converter converter = new Converter(op);
+					System.out.println(converter.asElement(op));
+					((ElementGroup) q.getQueryPattern()).getElements().remove(ele);
+					((ElementGroup) q.getQueryPattern()).getElements().add(converter.asElement(op));
+					break;
+				}
+			}
+			} catch (Exception e) {
+				//TODO: handle exception
+			}
+			
 	}
 }
