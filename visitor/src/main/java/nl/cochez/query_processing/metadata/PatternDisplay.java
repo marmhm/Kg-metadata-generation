@@ -1059,7 +1059,7 @@ public class PatternDisplay {
 							for (; rows.hasNext();) {
 								Binding row = rows.next();
 								// BindingBuilder.create().add(null, null)
-								System.out.println(row.vars().next() + " " + row.get(row.vars().next()).toString());
+								// System.out.println(row.vars().next() + " " + row.get(row.vars().next()).toString());
 								Iterator<Var> varIte = row.vars();
 								BindingBuilder bindingBuilder = BindingBuilder.create();
 								for (; varIte.hasNext();) {
@@ -1086,7 +1086,7 @@ public class PatternDisplay {
 					op.visit(visitorBind);
 					op = OpTable.create(new TableData(bindVars,rowlist));
 					Converter converter = new Converter(op);
-					System.out.println(converter.asElement(op));
+					// System.out.println(converter.asElement(op));
 					((ElementGroup) q.getQueryPattern()).getElements().remove(ele);
 					((ElementGroup) q.getQueryPattern()).getElements().add(converter.asElement(op));
 					break;
