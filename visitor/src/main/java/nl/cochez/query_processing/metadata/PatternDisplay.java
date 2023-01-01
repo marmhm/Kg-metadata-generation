@@ -1047,7 +1047,7 @@ public class PatternDisplay {
 					return;
 				}
 				for (Element ele : elements) {
-					if (ele.toString().startsWith("VALUES")) {
+					if(ele.toString().strip().startsWith("VALUES")) {
 						Op op = Algebra.compile(ele);
 						AllOpVisitor visitorBind = new AllOpVisitor() {
 							@Override
