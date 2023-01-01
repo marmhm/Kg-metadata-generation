@@ -1038,58 +1038,67 @@ public class PatternDisplay {
 			List<Var> bindVars = new ArrayList<Var>();
 			List<Binding> rowlist = new ArrayList<>();
 			try {
-				List<Element> elements = ((ElementGroup) q.getQueryPattern()).getElements();
-			for (Element ele : elements) {
-				if (ele.toString().startsWith("VALUES")) {
-					Op op = Algebra.compile(ele);
-					AllOpVisitor visitorBind = new AllOpVisitor() {
-						@Override
-						public void visit(OpBGP opBGP) {
-							// Do nothing
-						}
+				List<Element> elements = new ArrayList<Element>();
+				if (q.getQueryPattern() instanceof ElementGroup)
+					elements = ((ElementGroup) q.getQueryPattern()).getElements();
+				else if (q.getQueryPattern() instanceof Element) {
+					elements.add(q.getQueryPattern());
+				} else {
+					return;
+				}
+				for (Element ele : elements) {
+					if(ele.toString().strip().startsWith("VALUES")) {
+						Op op = Algebra.compile(ele);
+						AllOpVisitor visitorBind = new AllOpVisitor() {
+							@Override
+							public void visit(OpBGP opBGP) {
+								// Do nothing
+							}
 
-						@Override
-						public void visit(OpSlice opSlice) {
-							opSlice.getSubOp().visit(this);
-						}
+							@Override
+							public void visit(OpSlice opSlice) {
+								opSlice.getSubOp().visit(this);
+							}
 
-						@Override
-						public void visit(OpTable opTable) {
-							Iterator<Binding> rows = opTable.getTable().rows();
-							for (; rows.hasNext();) {
-								Binding row = rows.next();
-								// BindingBuilder.create().add(null, null)
-								System.out.println(row.vars().next() + " " + row.get(row.vars().next()).toString());
-								Iterator<Var> varIte = row.vars();
-								BindingBuilder bindingBuilder = BindingBuilder.create();
-								for (; varIte.hasNext();) {
-									Var var = varIte.next();
-									if (!bindVars.contains(var)) {
-										bindVars.add(var);
-										// Binding varRow = BindingBuilder.create().add(null, null);
-										// varRow
-										// rowlist.add(BindingBuilder.create().add(row.vars().next(), new
-										// Node_Variable("ValuesVar")).build());
+							@Override
+							public void visit(OpTable opTable) {
+								Iterator<Binding> rows = opTable.getTable().rows();
+								for (; rows.hasNext();) {
+									Binding row = rows.next();
+									// BindingBuilder.create().add(null, null)
+									// System.out.println(row.vars().next() + " " +
+									// row.get(row.vars().next()).toString());
+									Iterator<Var> varIte = row.vars();
+									BindingBuilder bindingBuilder = BindingBuilder.create();
+									for (; varIte.hasNext();) {
+										Var var = varIte.next();
+										if (!bindVars.contains(var)) {
+											bindVars.add(var);
+											// Binding varRow = BindingBuilder.create().add(null, null);
+											// varRow
+											// rowlist.add(BindingBuilder.create().add(row.vars().next(), new
+											// Node_Variable("ValuesVar")).build());
+										}
+										bindingBuilder.add(var,
+												new Node_Variable("ValuesVar" + Integer.toString(rowCount.size() + 1)));
+										rowCount.add(1);
 									}
-									bindingBuilder.add(var,
-											new Node_Variable("ValuesVar" + Integer.toString(rowCount.size() + 1)));
-									rowCount.add(1);
-								}
-								Binding newBinding = bindingBuilder.build();
-								if (!rowlist.contains(newBinding)) {
-									rowlist.add(newBinding);
+									Binding newBinding = bindingBuilder.build();
+									if (!rowlist.contains(newBinding)) {
+										rowlist.add(newBinding);
+									}
 								}
 							}
-						}
 
-					};
-					op.visit(visitorBind);
-					op = OpTable.create(new TableData(bindVars,rowlist));
-					Converter converter = new Converter(op);
-					System.out.println(converter.asElement(op));
-					((ElementGroup) q.getQueryPattern()).getElements().remove(ele);
-					((ElementGroup) q.getQueryPattern()).getElements().add(converter.asElement(op));
-					break;
+						};
+						op.visit(visitorBind);
+						op = OpTable.create(new TableData(bindVars, rowlist));
+						Converter converter = new Converter(op);
+						// System.out.println(converter.asElement(op));
+						((ElementGroup) q.getQueryPattern()).getElements().remove(ele);
+						((ElementGroup) q.getQueryPattern()).getElements().add(converter.asElement(op));
+						// System.out.println(q.serialize());
+						break;
 				}
 			}
 			} catch (Exception e) {
