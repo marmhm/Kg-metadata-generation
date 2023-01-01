@@ -1097,6 +1097,7 @@ public class PatternDisplay {
 						// System.out.println(converter.asElement(op));
 						((ElementGroup) q.getQueryPattern()).getElements().remove(ele);
 						((ElementGroup) q.getQueryPattern()).getElements().add(converter.asElement(op));
+						// System.out.println(q.serialize());
 						break;
 				}
 			}
