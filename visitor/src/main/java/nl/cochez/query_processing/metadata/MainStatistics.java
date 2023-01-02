@@ -125,9 +125,13 @@ public class MainStatistics {
 	};
 
 	public static void main(String[] args) throws IOException {
+		// String sparqlendpoint = "https://bio2rdf.org/sparql";
+		String sparqlendpoint = "https://query.wikidata.org/sparql";
+		String dict_name = "query_dict_wiki.index";
+		// String dict_name = "query_dict.index";
 		Stopwatch watch = Stopwatch.createStarted();
-		String filename = "/home/coder/project/kg-metadata-generation/visitor/src/main/java/nl/cochez/query_processing/metadata/reallall-bio2rdf-processed.tsv.gz";
-		// String filename = "/home/coder/project/kg-metadata-generation/drugbank_test.tsv.gz";
+		String filename = "/home/coder/project/2017-06-12_2017-07-09_organic.tsv.gz";
+		// String filename = "drugbank_test.tsv.gz";
 		if (args.length > 0) {
 			filename = args[0];
 		}
@@ -168,13 +172,13 @@ public class MainStatistics {
 				System.setOut(ps);
 				System.out.println("subject,label,frequency");
 				System.out.println(Multisets.copyHighestCountFirst(visitor.subjects).entrySet().size());
-				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.subjects).entrySet(), Multisets.copyHighestCountFirst(visitor.subjects).entrySet().size()),"s",100);
+				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.subjects).entrySet(), Multisets.copyHighestCountFirst(visitor.subjects).entrySet().size()),"s",100,sparqlendpoint);
 				System.out.println("predicate,label,frequency");
 				System.out.println(Multisets.copyHighestCountFirst(visitor.predicates).entrySet().size());
-				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.predicates).entrySet(), Multisets.copyHighestCountFirst(visitor.predicates).entrySet().size()),"p",100);
+				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.predicates).entrySet(), Multisets.copyHighestCountFirst(visitor.predicates).entrySet().size()),"p",100,sparqlendpoint);
 				System.out.println("object,label,frequency");
 				System.out.println(Multisets.copyHighestCountFirst(visitor.objects).entrySet().size());
-				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.objects).entrySet(), Multisets.copyHighestCountFirst(visitor.objects).entrySet().size()),"o",100);
+				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.objects).entrySet(), Multisets.copyHighestCountFirst(visitor.objects).entrySet().size()),"o",100,sparqlendpoint);
 				System.out.println("literal,label,frequency");
 				System.out.println(Multisets.copyHighestCountFirst(visitor.literal_values).entrySet().size());
 				print_without_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.literal_values).entrySet(), 100));
@@ -189,7 +193,7 @@ public class MainStatistics {
 				print_without_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.literal_labels).entrySet(), 100));
 				System.out.println("rdftype,label,frequency");
 				System.out.println(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet().size());
-				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet(), Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet().size()),"o",100);
+				print_with_label(Iterables.limit(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet(), Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet().size()),"o",100, sparqlendpoint);
 				System.setOut(ps_console);
 				System.out.println("Number of failures is : " + failures);
 			}
@@ -205,6 +209,7 @@ public class MainStatistics {
 			public void add(Query q) {
 				this.queryList.add(q);
 				Op op = Algebra.compile(q);
+				// System.out.println(q.serialize());
 				// System.out.println("NEXT QUERY");
 				op.visit(visitor);
 			}
@@ -229,17 +234,41 @@ public class MainStatistics {
 		watch.stop();
 		System.out.println("Elapsed" + watch.elapsed(TimeUnit.SECONDS));
 
-		collector.stats();
-		PatternDisplay.rankPattern(collector.getQueryList(), 10, 1,10,true);//input is (queryList, top number of display, max number of triples in pattern query)
+		// collector.stats();
+		PatternDisplay.rankPattern(collector.getQueryList(), 10, 1,25,true, sparqlendpoint, dict_name);//input is (queryList, top number of display, max number of triples in pattern query)
 		System.out.println("Finished!" + watch.elapsed(TimeUnit.SECONDS));
 	}
 
-	private static String get_labels(String str){
+	private static String get_labels(String str, String sparqlendpoint){
 		String label_str= null;
 		String queryString = "PREFIX dct: <http://purl.org/dc/terms/>\n SELECT * WHERE {\n   ?s dct:title ?o .\n  Values ?s {"
 				+ str + "}}  LIMIT 1";
 		Map<String, String> map = new HashMap<String, String>();
-		QueryExecution qexec = QueryExecutionFactory.sparqlService("https://bio2rdf.org/sparql", queryString);
+		QueryExecution qexec = QueryExecutionFactory.sparqlService(sparqlendpoint, queryString);
+        ResultSet rs = null;
+		try {
+        	rs = qexec.execSelect();
+            if (rs.hasNext()) {
+				QuerySolution rb = rs.nextSolution();
+				RDFNode label = rb.get("o");
+				label_str = label.asLiteral().getString();
+			}
+			else{
+				get_labels_rdfs(str,sparqlendpoint);
+			}
+        }catch (Exception e) {
+        	
+        }
+		qexec.close();
+		return label_str;
+	}
+
+	private static String get_labels_rdfs(String str, String sparqlendpoint){
+		String label_str= null;
+		String queryString = "PREFIX dct: <http://purl.org/dc/terms/>\n SELECT * WHERE {\n   ?s rdfs:label ?o .\n  Values ?s {"
+				+ str + "}}  LIMIT 1";
+		Map<String, String> map = new HashMap<String, String>();
+		QueryExecution qexec = QueryExecutionFactory.sparqlService(sparqlendpoint, queryString);
         ResultSet rs = null;
 		try {
         	rs = qexec.execSelect();
@@ -255,11 +284,11 @@ public class MainStatistics {
 		return label_str;
 	}
 
-	private static boolean check_exist_subject(String input){
+	private static boolean check_exist_subject(String input, String sparqlendpoint){
 		boolean exist = false;
 		String queryString = "PREFIX dct: <http://purl.org/dc/terms/>\n SELECT * WHERE {\n   ?s ?p ?o .\n  Values ?s {<"
 		+ input + ">}}  LIMIT 1";
-				QueryExecution qexec = QueryExecutionFactory.sparqlService("https://bio2rdf.org/sparql", queryString);
+				QueryExecution qexec = QueryExecutionFactory.sparqlService(sparqlendpoint, queryString);
 				ResultSet rs = null;
 		try {
         	rs = qexec.execSelect();
@@ -273,11 +302,11 @@ public class MainStatistics {
 		return exist;
 	}
 
-	private static boolean check_exist_predicate(String input){
+	private static boolean check_exist_predicate(String input, String sparqlendpoint){
 		boolean exist = false;
 		String queryString = "PREFIX dct: <http://purl.org/dc/terms/>\n SELECT * WHERE {\n   ?s ?p ?o .\n  Values ?p {<"
 				+ input + ">}}  LIMIT 1";
-				QueryExecution qexec = QueryExecutionFactory.sparqlService("https://bio2rdf.org/sparql", queryString);
+				QueryExecution qexec = QueryExecutionFactory.sparqlService(sparqlendpoint, queryString);
 				ResultSet rs = null;
 		try {
         	rs = qexec.execSelect();
@@ -291,11 +320,11 @@ public class MainStatistics {
 		return exist;
 	}
 
-	private static boolean check_exist_object(String input){
+	private static boolean check_exist_object(String input, String sparqlendpoint){
 		boolean exist = false;
 		String queryString = "PREFIX dct: <http://purl.org/dc/terms/>\n SELECT * WHERE {\n   ?s ?p ?o .\n  Values ?o {<"
 		+ input + ">}} LIMIT 1";
-				QueryExecution qexec = QueryExecutionFactory.sparqlService("https://bio2rdf.org/sparql", queryString);
+				QueryExecution qexec = QueryExecutionFactory.sparqlService(sparqlendpoint, queryString);
 				ResultSet rs = null;
 		try {
         	rs = qexec.execSelect();
@@ -309,28 +338,28 @@ public class MainStatistics {
 		return exist;
 	}
 
-	private static void print_with_label(Iterable<Entry<String>> input, String type, int limit){
+	private static void print_with_label(Iterable<Entry<String>> input, String type, int limit, String spaqlendpoint){
 		int count = 0;
 		for (Entry<String> str : input) {
 			if (count >=limit)
 			break;
-			String label = get_labels("<" + str.getElement() + ">");
+			String label = get_labels("<" + str.getElement() + ">", spaqlendpoint);
 			if (label != null) {
-				System.out.println("<" + str.getElement() + ">" + " & " + get_labels("<" + str.getElement() + ">")
+				System.out.println("<" + str.getElement() + ">" + " & " + get_labels("<" + str.getElement() + ">",spaqlendpoint)
 						+ " & " + str.getCount());
 				count ++;
 			} else if (type == "s") {
-				if (check_exist_subject(str.getElement())) {
+				if (check_exist_subject(str.getElement(),spaqlendpoint)) {
 					System.out.println("<" + str.getElement() + ">" + " & & " + str.getCount());
 					count ++;
 				}
 			} else if (type == "p") {
-				if (check_exist_predicate(str.getElement())) {
+				if (check_exist_predicate(str.getElement(), spaqlendpoint)) {
 					System.out.println("<" + str.getElement() + ">" + " & & " + str.getCount());
 					count ++;
 				}
 			} else if (type == "o") {
-				if (check_exist_object(str.getElement())) {
+				if (check_exist_object(str.getElement(),spaqlendpoint)) {
 					System.out.println("<" + str.getElement() + ">" + " & & " + str.getCount());
 					count ++;
 				}
@@ -345,11 +374,11 @@ public class MainStatistics {
 		}
 	}
 
-	private static void print_without_and_with_label(Iterable<Entry<String>> input){
+	private static void print_without_and_with_label(Iterable<Entry<String>> input, String sparqlendpoint){
 		for (Entry<String> str : input){
-			String label = get_labels("<"+str.getElement()+">");
+			String label = get_labels("<"+str.getElement()+">",sparqlendpoint);
 			if(label!=null)
-				System.out.println("<"+str.getElement()+">"+" & "+get_labels("<"+str.getElement()+">")+" & "+str.getCount());
+				System.out.println("<"+str.getElement()+">"+" & "+get_labels("<"+str.getElement()+">", sparqlendpoint)+" & "+str.getCount());
 			else
 				System.out.println("<"+str.getElement()+">"+" & & "+str.getCount());
 		}
