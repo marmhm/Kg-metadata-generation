@@ -145,7 +145,12 @@ public class PatternDisplay {
 
 				public void visit(OpExtend opExtend){
 					for(Var var : opExtend.getVarExprList().getExprs().keySet()){
-						extend_dict.put(opExtend.getVarExprList().getExprs().get(var).asVar(), var);
+						try {
+							extend_dict.put(opExtend.getVarExprList().getExprs().get(var).asVar(), var);
+						} catch (Exception e) {
+							//TODO: handle exception
+						}
+						
 					}
 					opExtend.getSubOp().visit(this);
 				}
@@ -154,13 +159,17 @@ public class PatternDisplay {
 				public void visit(OpGroup opGroup){
 					for(ExprAggregator exp : opGroup.getAggregators()){
 						// System.out.println(extend_dict.get(exp.getVar()).getVarName()+" "+exp.getAggregator().getName().toLowerCase()); 
-						if(count_count.containsKey(exp.getAggregator().getName().toLowerCase())){
-							count_count.put(exp.getAggregator().getName().toLowerCase(), count_count.get(exp.getAggregator().getName().toLowerCase())+1);
-							replace_map.put("?"+extend_dict.get(exp.getVar()).getVarName(), "?"+exp.getAggregator().getName().toLowerCase()+Integer.toString(count_count.get(exp.getAggregator().getName().toLowerCase())));
-						}
-						else{
-							count_count.put(exp.getAggregator().getName().toLowerCase(), 1);
-							replace_map.put("?"+extend_dict.get(exp.getVar()).getVarName(), "?"+exp.getAggregator().getName().toLowerCase()+Integer.toString(count_count.get(exp.getAggregator().getName().toLowerCase())));
+						try {
+							if(count_count.containsKey(exp.getAggregator().getName().toLowerCase())){
+								count_count.put(exp.getAggregator().getName().toLowerCase(), count_count.get(exp.getAggregator().getName().toLowerCase())+1);
+								replace_map.put("?"+extend_dict.get(exp.getVar()).getVarName(), "?"+exp.getAggregator().getName().toLowerCase()+Integer.toString(count_count.get(exp.getAggregator().getName().toLowerCase())));
+							}
+							else{
+								count_count.put(exp.getAggregator().getName().toLowerCase(), 1);
+								replace_map.put("?"+extend_dict.get(exp.getVar()).getVarName(), "?"+exp.getAggregator().getName().toLowerCase()+Integer.toString(count_count.get(exp.getAggregator().getName().toLowerCase())));
+							}
+						} catch (Exception e) {
+							//TODO: handle exception
 						}
 					}
 					opGroup.getSubOp().visit(this);
