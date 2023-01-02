@@ -120,10 +120,10 @@ public class PatternDisplay {
 						if (t.getPredicate().isVariable() || t.getPredicate().toString().startsWith("?")) {
 							predicate_set.add(t.getPredicate().toString());
 						}
-						if (t.getSubject().isURI()) {
+						if (t.getSubject().isURI() || t.getSubject().isBlank()) {
 							entity_set.add(t.getSubject().toString());
 						}
-						if (t.getObject().isURI()) {
+						if (t.getObject().isURI() || t.getObject().isBlank()) {
 							entity_set.add(t.getObject().toString());
 						}
 						if (t.getSubject().isLiteral()){
