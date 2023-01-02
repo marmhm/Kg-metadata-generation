@@ -21,7 +21,8 @@ public class IterateQueriesFromWikidataLog {
 			l.readLine();
 			ArrayList<Query> queryList = new ArrayList<Query>();
 			while ((line = l.readLine()) != null) {
-				String queryString = URLDecoder.decode(line.split("\t")[0].replaceAll("%(?![0-9a-fA-F]{2})", "%25").replaceAll("\\+", "%2B"), StandardCharsets.UTF_8);
+				String queryString = URLDecoder.decode(line.split("\t")[0].replace("+", " ").replaceAll("%(?![0-9a-fA-F]{2})", "%25").replaceAll("\\+", "%2B"), StandardCharsets.UTF_8);
+				// System.out.println(queryString);
 				Query q;
 				try {
 					q = QueryFactory.create(queryString);

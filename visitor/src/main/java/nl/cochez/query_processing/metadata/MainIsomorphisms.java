@@ -20,6 +20,10 @@ import com.google.common.base.Stopwatch;
 public class MainIsomorphisms {
 
 	public static void main(String[] args) throws IOException, QueryException {
+		// String sparqlendpoint = "https://bio2rdf.org/sparql";
+		String sparqlendpoint = "https://query.wikidata.org/sparql";
+		String dict_name = "query_dict_wiki.index";
+		// String dict_name = "query_dict.index";
 		Stopwatch watch = Stopwatch.createStarted();
 		org.apache.jena.query.ARQ.init();
 
@@ -33,7 +37,7 @@ public class MainIsomorphisms {
 
 		collector.stats();
 		
-		PatternDisplay.rankPattern(collector.queryList,10,5,5,true);
+		PatternDisplay.rankPattern(collector.queryList,10,5,5,true, sparqlendpoint, dict_name);
 	}
 
 }
