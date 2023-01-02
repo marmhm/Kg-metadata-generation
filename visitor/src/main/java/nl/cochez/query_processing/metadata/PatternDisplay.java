@@ -1001,12 +1001,18 @@ public class PatternDisplay {
 				String line = null;
 				while ((line = br.readLine()) != null) {
 					String[] splitline = line.split(" & ");
-					dict_query.put(construcQuery(splitline[0].replace("\\n", "\n").replace("\\r", "\r")), Boolean.parseBoolean(splitline[1]));
+					try {
+						dict_query.put(construcQuery(splitline[0].replace("\\n", "\n").replace("\\r", "\r")), Boolean.parseBoolean(splitline[1]));
+					} catch (Exception e) {
+						// TODO: handle exception
+						System.out.println(splitline[0]);
+						e.printStackTrace();
+					}
 				}
 				br.close();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 		}
 		return dict_query;
@@ -1077,7 +1083,7 @@ public class PatternDisplay {
 					return;
 				}
 				for (Element ele : elements) {
-					if(ele.toString().strip().startsWith("VALUES")) {
+					if(ele.toString().strip().startsWith("VALUES") || ele.toString().strip().startsWith("{ VALUES")) {
 						Op op = Algebra.compile(ele);
 						AllOpVisitor visitorBind = new AllOpVisitor() {
 							@Override
