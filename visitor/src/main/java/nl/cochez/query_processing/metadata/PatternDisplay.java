@@ -48,6 +48,7 @@ import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.ElementBind;
+import org.apache.jena.sparql.syntax.ElementData;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 
@@ -1005,8 +1006,8 @@ public class PatternDisplay {
 						dict_query.put(construcQuery(splitline[0].replace("\\n", "\n").replace("\\r", "\r")), Boolean.parseBoolean(splitline[1]));
 					} catch (Exception e) {
 						// TODO: handle exception
-						System.out.println(splitline[0]);
-						e.printStackTrace();
+						// System.out.println(splitline[0]);
+						// e.printStackTrace();
 					}
 				}
 				br.close();
@@ -1070,6 +1071,7 @@ public class PatternDisplay {
 	}
 
 	private static void generalize_VALUES(Query q){
+		Map<String,String> replace_map = new HashMap<String, String>();
 		List<Integer> rowCount = new ArrayList<Integer>();
 			List<Var> bindVars = new ArrayList<Var>();
 			List<Binding> rowlist = new ArrayList<>();
@@ -1082,64 +1084,73 @@ public class PatternDisplay {
 				} else {
 					return;
 				}
-				for (Element ele : elements) {
-					if(ele.toString().strip().startsWith("VALUES") || ele.toString().strip().startsWith("{ VALUES")) {
-						Op op = Algebra.compile(ele);
-						AllOpVisitor visitorBind = new AllOpVisitor() {
-							@Override
-							public void visit(OpBGP opBGP) {
-								// Do nothing
-							}
+				Element queryel = q.cloneQuery().getQueryPattern();
+				GroupElementVisitor elvisitor = new GroupElementVisitor(){
 
-							@Override
-							public void visit(OpSlice opSlice) {
-								opSlice.getSubOp().visit(this);
-							}
-
-							@Override
-							public void visit(OpTable opTable) {
-								Iterator<Binding> rows = opTable.getTable().rows();
-								for (; rows.hasNext();) {
-									Binding row = rows.next();
-									// BindingBuilder.create().add(null, null)
-									// System.out.println(row.vars().next() + " " +
-									// row.get(row.vars().next()).toString());
-									Iterator<Var> varIte = row.vars();
-									BindingBuilder bindingBuilder = BindingBuilder.create();
-									for (; varIte.hasNext();) {
-										Var var = varIte.next();
-										if (!bindVars.contains(var)) {
-											bindVars.add(var);
-											// Binding varRow = BindingBuilder.create().add(null, null);
-											// varRow
-											// rowlist.add(BindingBuilder.create().add(row.vars().next(), new
-											// Node_Variable("ValuesVar")).build());
+					@Override
+					public void visit(ElementData ele) {
+						// TODO Auto-generated method stub
+						if(ele.toString().strip().startsWith("VALUES") || ele.toString().strip().startsWith("{ VALUES")) {
+							Op op = Algebra.compile(ele);
+							AllOpVisitor visitorBind = new AllOpVisitor() {
+								@Override
+								public void visit(OpBGP opBGP) {
+									// Do nothing
+								}
+	
+								@Override
+								public void visit(OpSlice opSlice) {
+									opSlice.getSubOp().visit(this);
+								}
+	
+								@Override
+								public void visit(OpTable opTable) {
+									Iterator<Binding> rows = opTable.getTable().rows();
+									for (; rows.hasNext();) {
+										Binding row = rows.next();
+										// BindingBuilder.create().add(null, null)
+										// System.out.println(row.vars().next() + " " +
+										// row.get(row.vars().next()).toString());
+										Iterator<Var> varIte = row.vars();
+										BindingBuilder bindingBuilder = BindingBuilder.create();
+										for (; varIte.hasNext();) {
+											Var var = varIte.next();
+											if (!bindVars.contains(var)) {
+												bindVars.add(var);
+												// Binding varRow = BindingBuilder.create().add(null, null);
+												// varRow
+												// rowlist.add(BindingBuilder.create().add(row.vars().next(), new
+												// Node_Variable("ValuesVar")).build());
+											}
+											bindingBuilder.add(var,NodeFactory.createURI("https://example.org/ValuesVar" + Integer.toString(rowCount.size() + 1)));
+											rowCount.add(1);
 										}
-										bindingBuilder.add(var,
-												new Node_Variable("ValuesVar" + Integer.toString(rowCount.size() + 1)));
-										rowCount.add(1);
-									}
-									Binding newBinding = bindingBuilder.build();
-									if (!rowlist.contains(newBinding)) {
-										rowlist.add(newBinding);
+										Binding newBinding = bindingBuilder.build();
+										if (!rowlist.contains(newBinding)) {
+											rowlist.add(newBinding);
+										}
 									}
 								}
-							}
-
-						};
-						op.visit(visitorBind);
-						op = OpTable.create(new TableData(bindVars, rowlist));
-						Converter converter = new Converter(op);
-						// System.out.println(converter.asElement(op));
-						((ElementGroup) q.getQueryPattern()).getElements().remove(ele);
-						((ElementGroup) q.getQueryPattern()).getElements().add(converter.asElement(op));
-						// System.out.println(q.serialize());
-						break;
+	
+							};
+							op.visit(visitorBind);
+							op = OpTable.create(new TableData(bindVars, rowlist));
+							Converter converter = new Converter(op);
+							// ((ElementGroup) q.getQueryPattern()).getElements().remove(ele);
+							// ((ElementGroup) q.getQueryPattern()).getElements().add(converter.asElement(op));
+							replace_map.put(ele.toString(), "");
+					}
 				}
-			}
+				};
+				queryel.visit(elvisitor);
+				String queryString = q.serialize();
+				for(Entry<String,String> replace_ele : replace_map.entrySet()){
+					queryString = queryString.replace(replace_ele.getKey(), replace_ele.getValue());
+				}
+				q = construcQuery(queryString);
 			} catch (Exception e) {
 				//TODO: handle exception
+				e.printStackTrace();
 			}
-			
 	}
 }
