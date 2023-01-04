@@ -265,7 +265,7 @@ public class MainStatistics {
 
 	private static String get_labels_rdfs(String str, String sparqlendpoint){
 		String label_str= null;
-		String queryString = "PREFIX dct: <http://purl.org/dc/terms/>\n SELECT * WHERE {\n   ?s rdfs:label ?o .\n  Values ?s {"
+		String queryString = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n SELECT * WHERE {\n   ?s rdfs:label ?o .\n  Values ?s {"
 				+ str + "}}  LIMIT 1";
 		Map<String, String> map = new HashMap<String, String>();
 		QueryExecution qexec = QueryExecutionFactory.sparqlService(sparqlendpoint, queryString);
