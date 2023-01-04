@@ -254,7 +254,7 @@ public class MainStatistics {
 				label_str = label.asLiteral().getString();
 			}
 			else{
-				get_labels_rdfs(str,sparqlendpoint);
+				label_str = get_labels_rdfs(str,sparqlendpoint);
 			}
         }catch (Exception e) {
         	
