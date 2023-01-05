@@ -1019,8 +1019,10 @@ public class PatternDisplay {
 		return dict_query;
 	}
 
-	private static Query construcQuery(String queryString){
+    private static Query construcQuery(String queryString){
 		Query query = QueryFactory.create(queryString);
+		Op op = Algebra.compile(query);
+		query = OpAsQuery.asQuery(op);
 		if(query.isSelectType()){
 			SelectBuilder builder = new SelectBuilder();
 			HandlerBlock handlerBlock = new HandlerBlock(query);
@@ -1138,13 +1140,13 @@ public class PatternDisplay {
 							Converter converter = new Converter(op);
 							// ((ElementGroup) q.getQueryPattern()).getElements().remove(ele);
 							// ((ElementGroup) q.getQueryPattern()).getElements().add(converter.asElement(op));
-							// System.out.println(ele.toString());
+							System.out.println(ele.toString());
 							replace_map.put(ele.toString().strip(), "");
 					}
 				}
 				};
 				queryel.visit(elvisitor);
-				String queryString = q.serialize().replace("\n", " ").replace("\r", " ");
+				String queryString = q.serialize();
 				for(Entry<String,String> replace_ele : replace_map.entrySet()){
 					queryString = queryString.replace(replace_ele.getKey(), replace_ele.getValue());
 				}
