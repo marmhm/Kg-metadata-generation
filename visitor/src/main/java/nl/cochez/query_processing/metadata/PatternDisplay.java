@@ -250,7 +250,7 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
-					generalize_VALUES(pattern_q);
+					pattern_q = generalize_VALUES(pattern_q);
 					if(pattern_instance.containsKey(pattern_q)){
 						pattern_instance.get(pattern_q).add(q);
 					}
@@ -300,7 +300,7 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
-					generalize_VALUES(pattern_q);
+					pattern_q = generalize_VALUES(pattern_q);
 					if(pattern_instance.containsKey(pattern_q)){
 						pattern_instance.get(pattern_q).add(q);
 					}
@@ -350,7 +350,7 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
-					generalize_VALUES(pattern_q);
+					pattern_q = generalize_VALUES(pattern_q);
 					if(pattern_instance.containsKey(pattern_q)){
 						pattern_instance.get(pattern_q).add(q);
 					}
@@ -399,7 +399,7 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
-					generalize_VALUES(pattern_q);
+					pattern_q = generalize_VALUES(pattern_q);
 					if(pattern_instance.containsKey(pattern_q)){
 						pattern_instance.get(pattern_q).add(q);
 					}
@@ -1070,7 +1070,7 @@ public class PatternDisplay {
 		return bindvars;
 	}
 
-	private static void generalize_VALUES(Query q){
+	private static Query generalize_VALUES(Query q){
 		Map<String,String> replace_map = new HashMap<String, String>();
 		List<Integer> rowCount = new ArrayList<Integer>();
 			List<Var> bindVars = new ArrayList<Var>();
@@ -1082,7 +1082,7 @@ public class PatternDisplay {
 				else if (q.getQueryPattern() instanceof Element) {
 					elements.add(q.getQueryPattern());
 				} else {
-					return;
+					return q;
 				}
 				Element queryel = q.cloneQuery().getQueryPattern();
 				GroupElementVisitor elvisitor = new GroupElementVisitor(){
@@ -1138,7 +1138,8 @@ public class PatternDisplay {
 							Converter converter = new Converter(op);
 							// ((ElementGroup) q.getQueryPattern()).getElements().remove(ele);
 							// ((ElementGroup) q.getQueryPattern()).getElements().add(converter.asElement(op));
-							replace_map.put(ele.toString(), "");
+							// System.out.println(ele.toString());
+							replace_map.put(ele.toString().strip(), "");
 					}
 				}
 				};
@@ -1147,10 +1148,13 @@ public class PatternDisplay {
 				for(Entry<String,String> replace_ele : replace_map.entrySet()){
 					queryString = queryString.replace(replace_ele.getKey(), replace_ele.getValue());
 				}
-				q = construcQuery(queryString);
+				// System.out.println(queryString);
+				return construcQuery(queryString);
+				// System.out.println(q.serialize());
 			} catch (Exception e) {
 				//TODO: handle exception
 				e.printStackTrace();
 			}
+			return q;
 	}
 }
