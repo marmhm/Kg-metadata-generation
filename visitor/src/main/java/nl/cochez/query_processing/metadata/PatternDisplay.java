@@ -1152,7 +1152,13 @@ public class PatternDisplay {
 					queryString = queryString.replace(replace_ele.getKey(), replace_ele.getValue());
 				}
 				// System.out.println(queryString);
-				return construcQuery(queryString);
+				try {
+					return construcQuery(queryString);
+				} catch (Exception e) {
+					// TODO: handle exception
+					System.out.println(queryString);
+				}
+				
 				// System.out.println(q.serialize());
 			} catch (Exception e) {
 				//TODO: handle exception
