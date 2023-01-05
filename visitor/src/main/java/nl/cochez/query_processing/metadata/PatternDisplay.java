@@ -1073,20 +1073,21 @@ public class PatternDisplay {
 	}
 
 	private static Query generalize_VALUES(Query q){
+		Query query = construcQuery(q.serialize());
 		Map<String,String> replace_map = new HashMap<String, String>();
 		List<Integer> rowCount = new ArrayList<Integer>();
 			List<Var> bindVars = new ArrayList<Var>();
 			List<Binding> rowlist = new ArrayList<>();
 			try {
 				List<Element> elements = new ArrayList<Element>();
-				if (q.getQueryPattern() instanceof ElementGroup)
-					elements = ((ElementGroup) q.getQueryPattern()).getElements();
-				else if (q.getQueryPattern() instanceof Element) {
-					elements.add(q.getQueryPattern());
+				if (query.getQueryPattern() instanceof ElementGroup)
+					elements = ((ElementGroup) query.getQueryPattern()).getElements();
+				else if (query.getQueryPattern() instanceof Element) {
+					elements.add(query.getQueryPattern());
 				} else {
-					return q;
+					return query;
 				}
-				Element queryel = q.cloneQuery().getQueryPattern();
+				Element queryel = query.cloneQuery().getQueryPattern();
 				GroupElementVisitor elvisitor = new GroupElementVisitor(){
 
 					@Override
@@ -1140,13 +1141,13 @@ public class PatternDisplay {
 							Converter converter = new Converter(op);
 							// ((ElementGroup) q.getQueryPattern()).getElements().remove(ele);
 							// ((ElementGroup) q.getQueryPattern()).getElements().add(converter.asElement(op));
-							System.out.println(ele.toString());
+							// System.out.println(ele.toString());
 							replace_map.put(ele.toString().strip(), "");
 					}
 				}
 				};
 				queryel.visit(elvisitor);
-				String queryString = q.serialize();
+				String queryString = query.serialize();
 				for(Entry<String,String> replace_ele : replace_map.entrySet()){
 					queryString = queryString.replace(replace_ele.getKey(), replace_ele.getValue());
 				}
@@ -1157,6 +1158,6 @@ public class PatternDisplay {
 				//TODO: handle exception
 				e.printStackTrace();
 			}
-			return q;
+			return query;
 	}
 }
