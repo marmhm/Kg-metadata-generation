@@ -1144,7 +1144,7 @@ public class PatternDisplay {
 				}
 				};
 				queryel.visit(elvisitor);
-				String queryString = q.serialize();
+				String queryString = q.serialize().replace("\n", " ").replace("\r", " ");
 				for(Entry<String,String> replace_ele : replace_map.entrySet()){
 					queryString = queryString.replace(replace_ele.getKey(), replace_ele.getValue());
 				}
