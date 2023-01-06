@@ -501,7 +501,7 @@ public class PatternDisplay {
 		for (int i =1;i<=tripleNumber;i++){
 			count_map.put(i, 0);
 		}
-		result = sortPatternByValue(findFrequentPattern(new ArrayList<Query>(pattern_instance.keySet())));
+		result = sortPatternByValue(findFrequentPattern_checkQueryEquavalence(new ArrayList<Query>(pattern_instance.keySet()),sparqlendpoint));
 		br2: for (int i = 0; !(check_count_all(count_map,top,offset,tripleNumber)) && i < result.size();i++){
 			Query pattern_query = result.get(i).getKey();
 			int num = getBGPtripleNumber(pattern_query);
@@ -722,6 +722,130 @@ public class PatternDisplay {
 			}
 		}
 		return false;
+	}
+
+	private static HashMap<Query, Integer> findFrequentPattern_checkQueryEquavalence(List<Query> inputArr, String endpoint) {
+		HashMap<Query, Integer> numberMap = new HashMap<Query, Integer>();
+		int frequency = -1;
+
+		int value;
+		for (int i = 0; i < inputArr.size(); i++) {
+
+			value = -1;
+			if (numberMap.containsKey(inputArr.get(i)))
+				if (listOflistContains_checkQueryEquavalence(inputArr.get(i), numberMap.keySet(), endpoint)) {
+					value = numberMap.get(inputArr.get(i));
+				}
+			if (value != -1) {
+
+				value += 1;
+				if (value > frequency) {
+
+					frequency = value;
+				}
+
+				numberMap.put(inputArr.get(i), value);
+			} else {
+
+				numberMap.put(inputArr.get(i), 1);
+			}
+
+		}
+		return numberMap;
+	}
+
+	private static boolean listOflistContains_checkQueryEquavalence(Query list, Set<Query> listlist, String endpoint) {
+		if (listlist.contains(list))
+			return true;
+		List<Triple> list_pattern = new ArrayList<Triple>();
+		AllOpVisitor list_visit = new AllOpVisitor() {
+			@Override
+			public void visit(OpBGP opBGP) {
+				BasicPattern bp = simplify(opBGP.getPattern());
+				list_pattern.addAll(bp.getList());
+			}
+
+			@Override
+			public void visit(OpSlice opSlice) {
+				// TODO Auto-generated method stub
+				opSlice.getSubOp().visit(this);
+
+			}
+		};
+		try{
+		Algebra.compile(list).visit(list_visit);
+		} catch (Exception e){
+			return false;
+		}
+		for (Query temp : listlist) {
+			List<Triple> temp_pattern = new ArrayList<Triple>();
+			AllOpVisitor temp_visit = new AllOpVisitor() {
+				@Override
+				public void visit(OpBGP opBGP) {
+					BasicPattern bp = simplify(opBGP.getPattern());
+					temp_pattern.addAll(bp.getList());
+				}
+
+				@Override
+				public void visit(OpSlice opSlice) {
+					// TODO Auto-generated method stub
+					opSlice.getSubOp().visit(this);
+
+				}
+			};
+			try{
+			Algebra.compile(temp).visit(temp_visit);
+			} catch(Exception e){
+				return false;
+			}
+			if (temp_pattern.containsAll(list_pattern) && list_pattern.containsAll(temp_pattern) && temp_pattern.size() == list_pattern.size()) {
+				return check_query_equavalence(list,temp,endpoint);
+			}
+		}
+		return false;
+	}
+
+	private static boolean check_query_equavalence(Query q1, Query q2, String endpoint){
+		boolean bl = true;
+		List<String> result1 = get_query_top_results_and_result_count(q1, endpoint);
+		List<String> result2 = get_query_top_results_and_result_count(q2, endpoint);
+		if(result1.size() == result2.size()){
+			for(int i =0;i<result1.size();i++){
+				if(!result1.get(i).equals(result2.get(i))){
+					bl = false;
+				}
+			}
+		} else {
+			bl = false;
+		}
+		return bl;
+	}
+
+	private static List<String> get_query_top_results_and_result_count(Query q, String endpoint){
+		List<String> outputs = new ArrayList<String>();
+		QueryExecution qexec = QueryExecutionFactory.sparqlService(endpoint, q.serialize());
+        ResultSet rs = null;
+		try {
+        	rs = qexec.execSelect();
+			outputs.add(Integer.toString(rs.getRowNumber()));
+			outputs.add(Integer.toString(rs.getResultVars().size()));
+			int count = 0;
+            if (rs.hasNext() && count < 5) {
+				String result = "";
+				QuerySolution rb = rs.nextSolution();
+				Iterator<String> varIte = rb.varNames();
+				while(varIte.hasNext()){
+					String var = varIte.next();
+					result+= var+" "+rb.get(var).toString()+",";
+				}
+				outputs.add(result);
+				count++;
+			}
+        }catch (Exception e) {
+        	
+        }
+		qexec.close();
+		return outputs;
 	}
 
 	private static BasicPattern simplify(BasicPattern bgp) {
@@ -1021,8 +1145,8 @@ public class PatternDisplay {
 
     private static Query construcQuery(String queryString){
 		Query query = QueryFactory.create(queryString);
-		Op op = Algebra.compile(query);
-		query = OpAsQuery.asQuery(op);
+		// Op op = Algebra.compile(query);
+		// query = OpAsQuery.asQuery(op);
 		if(query.isSelectType()){
 			SelectBuilder builder = new SelectBuilder();
 			HandlerBlock handlerBlock = new HandlerBlock(query);
@@ -1147,7 +1271,7 @@ public class PatternDisplay {
 				}
 				};
 				queryel.visit(elvisitor);
-				String queryString = query.serialize();
+				String queryString = query.serialize().replace("\n", "").replace("\r", "");
 				for(Entry<String,String> replace_ele : replace_map.entrySet()){
 					queryString = queryString.replace(replace_ele.getKey(), replace_ele.getValue());
 				}
@@ -1156,7 +1280,7 @@ public class PatternDisplay {
 					return construcQuery(queryString);
 				} catch (Exception e) {
 					// TODO: handle exception
-					System.out.println(queryString);
+					// System.out.println(queryString);
 				}
 				
 				// System.out.println(q.serialize());
