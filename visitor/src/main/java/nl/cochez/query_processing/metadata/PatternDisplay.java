@@ -250,7 +250,7 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
-					pattern_q = generalize_VALUES(pattern_q);
+					// pattern_q = generalize_VALUES(pattern_q);
 					if(pattern_instance.containsKey(pattern_q)){
 						pattern_instance.get(pattern_q).add(q);
 					}
@@ -300,7 +300,7 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
-					pattern_q = generalize_VALUES(pattern_q);
+					// pattern_q = generalize_VALUES(pattern_q);
 					if(pattern_instance.containsKey(pattern_q)){
 						pattern_instance.get(pattern_q).add(q);
 					}
@@ -350,7 +350,7 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
-					pattern_q = generalize_VALUES(pattern_q);
+					// pattern_q = generalize_VALUES(pattern_q);
 					if(pattern_instance.containsKey(pattern_q)){
 						pattern_instance.get(pattern_q).add(q);
 					}
@@ -399,7 +399,7 @@ public class PatternDisplay {
 						}
 					}
 					Query pattern_q = selectBuilder.build();
-					pattern_q = generalize_VALUES(pattern_q);
+					// pattern_q = generalize_VALUES(pattern_q);
 					if(pattern_instance.containsKey(pattern_q)){
 						pattern_instance.get(pattern_q).add(q);
 					}

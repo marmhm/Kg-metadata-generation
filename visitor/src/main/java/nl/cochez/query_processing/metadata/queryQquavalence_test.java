@@ -20,7 +20,7 @@ import org.apache.jena.sparql.algebra.op.OpBGP;
 import org.apache.jena.sparql.algebra.op.OpSlice;
 import org.apache.jena.sparql.core.BasicPattern;
 
-public class queryQquavalence {
+public class queryQquavalence_test {
     public static void main(String[] args) {
         String query1 = "";
 		String query2 = "";
