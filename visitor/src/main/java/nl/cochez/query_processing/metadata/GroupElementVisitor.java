@@ -45,7 +45,7 @@ public abstract class GroupElementVisitor implements ElementVisitor {
     @Override
     public void visit(ElementBind el) {
         // TODO Auto-generated method stub
-        System.out.println(el.toString());
+        // System.out.println(el.toString());
     }
 
     @Override
@@ -61,7 +61,7 @@ public abstract class GroupElementVisitor implements ElementVisitor {
     @Override
     public void visit(ElementOptional el) {
         // TODO Auto-generated method stub
-        System.out.println(el.getOptionalElement().toString());
+        // System.out.println(el.getOptionalElement().toString());
         el.getOptionalElement().visit(this);
     }
 
