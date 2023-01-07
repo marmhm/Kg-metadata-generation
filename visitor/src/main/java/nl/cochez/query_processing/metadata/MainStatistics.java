@@ -234,7 +234,7 @@ public class MainStatistics {
 		watch.stop();
 		System.out.println("Elapsed" + watch.elapsed(TimeUnit.SECONDS));
 
-		// collector.stats();
+		collector.stats();
 		PatternDisplay.rankPattern(collector.getQueryList(), 10, 1,25,true, sparqlendpoint, dict_name);//input is (queryList, top number of display, max number of triples in pattern query)
 		System.out.println("Finished!" + watch.elapsed(TimeUnit.SECONDS));
 	}
