@@ -502,6 +502,17 @@ public class PatternDisplay {
 			count_map.put(i, 0);
 		}
 		result = sortPatternByValue(findFrequentPattern_checkQueryEquavalence(new ArrayList<Query>(pattern_instance.keySet()),sparqlendpoint));
+		Map<Integer, Integer> unique_pattern_numbers = new HashMap<Integer, Integer>();
+		for (Entry<Query, Integer> res : result) {
+			int length = patter_length_map.get(res.getKey());
+			if (unique_pattern_numbers.containsKey(length)) {
+				unique_pattern_numbers.put(length, unique_pattern_numbers.get(length) + 1);
+			} else {
+				unique_pattern_numbers.put(length, 1);
+			}
+			// Algebra.compile(res.getKey()).visit(get_pattern_visitor);
+		}
+		System.out.println("Statistics of number of unique pattern in each length:"+unique_pattern_numbers);
 		br2: for (int i = 0; !(check_count_all(count_map,top,offset,tripleNumber)) && i < result.size();i++){
 			Query pattern_query = result.get(i).getKey();
 			int num = getBGPtripleNumber(pattern_query);
