@@ -501,7 +501,7 @@ public class PatternDisplay {
 		for (int i =1;i<=tripleNumber;i++){
 			count_map.put(i, 0);
 		}
-		result = sortPatternByValue(findFrequentPattern_checkQueryEquavalence(new ArrayList<Query>(pattern_instance.keySet()),sparqlendpoint));
+		result = sortPatternByValue(findFrequentPattern_checkQueryEquavalence(pattern_instance,sparqlendpoint));
 		Map<Integer, Integer> unique_pattern_numbers = new HashMap<Integer, Integer>();
 		for (Entry<Query, Integer> res : result) {
 			int length = patter_length_map.get(res.getKey());
@@ -572,7 +572,7 @@ public class PatternDisplay {
 				System.exit(1);
 			}
 
-			jo.put("Frequency", result.get(i).getValue());
+			jo.put("Frequency", pattern_instance.get(pattern_query).size());
 			try {
 				bw_all.write(jo.toString());
 				bw_all.newLine();
@@ -735,7 +735,8 @@ public class PatternDisplay {
 		return false;
 	}
 
-	private static HashMap<Query, Integer> findFrequentPattern_checkQueryEquavalence(List<Query> inputArr, String endpoint) {
+	private static HashMap<Query, Integer> findFrequentPattern_checkQueryEquavalence(HashMap<Query, HashMultiset<Query>> pattern_instance, String endpoint) {
+		List<Query> inputArr = new ArrayList<Query>(pattern_instance.keySet());
 		HashMap<Query, Integer> numberMap = new HashMap<Query, Integer>();
 		int frequency = -1;
 
@@ -744,7 +745,7 @@ public class PatternDisplay {
 
 			value = -1;
 			if (numberMap.containsKey(inputArr.get(i)))
-				if (listOflistContains_checkQueryEquavalence(inputArr.get(i), numberMap.keySet(), endpoint)) {
+				if (listOflistContains_checkQueryEquavalence(inputArr.get(i), numberMap.keySet(), endpoint,pattern_instance)) {
 					value = numberMap.get(inputArr.get(i));
 				}
 			if (value != -1) {
@@ -765,7 +766,7 @@ public class PatternDisplay {
 		return numberMap;
 	}
 
-	private static boolean listOflistContains_checkQueryEquavalence(Query list, Set<Query> listlist, String endpoint) {
+	private static boolean listOflistContains_checkQueryEquavalence(Query list, Set<Query> listlist, String endpoint, HashMap<Query, HashMultiset<Query>> pattern_instance) {
 		if (listlist.contains(list))
 			return true;
 		List<Triple> list_pattern = new ArrayList<Triple>();
@@ -810,7 +811,12 @@ public class PatternDisplay {
 				return false;
 			}
 			if (temp_pattern.containsAll(list_pattern) && list_pattern.containsAll(temp_pattern) && temp_pattern.size() == list_pattern.size()) {
-				return check_query_equavalence(list,temp,endpoint);
+				if(check_query_equavalence(list,temp,endpoint) == true){
+					pattern_instance.get(temp).addAll(pattern_instance.get(list));
+					return true;
+				}
+				else
+					return false;
 			}
 		}
 		return false;
@@ -907,7 +913,11 @@ public class PatternDisplay {
 		});
 		HashMap<Query, Integer> temp = new LinkedHashMap<Query, Integer>();
 		for (Map.Entry<Query, Integer> aa : list) {
-			temp.put(aa.getKey(), aa.getValue());
+			try {
+				temp.put(construcQuery(aa.getKey()), aa.getValue());
+			} catch (Exception e) {
+				//TODO: handle exception
+			}
 		}
 		return list;
 	}
@@ -921,7 +931,11 @@ public class PatternDisplay {
 		});
 		HashMap<Query, Integer> temp = new LinkedHashMap<Query, Integer>();
 		for (Map.Entry<Query, Integer> aa : list) {
-			temp.put(aa.getKey(), aa.getValue());
+			try {
+				temp.put(construcQuery(aa.getKey()), aa.getValue());
+			} catch (Exception e) {
+				//TODO: handle exception
+			}
 		}
 		return temp;
 	}
@@ -1156,6 +1170,41 @@ public class PatternDisplay {
 
     private static Query construcQuery(String queryString){
 		Query query = QueryFactory.create(queryString);
+		// Op op = Algebra.compile(query);
+		// query = OpAsQuery.asQuery(op);
+		if(query.isSelectType()){
+			SelectBuilder builder = new SelectBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			builder.getHandlerBlock().addAll(handlerBlock);
+			builder.setBase(null);
+			query = builder.build();
+		}
+		else if(query.isAskType()){
+			AskBuilder builder = new AskBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			builder.getHandlerBlock().addAll(handlerBlock);
+			builder.setBase(null);
+			query = builder.build();
+		}
+		else if (query.isConstructType()){
+			ConstructBuilder builder = new ConstructBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			builder.getHandlerBlock().addAll(handlerBlock);
+			builder.setBase(null);
+			query = builder.build();
+		}
+		else if (query.isDescribeType()){
+			DescribeBuilder builder = new DescribeBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			builder.getHandlerBlock().addAll(handlerBlock);
+			builder.setBase(null);
+			query = builder.build();
+		}
+		return query;
+	}
+
+	private static Query construcQuery(Query query){
+		// Query query = QueryFactory.create(queryString);
 		// Op op = Algebra.compile(query);
 		// query = OpAsQuery.asQuery(op);
 		if(query.isSelectType()){
