@@ -103,6 +103,7 @@ public class PatternDisplay {
 			Set<Long> number_set = new HashSet<Long>();
 			Set<String> bind_set = get_bind_vars(q);
 			Set<String> values_set = new HashSet<String>();
+			Set<String> no_change_set = new HashSet<String>();
 			// Set<String> count_set = new HashSet<String>();
 			Map<String, Integer> count_count = new HashMap<String, Integer>();
 			HashMap<Var, Var> extend_dict = new HashMap<Var, Var>();
@@ -118,11 +119,15 @@ public class PatternDisplay {
 				public void visit(OpBGP opBGP) {
 					for (Triple t : opBGP.getPattern()) {
 						triples.add(t);
+						if (t.getPredicate().toString().equals("rdf:type") || t.getPredicate().toString().equals("a")){
+							no_change_set.add(t.getObject().toString());
+						}
 						if (t.getSubject().isVariable() || t.getSubject().toString().startsWith("?")) {
 							var_set.add(t.getSubject().toString());
 						}
 						if (t.getObject().isVariable() || t.getObject().toString().startsWith("?")) {
-							var_set.add(t.getObject().toString());
+							if(!no_change_set.contains(t.getObject().toString()))
+								var_set.add(t.getObject().toString());
 						}
 						if (t.getPredicate().isVariable() || t.getPredicate().toString().startsWith("?")) {
 							predicate_set.add(t.getPredicate().toString());
@@ -131,7 +136,8 @@ public class PatternDisplay {
 							entity_set.add(t.getSubject().toString());
 						}
 						if (t.getObject().isURI() || t.getObject().isBlank()) {
-							entity_set.add(t.getObject().toString());
+							if(!no_change_set.contains(t.getObject().toString()))
+								var_set.add(t.getObject().toString());
 						}
 						if (t.getSubject().isLiteral()){
 							literal_set.add(t.getSubject().getLiteralLexicalForm());
