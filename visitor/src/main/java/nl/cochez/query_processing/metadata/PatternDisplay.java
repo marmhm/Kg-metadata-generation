@@ -106,7 +106,13 @@ public class PatternDisplay {
 			// Set<String> count_set = new HashSet<String>();
 			Map<String, Integer> count_count = new HashMap<String, Integer>();
 			HashMap<Var, Var> extend_dict = new HashMap<Var, Var>();
-			Op ope = Algebra.compile(q);
+			Op ope = null;
+			try {
+				ope = Algebra.compile(q);
+			} catch (Exception e) {
+				//TODO: handle exception
+				continue br1;
+			}
 			AllOpVisitor allbgp = new AllOpVisitor() {
 				@Override
 				public void visit(OpBGP opBGP) {
@@ -933,6 +939,7 @@ public class PatternDisplay {
 		for (Map.Entry<Query, Integer> aa : list) {
 			try {
 				temp.put(construcQuery(aa.getKey()), aa.getValue());
+				// temp.put(aa.getKey(), aa.getValue());
 			} catch (Exception e) {
 				//TODO: handle exception
 			}
