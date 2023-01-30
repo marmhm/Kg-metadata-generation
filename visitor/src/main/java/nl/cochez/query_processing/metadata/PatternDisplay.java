@@ -487,7 +487,7 @@ public class PatternDisplay {
 				for(DefaultEdge edge : graph.edgesOf(pattern_q)){
 					count += instance_freq.get(graph.getEdgeTarget(edge));
 				}
-				bw_pattern_instance.write(pattern_q.serialize().replace("\r", "\\r").replace("\n", "\\n")+" & "+Integer.toString(pattern_instance.get(pattern_q).size())+" & "+Integer.toString(count));
+				bw_pattern_instance.write(pattern_q.serialize().replace("\r", "\\r").replace("\n", "\\n")+" & "+Integer.toString(graph.edgesOf(pattern_q).size())+" & "+Integer.toString(count));
 				bw_pattern_instance.newLine();
 				bw_pattern_instance.flush();
 			}
@@ -597,7 +597,7 @@ public class PatternDisplay {
 				System.exit(1);
 			}
 
-			
+
 
 			jo.put("Frequency", pattern_instance.get(pattern_query).size());
 			try {
