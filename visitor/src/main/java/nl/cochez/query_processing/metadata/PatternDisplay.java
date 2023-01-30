@@ -51,6 +51,7 @@ import org.apache.jena.sparql.syntax.ElementBind;
 import org.apache.jena.sparql.syntax.ElementData;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
@@ -75,7 +76,7 @@ public class PatternDisplay {
 		// List<Query> pattern_query = new ArrayList<Query>();
 		List<Query> invalid_pattern_query = new ArrayList<Query>();
 		Map<Query,Boolean> dict_query = getDict(dict_name);
-		// Map<Query, Query> pattern_instance_pair = new HashMap<Query,Query>();
+		Graph<Query, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
 		HashMap<Query, HashMultiset<Query>> pattern_instance = new HashMap<Query, HashMultiset<Query>>(); // hashmap for pattern and a set of unique queries for this pattern
 		Map<Query, Integer> patter_length_map = new HashMap<Query,Integer>();
 		Map<Integer, Integer> pattern_numbers = new HashMap<Integer, Integer>();
@@ -270,6 +271,9 @@ public class PatternDisplay {
 						pattern_instance.put(pattern_q, HashMultiset.create());
 						pattern_instance.get(pattern_q).add(q);
 					}
+					graph.addVertex(pattern_q);
+					graph.addVertex(q);
+					graph.addEdge(pattern_q, q);
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
 					// if(!pattern_instance_pair.containsKey(pattern_q)){
@@ -320,6 +324,9 @@ public class PatternDisplay {
 						pattern_instance.put(pattern_q, HashMultiset.create());
 						pattern_instance.get(pattern_q).add(q);
 					}
+					graph.addVertex(pattern_q);
+					graph.addVertex(q);
+					graph.addEdge(pattern_q, q);
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
 					// if(!pattern_instance_pair.containsKey(pattern_q)){
@@ -370,6 +377,9 @@ public class PatternDisplay {
 						pattern_instance.put(pattern_q, HashMultiset.create());
 						pattern_instance.get(pattern_q).add(q);
 					}
+					graph.addVertex(pattern_q);
+					graph.addVertex(q);
+					graph.addEdge(pattern_q, q);
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
 					// if(!pattern_instance_pair.containsKey(pattern_q)){
@@ -419,6 +429,9 @@ public class PatternDisplay {
 						pattern_instance.put(pattern_q, HashMultiset.create());
 						pattern_instance.get(pattern_q).add(q);
 					}
+					graph.addVertex(pattern_q);
+					graph.addVertex(q);
+					graph.addEdge(pattern_q, q);
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
 					// if(!pattern_instance_pair.containsKey(pattern_q)){
@@ -471,8 +484,8 @@ public class PatternDisplay {
 			BufferedWriter bw_pattern_instance = new BufferedWriter(new FileWriter("pattern_statistics.csv", true));
 			for (Query pattern_q : pattern_instance.keySet()) {
 				int count=0;
-				for(Query unique : pattern_instance.get(pattern_q)){
-					count += instance_freq.get(unique);
+				for(DefaultEdge edge : graph.edgesOf(pattern_q)){
+					count += instance_freq.get(graph.getEdgeTarget(edge));
 				}
 				bw_pattern_instance.write(pattern_q.serialize().replace("\r", "\\r").replace("\n", "\\n")+" & "+Integer.toString(pattern_instance.get(pattern_q).size())+" & "+Integer.toString(count));
 				bw_pattern_instance.newLine();
@@ -583,6 +596,8 @@ public class PatternDisplay {
 				e.printStackTrace();
 				System.exit(1);
 			}
+
+			
 
 			jo.put("Frequency", pattern_instance.get(pattern_query).size());
 			try {
