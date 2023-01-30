@@ -119,7 +119,7 @@ public class PatternDisplay {
 				public void visit(OpBGP opBGP) {
 					for (Triple t : opBGP.getPattern()) {
 						triples.add(t);
-						if (t.getPredicate().toString().equals("rdf:type") || t.getPredicate().toString().equals("a")){
+						if (t.getPredicate().toString().equals("rdf:type") || t.getPredicate().toString().equals("a") || t.getPredicate().toString().equals("http://www.wikidata.org/prop/qualifier/P31")){
 							no_change_set.add(t.getObject().toString());
 						}
 						if (t.getSubject().isVariable() || t.getSubject().toString().startsWith("?")) {
