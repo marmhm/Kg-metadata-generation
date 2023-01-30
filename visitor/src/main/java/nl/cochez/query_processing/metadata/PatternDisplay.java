@@ -119,7 +119,7 @@ public class PatternDisplay {
 				public void visit(OpBGP opBGP) {
 					for (Triple t : opBGP.getPattern()) {
 						triples.add(t);
-						if (t.getPredicate().toString().equals("rdf:type") || t.getPredicate().toString().equals("a") || t.getPredicate().toString().equals("http://www.wikidata.org/prop/qualifier/P31")){
+						if (t.getPredicate().toString().equals("rdf:type") || t.getPredicate().toString().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#type") || t.getPredicate().toString().equals("a") || t.getPredicate().toString().equals("http://www.wikidata.org/prop/qualifier/P31")){
 							no_change_set.add(t.getObject().toString());
 						}
 						if (t.getSubject().isVariable() || t.getSubject().toString().startsWith("?")) {
@@ -137,7 +137,7 @@ public class PatternDisplay {
 						}
 						if (t.getObject().isURI() || t.getObject().isBlank()) {
 							if(!no_change_set.contains(t.getObject().toString()))
-								var_set.add(t.getObject().toString());
+								entity_set.add(t.getObject().toString());
 						}
 						if (t.getSubject().isLiteral()){
 							literal_set.add(t.getSubject().getLiteralLexicalForm());
