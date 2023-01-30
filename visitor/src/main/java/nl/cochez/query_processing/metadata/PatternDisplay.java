@@ -127,8 +127,7 @@ public class PatternDisplay {
 							var_set.add(t.getSubject().toString());
 						}
 						if (t.getObject().isVariable() || t.getObject().toString().startsWith("?")) {
-							if(!no_change_set.contains(t.getObject().toString()))
-								var_set.add(t.getObject().toString());
+							var_set.add(t.getObject().toString());
 						}
 						if (t.getPredicate().isVariable() || t.getPredicate().toString().startsWith("?")) {
 							predicate_set.add(t.getPredicate().toString());
