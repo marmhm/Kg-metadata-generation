@@ -125,10 +125,8 @@ public class PatternDisplay {
 						triples.add(t);
 						if (t.getPredicate().toString().equals("rdf:type") || t.getPredicate().toString().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#type") || t.getPredicate().toString().equals("a") || t.getPredicate().toString().equals("http://www.wikidata.org/prop/qualifier/P31")){
 							no_change_set.add(t.getObject().toString());
-							if(t.getSubject().isURI()){
-								query_type.put(t.getObject().toString(),q);
-								type_counting_list.add(t.getObject().toString());
-							}
+							query_type.put(t.getObject().toString(),q);
+							type_counting_list.add(t.getObject().toString());
 						}
 						if (t.getSubject().isVariable() || t.getSubject().toString().startsWith("?")) {
 							var_set.add(t.getSubject().toString());
