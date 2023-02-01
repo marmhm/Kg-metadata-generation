@@ -82,7 +82,7 @@ public class PatternDisplay {
 		Map<Query, Integer> patter_length_map = new HashMap<Query,Integer>();
 		Map<Integer, Integer> pattern_numbers = new HashMap<Integer, Integer>();
 		Map<Integer, Integer> instance_numbers = new HashMap<Integer, Integer>();
-		Map<Query, org.apache.jena.graph.Node> query_type = new HashMap<Query, org.apache.jena.graph.Node>();
+		Map<String, Query> query_type = new HashMap<String, Query>();
 		List<String> type_counting_list = new ArrayList<String>();
 		HashMap<Query, Integer> instance_freq = sortInstanceByValue(findFrequentQuery(queryList)); // get unique query list and the frequency of each unique query
 		try {
@@ -125,9 +125,10 @@ public class PatternDisplay {
 						triples.add(t);
 						if (t.getPredicate().toString().equals("rdf:type") || t.getPredicate().toString().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#type") || t.getPredicate().toString().equals("a") || t.getPredicate().toString().equals("http://www.wikidata.org/prop/qualifier/P31")){
 							no_change_set.add(t.getObject().toString());
-							query_type.put(q, t.getObject());
-							if(t.getSubject().isURI())
+							if(t.getSubject().isURI()){
+								query_type.put(t.getObject().toString(),q);
 								type_counting_list.add(t.getObject().toString());
+							}
 						}
 						if (t.getSubject().isVariable() || t.getSubject().toString().startsWith("?")) {
 							var_set.add(t.getSubject().toString());
@@ -471,6 +472,17 @@ public class PatternDisplay {
 		}
 		Map<String, Long> couterMap = sortByValue(type_counting_list.stream().collect(Collectors.groupingBy(e -> e.toString(),Collectors.counting())));
 		System.out.println("Statistics of number of query for each type:"+couterMap);
+		try {
+			BufferedWriter bw_type = new BufferedWriter(new FileWriter("rdftype_statistics.csv",true));
+			for(Map.Entry<String, Long> type_item : couterMap.entrySet()){
+				bw_type.write(type_item.getKey().replace("\n", "\\n")+" & "+type_item.getValue().toString()+" & "+query_type.get(type_item.getKey()));
+				bw_type.newLine();
+				bw_type.flush();
+			}
+			bw_type.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 
 		// System.out.println("Statistics of number of pattern in each length:"+pattern_numbers);
 		System.out.println("Statistics of number of instance in each length:"+instance_numbers);
