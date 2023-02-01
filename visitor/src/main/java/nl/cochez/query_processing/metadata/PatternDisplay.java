@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.json.JsonObject;
@@ -81,6 +82,8 @@ public class PatternDisplay {
 		Map<Query, Integer> patter_length_map = new HashMap<Query,Integer>();
 		Map<Integer, Integer> pattern_numbers = new HashMap<Integer, Integer>();
 		Map<Integer, Integer> instance_numbers = new HashMap<Integer, Integer>();
+		Map<Query, org.apache.jena.graph.Node> query_type = new HashMap<Query, org.apache.jena.graph.Node>();
+		List<String> type_counting_list = new ArrayList<String>();
 		HashMap<Query, Integer> instance_freq = sortInstanceByValue(findFrequentQuery(queryList)); // get unique query list and the frequency of each unique query
 		try {
 			BufferedWriter bw1 = new BufferedWriter(new FileWriter("unique_query_frequency.csv",true));
@@ -122,6 +125,8 @@ public class PatternDisplay {
 						triples.add(t);
 						if (t.getPredicate().toString().equals("rdf:type") || t.getPredicate().toString().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#type") || t.getPredicate().toString().equals("a") || t.getPredicate().toString().equals("http://www.wikidata.org/prop/qualifier/P31")){
 							no_change_set.add(t.getObject().toString());
+							query_type.put(q, t.getObject());
+							type_counting_list.add(t.getObject().toString());
 						}
 						if (t.getSubject().isVariable() || t.getSubject().toString().startsWith("?")) {
 							var_set.add(t.getSubject().toString());
@@ -463,6 +468,8 @@ public class PatternDisplay {
 				instance_numbers.put(length, instance_freq.get(q));
 			}
 		}
+		Map<String, Long> couterMap = sortByValue(type_counting_list.stream().collect(Collectors.groupingBy(e -> e.toString(),Collectors.counting())));
+		System.out.println("Statistics of number of query for each type:"+couterMap);
 
 		// System.out.println("Statistics of number of pattern in each length:"+pattern_numbers);
 		System.out.println("Statistics of number of instance in each length:"+instance_numbers);
@@ -959,6 +966,25 @@ public class PatternDisplay {
 		for (Map.Entry<Query, Integer> aa : list) {
 			try {
 				temp.put(construcQuery(aa.getKey()), aa.getValue());
+				// temp.put(aa.getKey(), aa.getValue());
+			} catch (Exception e) {
+				//TODO: handle exception
+			}
+		}
+		return temp;
+	}
+
+	public static HashMap<String, Long> sortByValue(Map<String, Long> hm) {
+		List<Map.Entry<String, Long>> list = new LinkedList<Map.Entry<String, Long>>(hm.entrySet());
+		Collections.sort(list, new Comparator<Map.Entry<String, Long>>() {
+			public int compare(Map.Entry<String, Long> o1, Map.Entry<String, Long> o2) {
+				return (o2.getValue()).compareTo(o1.getValue());
+			}
+		});
+		HashMap<String, Long> temp = new LinkedHashMap<String, Long>();
+		for (Map.Entry<String, Long> aa : list) {
+			try {
+				temp.put(aa.getKey(), aa.getValue());
 				// temp.put(aa.getKey(), aa.getValue());
 			} catch (Exception e) {
 				//TODO: handle exception
