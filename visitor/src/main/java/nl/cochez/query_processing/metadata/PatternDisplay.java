@@ -73,7 +73,7 @@ import nl.cochez.query_processing.metadata.OpAsQuery.Converter;
 import java.io.IOException;
 
 public class PatternDisplay {
-    public static void rankPattern(ArrayList<Query> queryList, int top,int offset, int tripleNumber, boolean checkEndpoint, String sparqlendpoint, String dict_name) {
+    public static void rankPattern(ArrayList<Query> queryList, int top,int offset, int tripleNumber, boolean checkEndpoint, String sparqlendpoint, String dict_name, List<String> stop_list, List<String> ptop_List, List<String> otop_list, List<String> typetop_list) {
 		// List<Query> pattern_query = new ArrayList<Query>();
 		List<Query> invalid_pattern_query = new ArrayList<Query>();
 		Map<Query,Boolean> dict_query = getDict(dict_name);
@@ -83,6 +83,7 @@ public class PatternDisplay {
 		Map<Integer, Integer> pattern_numbers = new HashMap<Integer, Integer>();
 		Map<Integer, Integer> instance_numbers = new HashMap<Integer, Integer>();
 		Map<String, Query> query_type = new HashMap<String, Query>();
+		HashMap<String, Query> iri_query = new HashMap<String, Query>();
 		List<String> type_counting_list = new ArrayList<String>();
 		HashMap<Query, Integer> instance_freq = sortInstanceByValue(findFrequentQuery(queryList)); // get unique query list and the frequency of each unique query
 		try {
@@ -150,6 +151,20 @@ public class PatternDisplay {
 						if (t.getObject().isLiteral()){
 							literal_set.add(t.getObject().getLiteralLexicalForm());
 						}
+
+						if(stop_list.contains(t.getSubject().toString())){
+							if(iri_query.containsKey(t.getSubject().toString())){
+								int old_socre = entity_vairable_score(iri_query.get(t.getSubject().toString()));
+								int new_score = entity_vairable_score(opBGP);
+								if(new_score>old_socre){
+									iri_query.put(t.getSubject().toString(), q);
+								}
+							}
+							else{
+								iri_query.put(t.getSubject().toString(), q);
+							}
+						}
+						
 					}
 				}
 
@@ -478,6 +493,47 @@ public class PatternDisplay {
 				bw_type.flush();
 			}
 			bw_type.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		try {
+			BufferedWriter bw_type_top = new BufferedWriter(new FileWriter("type_top_query.txt",true));
+			bw_type_top.write("subject");
+			bw_type_top.newLine();
+			bw_type_top.flush();
+			for(String item : stop_list){
+				bw_type_top.write(item+" & "+iri_query.get(item).serialize().replace("\r", "\\r").replace("\n", "\\n"));
+				bw_type_top.newLine();
+				bw_type_top.flush();
+			}
+
+			bw_type_top.write("predicate");
+			bw_type_top.newLine();
+			bw_type_top.flush();
+			for(String item : ptop_List){
+				bw_type_top.write(item+" & "+iri_query.get(item).serialize().replace("\r", "\\r").replace("\n", "\\n"));
+				bw_type_top.newLine();
+				bw_type_top.flush();
+			}
+
+			bw_type_top.write("object");
+			bw_type_top.newLine();
+			bw_type_top.flush();
+			for(String item : otop_list){
+				bw_type_top.write(item+" & "+iri_query.get(item).serialize().replace("\r", "\\r").replace("\n", "\\n"));
+				bw_type_top.newLine();
+				bw_type_top.flush();
+			}
+
+			bw_type_top.write("type");
+			bw_type_top.newLine();
+			bw_type_top.flush();
+			for(String item : typetop_list){
+				bw_type_top.write(item+" & "+iri_query.get(item).serialize().replace("\r", "\\r").replace("\n", "\\n"));
+				bw_type_top.newLine();
+				bw_type_top.flush();
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -1413,5 +1469,113 @@ public class PatternDisplay {
 				e.printStackTrace();
 			}
 			return query;
+	}
+
+	private static int entity_vairable_score(Query query){
+		HashSet<String> ent_set = new HashSet<String>();
+		HashSet<String> var_set = new HashSet<String>();
+		Op op = Algebra.compile(query);
+		AllOpVisitor allbgp = new AllOpVisitor() {
+			@Override
+			public void visit(OpBGP opBGP) {
+				for(Triple t: opBGP.getPattern().getList()){
+					org.apache.jena.graph.Node s = t.getSubject();
+						if (s.isURI()) {
+							ent_set.add(s.getURI());
+						} else if (s.isVariable()) {
+							// TODO
+							var_set.add(s.toString());
+						} else {
+							// blank nodes ingored
+						}
+						org.apache.jena.graph.Node p = t.getPredicate();
+						if (p.isURI()) {
+							ent_set.add(p.getURI());
+						} else if (p.isVariable()) {
+							// TODO
+							var_set.add(p.toString());
+						} else {
+							throw new AssertionError("This should never happen");
+						}
+						org.apache.jena.graph.Node o = t.getObject();
+						if (o.isURI()) {
+							ent_set.add(o.getURI());
+						} else if (o.isVariable()) {
+							// TODO
+							var_set.add(o.toString());
+						} else if (o.isLiteral()) {
+		
+						} else {
+							// blank nodes ingored
+						}
+				}
+			}
+
+			@Override
+			public void visit(OpSlice opSlice) {
+				opSlice.getSubOp().visit(this);
+			}
+
+			public void visit(OpExtend opExtend){
+				opExtend.getSubOp().visit(this);
+			}
+
+			@Override
+			public void visit(OpGroup opGroup){
+				opGroup.getSubOp().visit(this);
+			}
+
+			@Override
+			public void visit(OpTable opTable){
+			}
+		};
+		op.visit(allbgp);
+		
+		
+		if(var_set.isEmpty())
+			return ent_set.size();
+		
+		return (ent_set.size())/(var_set.size());
+	}
+
+	private static int entity_vairable_score(OpBGP opBGP){
+
+		HashSet<String> ent_set = new HashSet<String>();
+		HashSet<String> var_set = new HashSet<String>();
+		for(Triple t: opBGP.getPattern().getList()){
+			org.apache.jena.graph.Node s = t.getSubject();
+				if (s.isURI()) {
+					ent_set.add(s.getURI());
+				} else if (s.isVariable()) {
+					// TODO
+					var_set.add(s.toString());
+				} else {
+					// blank nodes ingored
+				}
+				org.apache.jena.graph.Node p = t.getPredicate();
+				if (p.isURI()) {
+					ent_set.add(p.getURI());
+				} else if (p.isVariable()) {
+					// TODO
+					var_set.add(p.toString());
+				} else {
+					throw new AssertionError("This should never happen");
+				}
+				org.apache.jena.graph.Node o = t.getObject();
+				if (o.isURI()) {
+					ent_set.add(o.getURI());
+				} else if (o.isVariable()) {
+					// TODO
+					var_set.add(o.toString());
+				} else if (o.isLiteral()) {
+
+				} else {
+					// blank nodes ingored
+				}
+		}
+		if(var_set.isEmpty())
+			return ent_set.size();
+		
+		return (ent_set.size())/(var_set.size());
 	}
 }
