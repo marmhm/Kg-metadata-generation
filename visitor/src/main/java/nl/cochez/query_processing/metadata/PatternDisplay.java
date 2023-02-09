@@ -75,6 +75,7 @@ import java.io.IOException;
 public class PatternDisplay {
     public static void rankPattern(ArrayList<Query> queryList, int top,int offset, int tripleNumber, boolean checkEndpoint, String sparqlendpoint, String dict_name, List<String> stop_list, List<String> ptop_List, List<String> otop_list, List<String> typetop_list) {
 		// List<Query> pattern_query = new ArrayList<Query>();
+		int threshold = 1; // change the threshold for ratio
 		List<Query> invalid_pattern_query = new ArrayList<Query>();
 		Map<Query,Boolean> dict_query = getDict(dict_name);
 		Graph<Query, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
@@ -83,7 +84,7 @@ public class PatternDisplay {
 		Map<Integer, Integer> pattern_numbers = new HashMap<Integer, Integer>();
 		Map<Integer, Integer> instance_numbers = new HashMap<Integer, Integer>();
 		Map<String, Query> query_type = new HashMap<String, Query>();
-		HashMap<String, Query> iri_query = new HashMap<String, Query>();
+		HashMap<String, HashMultiset<Query>> iri_query = new HashMap<String, HashMultiset<Query>>();
 		List<String> type_counting_list = new ArrayList<String>();
 		HashMap<Query, Integer> instance_freq = sortInstanceByValue(findFrequentQuery(queryList)); // get unique query list and the frequency of each unique query
 		try {
@@ -154,14 +155,16 @@ public class PatternDisplay {
 
 						if(stop_list.contains(t.getSubject().toString())){
 							if(iri_query.containsKey(t.getSubject().toString())){
-								int old_socre = entity_vairable_score(iri_query.get(t.getSubject().toString()));
 								int new_score = entity_vairable_score(opBGP);
-								if(new_score>old_socre){
-									iri_query.put(t.getSubject().toString(), q);
+								if(new_score>threshold){
+									if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+										iri_query.get(t.getSubject().toString()).add(q);
 								}
 							}
 							else{
-								iri_query.put(t.getSubject().toString(), q);
+								iri_query.put(t.getSubject().toString(), HashMultiset.create());
+								if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+										iri_query.get(t.getSubject().toString()).add(q);
 							}
 						}
 						
@@ -498,41 +501,49 @@ public class PatternDisplay {
 		}
 
 		try {
-			BufferedWriter bw_type_top = new BufferedWriter(new FileWriter("type_top_query.txt",true));
+			BufferedWriter bw_type_top = new BufferedWriter(new FileWriter("type_top_query.txt", true));
 			bw_type_top.write("subject");
 			bw_type_top.newLine();
 			bw_type_top.flush();
-			for(String item : stop_list){
-				bw_type_top.write(item+" & "+iri_query.get(item).serialize().replace("\r", "\\r").replace("\n", "\\n"));
-				bw_type_top.newLine();
-				bw_type_top.flush();
+			for (String item : stop_list) {
+				for (Query query : iri_query.get(item).elementSet()) {
+					bw_type_top.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
+					bw_type_top.newLine();
+					bw_type_top.flush();
+				}
 			}
 
 			bw_type_top.write("predicate");
 			bw_type_top.newLine();
 			bw_type_top.flush();
-			for(String item : ptop_List){
-				bw_type_top.write(item+" & "+iri_query.get(item).serialize().replace("\r", "\\r").replace("\n", "\\n"));
-				bw_type_top.newLine();
-				bw_type_top.flush();
+			for (String item : ptop_List) {
+				for (Query query : iri_query.get(item).elementSet()) {
+					bw_type_top.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
+					bw_type_top.newLine();
+					bw_type_top.flush();
+				}
 			}
 
 			bw_type_top.write("object");
 			bw_type_top.newLine();
 			bw_type_top.flush();
-			for(String item : otop_list){
-				bw_type_top.write(item+" & "+iri_query.get(item).serialize().replace("\r", "\\r").replace("\n", "\\n"));
-				bw_type_top.newLine();
-				bw_type_top.flush();
+			for (String item : otop_list) {
+				for (Query query : iri_query.get(item).elementSet()) {
+					bw_type_top.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
+					bw_type_top.newLine();
+					bw_type_top.flush();
+				}
 			}
 
 			bw_type_top.write("type");
 			bw_type_top.newLine();
 			bw_type_top.flush();
-			for(String item : typetop_list){
-				bw_type_top.write(item+" & "+iri_query.get(item).serialize().replace("\r", "\\r").replace("\n", "\\n"));
-				bw_type_top.newLine();
-				bw_type_top.flush();
+			for (String item : typetop_list) {
+				for (Query query : iri_query.get(item).elementSet()) {
+					bw_type_top.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
+					bw_type_top.newLine();
+					bw_type_top.flush();
+				}
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
