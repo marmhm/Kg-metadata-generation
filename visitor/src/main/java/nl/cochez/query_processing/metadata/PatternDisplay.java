@@ -506,7 +506,8 @@ public class PatternDisplay {
 			bw_type_top.newLine();
 			bw_type_top.flush();
 			for (String item : stop_list) {
-				for (Query query : iri_query.get(item).elementSet()) {
+				if(iri_query.containsKey(item))
+				for (Query query : iri_query.get(item)) {
 					bw_type_top.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
 					bw_type_top.newLine();
 					bw_type_top.flush();
@@ -517,7 +518,8 @@ public class PatternDisplay {
 			bw_type_top.newLine();
 			bw_type_top.flush();
 			for (String item : ptop_List) {
-				for (Query query : iri_query.get(item).elementSet()) {
+				if(iri_query.containsKey(item))
+				for (Query query : iri_query.get(item)) {
 					bw_type_top.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
 					bw_type_top.newLine();
 					bw_type_top.flush();
@@ -528,7 +530,8 @@ public class PatternDisplay {
 			bw_type_top.newLine();
 			bw_type_top.flush();
 			for (String item : otop_list) {
-				for (Query query : iri_query.get(item).elementSet()) {
+				if(iri_query.containsKey(item))
+				for (Query query : iri_query.get(item)) {
 					bw_type_top.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
 					bw_type_top.newLine();
 					bw_type_top.flush();
@@ -539,7 +542,8 @@ public class PatternDisplay {
 			bw_type_top.newLine();
 			bw_type_top.flush();
 			for (String item : typetop_list) {
-				for (Query query : iri_query.get(item).elementSet()) {
+				if(iri_query.containsKey(item))
+				for (Query query : iri_query.get(item)) {
 					bw_type_top.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
 					bw_type_top.newLine();
 					bw_type_top.flush();
@@ -547,6 +551,8 @@ public class PatternDisplay {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
+			System.exit(1);
 		}
 
 		// System.out.println("Statistics of number of pattern in each length:"+pattern_numbers);
