@@ -552,7 +552,7 @@ public class PatternDisplay {
 			bw_type_top.flush();
 			for (String item : stop_list) {
 				if(iri_query.containsKey(item))
-				for (Query query : iri_query.get(item)) {
+				for (Query query : iri_query.get(item).elementSet()) {
 					bw_type_top.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
 					bw_type_top.newLine();
 					bw_type_top.flush();
@@ -564,7 +564,7 @@ public class PatternDisplay {
 			bw_type_top.flush();
 			for (String item : ptop_List) {
 				if(iri_query.containsKey(item))
-				for (Query query : iri_query.get(item)) {
+				for (Query query : iri_query.get(item).elementSet()) {
 					bw_type_top.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
 					bw_type_top.newLine();
 					bw_type_top.flush();
@@ -576,7 +576,7 @@ public class PatternDisplay {
 			bw_type_top.flush();
 			for (String item : otop_list) {
 				if(iri_query.containsKey(item))
-				for (Query query : iri_query.get(item)) {
+				for (Query query : iri_query.get(item).elementSet()) {
 					bw_type_top.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
 					bw_type_top.newLine();
 					bw_type_top.flush();
@@ -588,7 +588,7 @@ public class PatternDisplay {
 			bw_type_top.flush();
 			for (String item : typetop_list) {
 				if(iri_query.containsKey(item))
-				for (Query query : iri_query.get(item)) {
+				for (Query query : iri_query.get(item).elementSet()) {
 					bw_type_top.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
 					bw_type_top.newLine();
 					bw_type_top.flush();
