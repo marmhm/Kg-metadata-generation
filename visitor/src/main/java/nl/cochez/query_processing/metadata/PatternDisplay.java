@@ -75,7 +75,7 @@ import java.io.IOException;
 public class PatternDisplay {
     public static void rankPattern(ArrayList<Query> queryList, int top,int offset, int tripleNumber, boolean checkEndpoint, String sparqlendpoint, String dict_name, List<String> stop_list, List<String> ptop_List, List<String> otop_list, List<String> typetop_list) {
 		// List<Query> pattern_query = new ArrayList<Query>();
-		int threshold = 1; // change the threshold for ratio
+		double threshold = 1.0; // change the threshold for ratio
 		List<Query> invalid_pattern_query = new ArrayList<Query>();
 		Map<Query,Boolean> dict_query = getDict(dict_name);
 		Graph<Query, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
@@ -155,7 +155,7 @@ public class PatternDisplay {
 
 						if(stop_list.contains(t.getSubject().toString())){
 							if(iri_query.containsKey(t.getSubject().toString())){
-								int new_score = entity_vairable_score(opBGP);
+								double new_score = entity_vairable_score(opBGP);
 								if(new_score>threshold){
 									if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
 										iri_query.get(t.getSubject().toString()).add(q);
@@ -170,7 +170,7 @@ public class PatternDisplay {
 
 						if(ptop_List.contains(t.getPredicate().toString())){
 							if(iri_query.containsKey(t.getPredicate().toString())){
-								int new_score = entity_vairable_score(opBGP);
+								double new_score = entity_vairable_score(opBGP);
 								if(new_score>threshold){
 									if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
 										iri_query.get(t.getPredicate().toString()).add(q);
@@ -185,7 +185,7 @@ public class PatternDisplay {
 
 						if(otop_list.contains(t.getObject().toString())){
 							if(iri_query.containsKey(t.getObject().toString())){
-								int new_score = entity_vairable_score(opBGP);
+								double new_score = entity_vairable_score(opBGP);
 								if(new_score>threshold){
 									if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
 										iri_query.get(t.getObject().toString()).add(q);
@@ -200,7 +200,7 @@ public class PatternDisplay {
 
 						if(typetop_list.contains(t.getObject().toString())){
 							if(iri_query.containsKey(t.getObject().toString())){
-								int new_score = entity_vairable_score(opBGP);
+								double new_score = entity_vairable_score(opBGP);
 								if(new_score>threshold){
 									if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
 										iri_query.get(t.getObject().toString()).add(q);
@@ -1600,7 +1600,7 @@ public class PatternDisplay {
 		return (ent_set.size())/(var_set.size());
 	}
 
-	private static int entity_vairable_score(OpBGP opBGP){
+	private static double entity_vairable_score(OpBGP opBGP){
 
 		HashSet<String> ent_set = new HashSet<String>();
 		HashSet<String> var_set = new HashSet<String>();
@@ -1636,8 +1636,8 @@ public class PatternDisplay {
 				}
 		}
 		if(var_set.isEmpty())
-			return ent_set.size();
+			return (double)ent_set.size();
 		
-		return (ent_set.size())/(var_set.size());
+		return (double)(ent_set.size())/ (double) (var_set.size());
 	}
 }
