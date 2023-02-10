@@ -75,7 +75,10 @@ import java.io.IOException;
 public class PatternDisplay {
     public static void rankPattern(ArrayList<Query> queryList, int top,int offset, int tripleNumber, boolean checkEndpoint, String sparqlendpoint, String dict_name, List<String> stop_list, List<String> ptop_List, List<String> otop_list, List<String> typetop_list) {
 		// List<Query> pattern_query = new ArrayList<Query>();
-		double threshold = 1.0; // change the threshold for ratio
+		double threshold_subject = 1.0; // change the threshold for ratio
+		double threshold_predicate = 1.0; // change the threshold for ratio
+		double threshold_object = 1.0; // change the threshold for ratio
+		double threshold_type = 1.0; // change the threshold for ratio
 		List<Query> invalid_pattern_query = new ArrayList<Query>();
 		Map<Query,Boolean> dict_query = getDict(dict_name);
 		Graph<Query, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
@@ -156,7 +159,7 @@ public class PatternDisplay {
 						if(stop_list.contains(t.getSubject().toString())){
 							if(iri_query.containsKey(t.getSubject().toString())){
 								double new_score = entity_vairable_score(opBGP);
-								if(new_score>threshold){
+								if(new_score>threshold_subject){
 									if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
 										iri_query.get(t.getSubject().toString()).add(construcQuery_removeLimitOffset(q));
 								}
@@ -171,7 +174,7 @@ public class PatternDisplay {
 						if(ptop_List.contains(t.getPredicate().toString())){
 							if(iri_query.containsKey(t.getPredicate().toString())){
 								double new_score = entity_vairable_score(opBGP);
-								if(new_score>threshold){
+								if(new_score>threshold_predicate){
 									if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
 										iri_query.get(t.getPredicate().toString()).add(construcQuery_removeLimitOffset(q));
 								}
@@ -186,7 +189,7 @@ public class PatternDisplay {
 						if(otop_list.contains(t.getObject().toString())){
 							if(iri_query.containsKey(t.getObject().toString())){
 								double new_score = entity_vairable_score(opBGP);
-								if(new_score>threshold){
+								if(new_score>threshold_object){
 									if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
 										iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
 								}
@@ -201,7 +204,7 @@ public class PatternDisplay {
 						if(typetop_list.contains(t.getObject().toString())){
 							if(iri_query.containsKey(t.getObject().toString())){
 								double new_score = entity_vairable_score(opBGP);
-								if(new_score>threshold){
+								if(new_score>threshold_type){
 									if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
 										iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
 								}
