@@ -158,13 +158,13 @@ public class PatternDisplay {
 								double new_score = entity_vairable_score(opBGP);
 								if(new_score>threshold){
 									if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-										iri_query.get(t.getSubject().toString()).add(q);
+										iri_query.get(t.getSubject().toString()).add(construcQuery_removeLimitOffset(q));
 								}
 							}
 							else{
 								iri_query.put(t.getSubject().toString(), HashMultiset.create());
 								if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-										iri_query.get(t.getSubject().toString()).add(q);
+										iri_query.get(t.getSubject().toString()).add(construcQuery_removeLimitOffset(q));
 							}
 						}
 
@@ -173,13 +173,13 @@ public class PatternDisplay {
 								double new_score = entity_vairable_score(opBGP);
 								if(new_score>threshold){
 									if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-										iri_query.get(t.getPredicate().toString()).add(q);
+										iri_query.get(t.getPredicate().toString()).add(construcQuery_removeLimitOffset(q));
 								}
 							}
 							else{
 								iri_query.put(t.getPredicate().toString(), HashMultiset.create());
 								if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-										iri_query.get(t.getPredicate().toString()).add(q);
+										iri_query.get(t.getPredicate().toString()).add(construcQuery_removeLimitOffset(q));
 							}
 						}
 
@@ -188,13 +188,13 @@ public class PatternDisplay {
 								double new_score = entity_vairable_score(opBGP);
 								if(new_score>threshold){
 									if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-										iri_query.get(t.getObject().toString()).add(q);
+										iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
 								}
 							}
 							else{
 								iri_query.put(t.getObject().toString(), HashMultiset.create());
 								if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-										iri_query.get(t.getObject().toString()).add(q);
+										iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
 							}
 						}
 
@@ -203,13 +203,13 @@ public class PatternDisplay {
 								double new_score = entity_vairable_score(opBGP);
 								if(new_score>threshold){
 									if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-										iri_query.get(t.getObject().toString()).add(q);
+										iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
 								}
 							}
 							else{
 								iri_query.put(t.getObject().toString(), HashMultiset.create());
 								if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-										iri_query.get(t.getObject().toString()).add(q);
+										iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
 							}
 						}
 						
@@ -1415,6 +1415,49 @@ public class PatternDisplay {
 			HandlerBlock handlerBlock = new HandlerBlock(query);
 			builder.getHandlerBlock().addAll(handlerBlock);
 			builder.setBase(null);
+			query = builder.build();
+		}
+		return query;
+	}
+
+	private static Query construcQuery_removeLimitOffset(Query query){
+		// Query query = QueryFactory.create(queryString);
+		// Op op = Algebra.compile(query);
+		// query = OpAsQuery.asQuery(op);
+		if(query.isSelectType()){
+			SelectBuilder builder = new SelectBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			builder.getHandlerBlock().addAll(handlerBlock);
+			builder.setBase(null);
+			builder.setLimit(0);
+			builder.setOffset(0);
+			query = builder.build();
+		}
+		else if(query.isAskType()){
+			AskBuilder builder = new AskBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			builder.getHandlerBlock().addAll(handlerBlock);
+			builder.setBase(null);
+			builder.setLimit(0);
+			builder.setOffset(0);
+			query = builder.build();
+		}
+		else if (query.isConstructType()){
+			ConstructBuilder builder = new ConstructBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			builder.getHandlerBlock().addAll(handlerBlock);
+			builder.setBase(null);
+			builder.setLimit(0);
+			builder.setOffset(0);
+			query = builder.build();
+		}
+		else if (query.isDescribeType()){
+			DescribeBuilder builder = new DescribeBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			builder.getHandlerBlock().addAll(handlerBlock);
+			builder.setBase(null);
+			builder.setLimit(0);
+			builder.setOffset(0);
 			query = builder.build();
 		}
 		return query;
