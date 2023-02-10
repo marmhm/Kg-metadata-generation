@@ -206,7 +206,7 @@ public class MainStatistics {
 				System.out.println("rdftype,label,frequency");
 				System.out.println(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet().size());
 				Iterable<Entry<String>> types = Iterables.limit(Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet(), Multisets.copyHighestCountFirst(visitor.rdf_types).entrySet().size());
-				typetop_list.addAll(get_top(types, 10, sparqlendpoint));
+				typetop_list.addAll(get_top_type(types, 10, sparqlendpoint));
 				print_with_label(types,"o",100, sparqlendpoint);
 				System.setOut(ps_console);
 				System.out.println("Number of failures is : " + failures);
@@ -389,6 +389,21 @@ public class MainStatistics {
 				break;
 			String label = get_labels("<" + str.getElement() + ">", sparqlendpoint);
 			if (label != null) {
+				top_list.add(str.getElement());
+				count++;
+			}
+		}
+		return top_list;
+	}
+
+	private static List<String> get_top_type(Iterable<Entry<String>> input, int limit, String sparqlendpoint){
+		List<String> top_list = new ArrayList<String>();
+		int count = 0;
+		for (Entry<String> str : input) {
+			if (count >= limit)
+				break;
+			String label = get_labels("<" + str.getElement() + ">", sparqlendpoint);
+			if (label != null && !str.getElement().contains(":Resource")) {
 				top_list.add(str.getElement());
 				count++;
 			}
