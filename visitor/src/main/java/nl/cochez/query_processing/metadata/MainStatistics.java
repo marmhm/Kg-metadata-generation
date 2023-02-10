@@ -189,7 +189,7 @@ public class MainStatistics {
 				System.out.println("object,label,frequency");
 				System.out.println(Multisets.copyHighestCountFirst(visitor.objects).entrySet().size());
 				Iterable<Entry<String>> objects = Iterables.limit(Multisets.copyHighestCountFirst(visitor.objects).entrySet(), Multisets.copyHighestCountFirst(visitor.objects).entrySet().size());
-				otop_list.addAll(get_top(objects, 10, sparqlendpoint));
+				otop_list.addAll(get_top_type(objects, 10, sparqlendpoint));
 				print_with_label(objects,"o",100,sparqlendpoint);
 				System.out.println("literal,label,frequency");
 				System.out.println(Multisets.copyHighestCountFirst(visitor.literal_values).entrySet().size());
