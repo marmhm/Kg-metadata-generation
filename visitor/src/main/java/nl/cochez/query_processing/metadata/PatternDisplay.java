@@ -213,6 +213,16 @@ public class PatternDisplay {
 			};
 			ope.visit(allbgp);
 			double new_score = entity_vairable_score(triples);
+			try {
+				BufferedWriter bw_ratio = new BufferedWriter(new FileWriter("query_ratio.txt",true));
+				bw_ratio.write(q.serialize()+" & "+Double.toString(new_score));
+				bw_ratio.newLine();
+				bw_ratio.flush();	
+				bw_ratio.close();
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+
 			for (Triple t : triples) {
 				if (stop_list.contains(t.getSubject().toString())) {
 					if (new_score > threshold_subject) {
