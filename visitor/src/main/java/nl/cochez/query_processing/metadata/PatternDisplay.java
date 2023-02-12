@@ -123,6 +123,7 @@ public class PatternDisplay {
 				//TODO: handle exception
 				continue br1;
 			}
+			// List<Triple> triple_list = new ArrayList<Triple>();
 			AllOpVisitor allbgp = new AllOpVisitor() {
 				@Override
 				public void visit(OpBGP opBGP) {
@@ -156,65 +157,7 @@ public class PatternDisplay {
 							literal_set.add(t.getObject().getLiteralLexicalForm());
 						}
 
-						if(stop_list.contains(t.getSubject().toString())){
-							if(iri_query.containsKey(t.getSubject().toString())){
-								double new_score = entity_vairable_score(opBGP);
-								if(new_score>threshold_subject){
-									if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-										iri_query.get(t.getSubject().toString()).add(construcQuery_removeLimitOffset(q));
-								}
-							}
-							else{
-								iri_query.put(t.getSubject().toString(), HashMultiset.create());
-								if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-										iri_query.get(t.getSubject().toString()).add(construcQuery_removeLimitOffset(q));
-							}
-						}
-
-						if(ptop_List.contains(t.getPredicate().toString())){
-							if(iri_query.containsKey(t.getPredicate().toString())){
-								double new_score = entity_vairable_score(opBGP);
-								if(new_score>threshold_predicate){
-									if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-										iri_query.get(t.getPredicate().toString()).add(construcQuery_removeLimitOffset(q));
-								}
-							}
-							else{
-								iri_query.put(t.getPredicate().toString(), HashMultiset.create());
-								if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-										iri_query.get(t.getPredicate().toString()).add(construcQuery_removeLimitOffset(q));
-							}
-						}
-
-						if(otop_list.contains(t.getObject().toString())){
-							if(iri_query.containsKey(t.getObject().toString())){
-								double new_score = entity_vairable_score(opBGP);
-								if(new_score>threshold_object){
-									if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-										iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
-								}
-							}
-							else{
-								iri_query.put(t.getObject().toString(), HashMultiset.create());
-								if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-										iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
-							}
-						}
-
-						if(typetop_list.contains(t.getObject().toString())){
-							if(iri_query.containsKey(t.getObject().toString())){
-								double new_score = entity_vairable_score(opBGP);
-								if(new_score>threshold_type){
-									if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-										iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
-								}
-							}
-							else{
-								iri_query.put(t.getObject().toString(), HashMultiset.create());
-								if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-										iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
-							}
-						}
+						
 						
 					}
 				}
@@ -269,6 +212,68 @@ public class PatternDisplay {
 				}
 			};
 			ope.visit(allbgp);
+
+			for(Triple t : triples){
+				if(stop_list.contains(t.getSubject().toString())){
+					if(iri_query.containsKey(t.getSubject().toString())){
+						double new_score = entity_vairable_score(triples);
+						if(new_score>threshold_subject){
+							if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+								iri_query.get(t.getSubject().toString()).add(construcQuery_removeLimitOffset(q));
+						}
+					}
+					else{
+						iri_query.put(t.getSubject().toString(), HashMultiset.create());
+						if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+								iri_query.get(t.getSubject().toString()).add(construcQuery_removeLimitOffset(q));
+					}
+				}
+
+				if(ptop_List.contains(t.getPredicate().toString())){
+					if(iri_query.containsKey(t.getPredicate().toString())){
+						double new_score = entity_vairable_score(triples);
+						if(new_score>threshold_predicate){
+							if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+								iri_query.get(t.getPredicate().toString()).add(construcQuery_removeLimitOffset(q));
+						}
+					}
+					else{
+						iri_query.put(t.getPredicate().toString(), HashMultiset.create());
+						if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+								iri_query.get(t.getPredicate().toString()).add(construcQuery_removeLimitOffset(q));
+					}
+				}
+
+				if(otop_list.contains(t.getObject().toString())){
+					if(iri_query.containsKey(t.getObject().toString())){
+						double new_score = entity_vairable_score(triples);
+						if(new_score>threshold_object){
+							if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+								iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
+						}
+					}
+					else{
+						iri_query.put(t.getObject().toString(), HashMultiset.create());
+						if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+								iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
+					}
+				}
+
+				if(typetop_list.contains(t.getObject().toString())){
+					if(iri_query.containsKey(t.getObject().toString())){
+						double new_score = entity_vairable_score(triples);
+						if(new_score>threshold_type){
+							if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+								iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
+						}
+					}
+					else{
+						iri_query.put(t.getObject().toString(), HashMultiset.create());
+						if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+								iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
+					}
+				}
+			}
 			String replace_query_string = "";
 			try {
 				replace_query_string = q.serialize();
@@ -1579,9 +1584,9 @@ public class PatternDisplay {
 			return query;
 	}
 
-	private static int entity_vairable_score(Query query){
-		HashSet<String> ent_set = new HashSet<String>();
-		HashSet<String> var_set = new HashSet<String>();
+	private static double entity_vairable_score(Query query){
+		List<String> ent_set = new ArrayList<String>();
+		List<String> var_set = new ArrayList<String>();
 		Op op = Algebra.compile(query);
 		AllOpVisitor allbgp = new AllOpVisitor() {
 			@Override
@@ -1642,15 +1647,17 @@ public class PatternDisplay {
 		
 		if(var_set.isEmpty())
 			return ent_set.size();
+        
+        System.out.println(ent_set);
+        System.out.println(var_set);
 		
-		return (ent_set.size())/(var_set.size());
+		return ((double) ent_set.size())/((double) var_set.size());
 	}
 
-	private static double entity_vairable_score(OpBGP opBGP){
-
-		HashSet<String> ent_set = new HashSet<String>();
-		HashSet<String> var_set = new HashSet<String>();
-		for(Triple t: opBGP.getPattern().getList()){
+	private static double entity_vairable_score(List<Triple> opBGP){
+		List<String> ent_set = new ArrayList<String>();
+		List<String> var_set = new ArrayList<String>();
+		for(Triple t: opBGP){
 			org.apache.jena.graph.Node s = t.getSubject();
 				if (s.isURI()) {
 					ent_set.add(s.getURI());
@@ -1684,6 +1691,6 @@ public class PatternDisplay {
 		if(var_set.isEmpty())
 			return (double)ent_set.size();
 		
-		return (double)(ent_set.size())/ (double) (var_set.size());
+		return ((double) ent_set.size())/((double) var_set.size());
 	}
 }
