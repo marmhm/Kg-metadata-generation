@@ -212,65 +212,61 @@ public class PatternDisplay {
 				}
 			};
 			ope.visit(allbgp);
+			double new_score = entity_vairable_score(triples);
+			for (Triple t : triples) {
+				if (stop_list.contains(t.getSubject().toString())) {
+					if (new_score > threshold_subject) {
+						if (iri_query.containsKey(t.getSubject().toString())) {
 
-			for(Triple t : triples){
-				if(stop_list.contains(t.getSubject().toString())){
-					if(iri_query.containsKey(t.getSubject().toString())){
-						double new_score = entity_vairable_score(triples);
-						if(new_score>threshold_subject){
-							if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+								iri_query.get(t.getSubject().toString()).add(construcQuery_removeLimitOffset(q));
+						} else {
+							iri_query.put(t.getSubject().toString(), HashMultiset.create());
+							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
 								iri_query.get(t.getSubject().toString()).add(construcQuery_removeLimitOffset(q));
 						}
 					}
-					else{
-						iri_query.put(t.getSubject().toString(), HashMultiset.create());
-						if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-								iri_query.get(t.getSubject().toString()).add(construcQuery_removeLimitOffset(q));
-					}
 				}
 
-				if(ptop_List.contains(t.getPredicate().toString())){
-					if(iri_query.containsKey(t.getPredicate().toString())){
-						double new_score = entity_vairable_score(triples);
-						if(new_score>threshold_predicate){
-							if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+				if (ptop_List.contains(t.getPredicate().toString())) {
+					if (new_score > threshold_subject) {
+						if (iri_query.containsKey(t.getPredicate().toString())) {
+
+							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+								iri_query.get(t.getPredicate().toString()).add(construcQuery_removeLimitOffset(q));
+
+						} else {
+							iri_query.put(t.getPredicate().toString(), HashMultiset.create());
+							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
 								iri_query.get(t.getPredicate().toString()).add(construcQuery_removeLimitOffset(q));
 						}
 					}
-					else{
-						iri_query.put(t.getPredicate().toString(), HashMultiset.create());
-						if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-								iri_query.get(t.getPredicate().toString()).add(construcQuery_removeLimitOffset(q));
-					}
 				}
 
-				if(otop_list.contains(t.getObject().toString())){
-					if(iri_query.containsKey(t.getObject().toString())){
-						double new_score = entity_vairable_score(triples);
-						if(new_score>threshold_object){
-							if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+				if (otop_list.contains(t.getObject().toString())) {
+					if (new_score > threshold_subject) {
+						if (iri_query.containsKey(t.getObject().toString())) {
+							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+								iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
+
+						} else {
+							iri_query.put(t.getObject().toString(), HashMultiset.create());
+							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
 								iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
 						}
 					}
-					else{
-						iri_query.put(t.getObject().toString(), HashMultiset.create());
-						if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-								iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
-					}
 				}
 
-				if(typetop_list.contains(t.getObject().toString())){
-					if(iri_query.containsKey(t.getObject().toString())){
-						double new_score = entity_vairable_score(triples);
-						if(new_score>threshold_type){
-							if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+				if (typetop_list.contains(t.getObject().toString())) {
+					if (new_score > threshold_subject) {
+						if (iri_query.containsKey(t.getObject().toString())) {
+							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
 								iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
 						}
-					}
-					else{
+					} else {
 						iri_query.put(t.getObject().toString(), HashMultiset.create());
-						if(StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-								iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
+						if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+							iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
 					}
 				}
 			}
