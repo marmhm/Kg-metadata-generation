@@ -769,9 +769,9 @@ public class PatternDisplay {
 
 			value = -1;
 			if (numberMap.containsKey(inputArr.get(i)))
-				if (listOflistContains_checkQueryEquavalence(inputArr.get(i), numberMap.keySet(), endpoint,pattern_instance)) {
+				// if (listOflistContains_checkQueryEquavalence(inputArr.get(i), numberMap.keySet(), endpoint,pattern_instance)) {
 					value = numberMap.get(inputArr.get(i));
-				}
+				// }
 			if (value != -1) {
 
 				value += 1;
