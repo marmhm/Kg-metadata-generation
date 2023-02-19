@@ -233,7 +233,7 @@ public class PatternDisplay {
 				replace_query_string = replace_query_string.replace(var + " ", replace_map.get(var) + " ")
 						.replace(var + "\n", replace_map.get(var) + "\n").replace(var + ")", replace_map.get(var) + ")")
 						.replace(var + "\r", replace_map.get(var) + "\r").replace(var + ",", replace_map.get(var) + ",")
-						.replace("<" + var + ">", "<" + replace_map.get(var) + ">").replace(var, replace_map.get(var));
+						.replace("<" + var + ">", "<" + replace_map.get(var) + ">").replace(var+"}", replace_map.get(var)+"}");
 			}
 
 			if(q.isSelectType()){
