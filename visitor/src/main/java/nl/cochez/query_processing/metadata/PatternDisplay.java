@@ -521,7 +521,7 @@ public class PatternDisplay {
 		for (int i =1;i<=tripleNumber;i++){
 			count_map.put(i, 0);
 		}
-		result = sortPatternByValue(findFrequentPattern_checkQueryEquavalence(pattern_instance,sparqlendpoint));
+		result = sortPatternByValue(findFrequentPattern_checkQueryEquavalence(pattern_instance,instance_freq, sparqlendpoint));
 		Map<Integer, Integer> unique_pattern_numbers = new HashMap<Integer, Integer>();
 		for (Entry<Query, Integer> res : result) {
 			int length = patter_length_map.get(res.getKey());
@@ -759,7 +759,7 @@ public class PatternDisplay {
 		return false;
 	}
 
-	private static HashMap<Query, Integer> findFrequentPattern_checkQueryEquavalence(HashMap<Query, HashMultiset<Query>> pattern_instance, String endpoint) {
+	private static HashMap<Query, Integer> findFrequentPattern_checkQueryEquavalence(HashMap<Query, HashMultiset<Query>> pattern_instance,HashMap<Query, Integer> instance_freq, String endpoint) {
 		List<Query> inputArr = new ArrayList<Query>(pattern_instance.keySet());
 		HashMap<Query, Integer> numberMap = new HashMap<Query, Integer>();
 		int frequency = -1;
@@ -782,8 +782,11 @@ public class PatternDisplay {
 
 				numberMap.put(inputArr.get(i), value);
 			} else {
-
-				numberMap.put(inputArr.get(i), 1);
+				int freq = 0;
+				for(Query uni_q : pattern_instance.get(inputArr.get(i))){
+					freq+= instance_freq.get(uni_q);
+				}
+				numberMap.put(inputArr.get(i), freq);
 			}
 
 		}
