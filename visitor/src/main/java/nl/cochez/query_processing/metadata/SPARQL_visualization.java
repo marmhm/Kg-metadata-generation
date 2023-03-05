@@ -2,6 +2,10 @@ package nl.cochez.query_processing.metadata;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +61,15 @@ public class SPARQL_visualization {
             e.printStackTrace();
         }
         System.out.println(g.toString());
+        System.out.println(getShortURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"));
+    }
+
+    private static List<Node> display_multi_SPARQL(List<String> queries){
+        List<Node> nodes = new ArrayList<Node>();
+
+        
+
+        return nodes;
     }
 
     private static List<Triple> getALLtriples(String inputString){
@@ -99,8 +112,52 @@ public class SPARQL_visualization {
     }
 
     private static Node Triple2Node(Triple t){
-        return node(t.getSubject().toString()) // source node
-        .link(to(node(t.getObject().toString())) // target node
-        .with(Label.of(t.getPredicate().toString()))); // give relation label
+        return node(getShortURI(t.getSubject().toString())) // source node
+        .link(to(node(getShortURI(t.getObject().toString()))) // target node
+        .with(Label.of(getShortURI(t.getPredicate().toString().replace("http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "a"))))); // give relation label
+    }
+
+    private static String getShortURI(String fullURI){
+        String shortURI = fullURI;
+
+        if (fullURI == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+            return "a";
+
+        String link = "https://prefix.cc/?q="+fullURI;
+        try {
+            // URLConnection con = new URL( link ).openConnection();
+            // System.out.println( "orignal url: " + con.getURL() );
+            
+            // con.connect();
+            // System.out.println( "connected url: " + con.getURL() );
+            shortURI = getRedirectedUrl(link).replace("https://prefix.cc/", "");
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        
+
+        return shortURI;
+    }
+
+    public static String getRedirectedUrl(String url) throws MalformedURLException, IOException {
+        HttpURLConnection connection;
+        String finalUrl = url;//from   w  w  w .  ja va2  s  .  co m
+        do {
+            connection = (HttpURLConnection) new URL(finalUrl).openConnection();
+            connection.setInstanceFollowRedirects(false);
+            connection.setUseCaches(false);
+            connection.setRequestMethod("GET");
+            connection.connect();
+            int responseCode = connection.getResponseCode();
+            if (responseCode >= 300 && responseCode < 400) {
+                String redirectedUrl = connection.getHeaderField("Location");
+                if (redirectedUrl == null)
+                    break;
+                finalUrl = redirectedUrl;
+            } else
+                break;
+        } while (connection.getResponseCode() != HttpURLConnection.HTTP_OK);
+        connection.disconnect();
+        return finalUrl.replaceAll(" ", "%20");
     }
 }
