@@ -50,15 +50,12 @@ public class SPARQL_visualization {
         List<String> queries = new ArrayList<String>();
         queries.add(queryString);
         queries.add("SELECT DISTINCT  ?p ?o WHERE   { <http://bio2rdf.org/drugbank_vocabulary:target>               ?p  ?o     FILTER ( ?p != <http://www.w3.org/2002/07/owl#sameAs> )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/2002/07/owl#Class> ) )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> ) )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/2002/07/owl#ObjectProperty> ) )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/2002/07/owl#AnnotationProperty> ) )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/2002/07/owl#DatatypeProperty> ) )   }");
-        // List<Node> nodes = new ArrayList<Node>();
-        // for(Triple t : getALLtriples(queryString)){
-        //     nodes.add(Triple2Node(t));
-        // }
         List<Node> nodes = display_multi_SPARQL(queries);
+        // add query into String list "queries"
         Graph g = graph().directed().with(nodes);
         try {
-            Graphviz.fromGraph(g).render(Format.PNG).toFile(new File("SPARQL_graph.png"));
-            Graphviz.fromGraph(g).render(Format.DOT).toFile(new File("SPARQL_graph.dot"));
+            Graphviz.fromGraph(g).render(Format.PNG).toFile(new File("SPARQL_graph.png")); // output as png graph
+            Graphviz.fromGraph(g).render(Format.DOT).toFile(new File("SPARQL_graph.dot")); // output as .dot file which you analyse this graph with this file
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
