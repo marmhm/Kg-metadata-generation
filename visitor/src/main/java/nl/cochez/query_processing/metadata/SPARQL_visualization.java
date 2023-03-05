@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.jena.arq.querybuilder.AskBuilder;
@@ -14,6 +15,7 @@ import org.apache.jena.arq.querybuilder.ConstructBuilder;
 import org.apache.jena.arq.querybuilder.DescribeBuilder;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
@@ -45,29 +47,38 @@ public class SPARQL_visualization {
     public static void main(String[] args) {
         String endpoint = "";
         String queryString = "PREFIX xsd:<http://www.w3.org/2001/XMLSchema#> \n SELECT DISTINCT ?uri WHERE { ?uri a <http://dbpedia.org/ontology/Song> .\n ?uri <http://dbpedia.org/ontology/artist> <http://dbpedia.org/resource/Bruce_Springsteen> . ?uri <http://dbpedia.org/ontology/releaseDate> ?date . FILTER (?date >= '1980-01-01'^^xsd:date && ?date <= '1990-12-31'^^xsd:date) }";
-
-        List<Node> nodes = new ArrayList<Node>();
-        for(Triple t : getALLtriples(queryString)){
-            nodes.add(Triple2Node(t));
-        }
-        // Node test = node("1") // source node
-        //     .link(to(node("2")) // target node
-        //     .with(Label.of("1to2"))); // give relation label
+        List<String> queries = new ArrayList<String>();
+        queries.add(queryString);
+        queries.add("SELECT DISTINCT  ?p ?o WHERE   { <http://bio2rdf.org/drugbank_vocabulary:target>               ?p  ?o     FILTER ( ?p != <http://www.w3.org/2002/07/owl#sameAs> )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/2002/07/owl#Class> ) )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> ) )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/2002/07/owl#ObjectProperty> ) )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/2002/07/owl#AnnotationProperty> ) )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/2002/07/owl#DatatypeProperty> ) )   }");
+        // List<Node> nodes = new ArrayList<Node>();
+        // for(Triple t : getALLtriples(queryString)){
+        //     nodes.add(Triple2Node(t));
+        // }
+        List<Node> nodes = display_multi_SPARQL(queries);
         Graph g = graph().directed().with(nodes);
         try {
             Graphviz.fromGraph(g).render(Format.PNG).toFile(new File("SPARQL_graph.png"));
+            Graphviz.fromGraph(g).render(Format.DOT).toFile(new File("SPARQL_graph.dot"));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         System.out.println(g.toString());
-        System.out.println(getShortURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"));
+        // System.out.println(getShortURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"));
     }
 
     private static List<Node> display_multi_SPARQL(List<String> queries){
         List<Node> nodes = new ArrayList<Node>();
 
         
+        List<Integer> count = new ArrayList<Integer>();
+        count.add(1);
+        for(String query :queries){
+            HashMap<String, org.apache.jena.graph.Node> dict = new HashMap<String, org.apache.jena.graph.Node>();
+            for (Triple t : getALLtriples(query,count,dict)){
+                nodes.add(Triple2Node(t));
+            }
+        }
 
         return nodes;
     }
@@ -83,6 +94,79 @@ public class SPARQL_visualization {
             public void visit(OpBGP opBGP) {
                 for (Triple t : opBGP.getPattern()) {
                     triples.add(t);
+                    // System.out.println(t.getSubject().toString());
+                    // System.out.println(t.getPredicate().getLocalName());
+                }
+            }
+
+            @Override
+            public void visit(OpSlice opSlice) {
+                opSlice.getSubOp().visit(this);
+            }
+
+            public void visit(OpExtend opExtend){
+                opExtend.getSubOp().visit(this);
+            }
+
+            @Override
+            public void visit(OpGroup opGroup){
+                opGroup.getSubOp().visit(this);
+            }
+
+            @Override
+            public void visit(OpTable opTable){
+            }
+        };
+        ope.visit(allbgp);
+
+        return triples;
+    }
+
+    private static List<Triple> getALLtriples(String inputString, List<Integer> count, HashMap<String, org.apache.jena.graph.Node> dict){
+
+        Query q = QueryFactory.create(inputString);
+        Op ope = Algebra.compile(q);
+        List<Triple> triples = new ArrayList<Triple>();
+
+        AllOpVisitor allbgp = new AllOpVisitor() {
+            @Override
+            public void visit(OpBGP opBGP) {
+                for (Triple t : opBGP.getPattern()) {
+                    NodeFactory model = new NodeFactory();
+                    org.apache.jena.graph.Node s = t.getSubject();
+                    org.apache.jena.graph.Node p = t.getPredicate();
+                    org.apache.jena.graph.Node o = t.getObject();
+                    if(t.getSubject().toString().startsWith("?")){
+                        if(dict.containsKey(t.getSubject().toString())){
+                            s = dict.get(t.getSubject().toString());
+                        }
+                        else{
+                            s = model.createVariable("v"+Integer.toString(count.size()));
+                            count.add(1);
+                            dict.put(t.getSubject().toString(), s);
+                        }
+                    }
+                    if(t.getPredicate().toString().startsWith("?")){
+                        if(dict.containsKey(t.getPredicate().toString())){
+                            p = dict.get(t.getPredicate().toString());
+                        }
+                        else{
+                            p = model.createVariable("v"+Integer.toString(count.size()));
+                            count.add(1);
+                            dict.put(t.getPredicate().toString(), p);
+                        }
+                    }
+                    if(t.getObject().toString().startsWith("?")){
+                        if(dict.containsKey(t.getObject().toString())){
+                            o = dict.get(t.getObject().toString());
+                        }
+                        else{
+                            o = model.createVariable("v"+Integer.toString(count.size()));
+                            count.add(1);
+                            dict.put(t.getObject().toString(), o);
+                        }
+                    }
+                    triples.add(new Triple(s, p, o));
                     // System.out.println(t.getSubject().toString());
                     // System.out.println(t.getPredicate().getLocalName());
                 }
