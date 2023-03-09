@@ -81,6 +81,7 @@ public class PatternDisplay {
 		Map<Integer, Integer> pattern_numbers = new HashMap<Integer, Integer>();
 		Map<Integer, Integer> instance_numbers = new HashMap<Integer, Integer>();
 		HashMap<Query, Integer> instance_freq = sortInstanceByValue(findFrequentQuery(queryList)); // get unique query list and the frequency of each unique query
+		List<String> unique_queries = new ArrayList<String>();
 		try {
 			BufferedWriter bw1 = new BufferedWriter(new FileWriter("unique_query_frequency.csv",true));
 			for(Entry<Query,Integer> uqf:instance_freq.entrySet()){
@@ -93,6 +94,11 @@ public class PatternDisplay {
 			// TODO: handle exception
 		}
 		br1: for (Query q : instance_freq.keySet()) {
+			try {
+				unique_queries.add(q.serialize().replace("\r", "\\r").replace("\n", "\\n"));
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 			// System.out.println(q.queryType().name());
 			List<Triple> triples = new ArrayList<Triple>();
 			Map<String, String> replace_map = new HashMap<String, String>();
@@ -444,6 +450,12 @@ public class PatternDisplay {
 			} else {
 				instance_numbers.put(length, instance_freq.get(q));
 			}
+		}
+
+		try {
+			SPARQL_visualization.SPARQLVisualization(unique_queries, "unique_queries_visualization");
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 
 		// System.out.println("Statistics of number of pattern in each length:"+pattern_numbers);

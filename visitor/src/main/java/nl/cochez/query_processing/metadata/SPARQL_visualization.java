@@ -65,6 +65,18 @@ public class SPARQL_visualization {
         }
     }
 
+    public static void SPARQLVisualization(List<String> queries, String filename){ //input list of SPARQL queries, output .png and .dot graph
+        List<Node> nodes = display_multi_SPARQL(queries);
+        // add query into String list "queries"
+        Graph g = graph().directed().with(nodes);
+        try {
+            Graphviz.fromGraph(g).render(Format.PNG).toFile(new File(filename+".png")); // output as png graph
+            Graphviz.fromGraph(g).render(Format.DOT).toFile(new File(filename+".dot")); // output as .dot file which you analyse this graph with this file
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static List<Node> display_multi_SPARQL(List<String> queries){
         List<Node> nodes = new ArrayList<Node>();
 
