@@ -89,7 +89,7 @@ public class SPARQL_visualization {
             BufferedReader br = new BufferedReader(new FileReader(path));
             String line = null;
             while((line = br.readLine())!= null){
-                queries.add(line);
+                queries.add(line.replace("\\n", "\n"));
             }
         } catch (Exception e) {
             // TODO: handle exception
