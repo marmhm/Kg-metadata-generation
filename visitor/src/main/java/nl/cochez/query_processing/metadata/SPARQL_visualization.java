@@ -173,7 +173,8 @@ public class SPARQL_visualization {
     }
 
     private static boolean check_entity_rate(String qString, double threshold){
-        Query q = QueryFactory.create(qString);
+        try {
+            Query q = QueryFactory.create(qString);
         List<Integer> ent = new ArrayList<Integer>();
         List<Integer> var = new ArrayList<Integer>();
         Op ope = Algebra.compile(q);
@@ -228,6 +229,11 @@ public class SPARQL_visualization {
         score = score / (double) var.size();
         if (score >= threshold)
             return true;
+        } catch (Exception e) {
+            // TODO: handle exception
+            System.out.println("Error with SPARQL query:\n"+qString);
+        }
+        
 
         return false;
     }
