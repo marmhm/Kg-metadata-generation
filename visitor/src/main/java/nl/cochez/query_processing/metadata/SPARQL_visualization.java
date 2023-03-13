@@ -1,6 +1,8 @@
 package nl.cochez.query_processing.metadata;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -45,16 +47,20 @@ import static guru.nidi.graphviz.model.Factory.node;
 
 public class SPARQL_visualization {
     public static void main(String[] args) {
-        String endpoint = "";
-        String queryString = "PREFIX xsd:<http://www.w3.org/2001/XMLSchema#> \n SELECT DISTINCT ?uri WHERE { ?uri a <http://dbpedia.org/ontology/Song> .\n ?uri <http://dbpedia.org/ontology/artist> <http://dbpedia.org/resource/Bruce_Springsteen> . ?uri <http://dbpedia.org/ontology/releaseDate> ?date . FILTER (?date >= '1980-01-01'^^xsd:date && ?date <= '1990-12-31'^^xsd:date) }";
+        double threshold = 1.75; // threshold for entity/variable rate
+        String queryFilePath = ""; // path to query file, one query per line
         List<String> queries = new ArrayList<String>();
-        queries.add(queryString);
-        queries.add("SELECT DISTINCT  ?p ?o WHERE   { <http://bio2rdf.org/drugbank_vocabulary:target>               ?p  ?o     FILTER ( ?p != <http://www.w3.org/2002/07/owl#sameAs> )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/2002/07/owl#Class> ) )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> ) )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/2002/07/owl#ObjectProperty> ) )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/2002/07/owl#AnnotationProperty> ) )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/2002/07/owl#DatatypeProperty> ) )   }");
-        SPARQLVisualization(queries);
+        if(queryFilePath!="" && !queryFilePath.isEmpty()){
+            queries = readFromFile(queryFilePath); // add queries from file with bufferedreader
+        }
+        // String queryString = "PREFIX xsd:<http://www.w3.org/2001/XMLSchema#> \n SELECT DISTINCT ?uri WHERE { ?uri a <http://dbpedia.org/ontology/Song> .\n ?uri <http://dbpedia.org/ontology/artist> <http://dbpedia.org/resource/Bruce_Springsteen> . ?uri <http://dbpedia.org/ontology/releaseDate> ?date . FILTER (?date >= '1980-01-01'^^xsd:date && ?date <= '1990-12-31'^^xsd:date) }";
+        // queries.add(queryString);
+        // queries.add("SELECT DISTINCT  ?p ?o WHERE   { <http://bio2rdf.org/drugbank_vocabulary:target>               ?p  ?o     FILTER ( ?p != <http://www.w3.org/2002/07/owl#sameAs> )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/2002/07/owl#Class> ) )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> ) )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/2002/07/owl#ObjectProperty> ) )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/2002/07/owl#AnnotationProperty> ) )     FILTER ( ( ?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ) || ( ?o != <http://www.w3.org/2002/07/owl#DatatypeProperty> ) )   }");
+        SPARQLVisualization(queries, threshold);
     }
 
-    public static void SPARQLVisualization(List<String> queries){ //input list of SPARQL queries, output .png and .dot graph
-        List<Node> nodes = display_multi_SPARQL(queries);
+    public static void SPARQLVisualization(List<String> queries, double threshold){ //input list of SPARQL queries, output .png and .dot graph
+        List<Node> nodes = display_multi_SPARQL(queries,threshold);
         // add query into String list "queries"
         Graph g = graph().directed().with(nodes);
         try {
@@ -77,6 +83,20 @@ public class SPARQL_visualization {
         }
     }
 
+    private static List<String> readFromFile(String path){
+        List<String> queries = new ArrayList<String>();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(path));
+            String line = null;
+            while((line = br.readLine())!= null){
+                queries.add(line);
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        return queries;
+    }
+
     private static List<Node> display_multi_SPARQL(List<String> queries){
         List<Node> nodes = new ArrayList<Node>();
 
@@ -84,6 +104,26 @@ public class SPARQL_visualization {
         List<Integer> count = new ArrayList<Integer>();
         count.add(1);
         for(String query :queries){
+            if (!check_entity_rate(query, 0.0))
+                continue;
+            HashMap<String, org.apache.jena.graph.Node> dict = new HashMap<String, org.apache.jena.graph.Node>();
+            for (Triple t : getALLtriples(query,count,dict)){
+                nodes.add(Triple2Node(t));
+            }
+        }
+
+        return nodes;
+    }
+
+    private static List<Node> display_multi_SPARQL(List<String> queries,double threshold){
+        List<Node> nodes = new ArrayList<Node>();
+
+        
+        List<Integer> count = new ArrayList<Integer>();
+        count.add(1);
+        for(String query :queries){
+            if (!check_entity_rate(query, threshold))
+                continue;
             HashMap<String, org.apache.jena.graph.Node> dict = new HashMap<String, org.apache.jena.graph.Node>();
             for (Triple t : getALLtriples(query,count,dict)){
                 nodes.add(Triple2Node(t));
@@ -130,6 +170,66 @@ public class SPARQL_visualization {
         ope.visit(allbgp);
 
         return triples;
+    }
+
+    private static boolean check_entity_rate(String qString, double threshold){
+        Query q = QueryFactory.create(qString);
+        List<Integer> ent = new ArrayList<Integer>();
+        List<Integer> var = new ArrayList<Integer>();
+        Op ope = Algebra.compile(q);
+        AllOpVisitor allbgp = new AllOpVisitor() {
+            @Override
+            public void visit(OpBGP opBGP) {
+                for (Triple t : opBGP.getPattern()) {
+                    org.apache.jena.graph.Node s = t.getSubject();
+                    org.apache.jena.graph.Node p = t.getPredicate();
+                    org.apache.jena.graph.Node o = t.getObject();
+                    if (s.isURI())
+                        ent.add(1);
+                    else if (s.toString().startsWith("?"))
+                        var.add(1);
+                    if (p.isURI())
+                        ent.add(1);
+                    else if (p.toString().startsWith("?"))
+                        var.add(1);
+                    if (o.isURI())
+                        ent.add(1);
+                    else if (o.toString().startsWith("?"))
+                        var.add(1);
+                }
+            }
+
+            @Override
+            public void visit(OpSlice opSlice) {
+                opSlice.getSubOp().visit(this);
+            }
+
+            public void visit(OpExtend opExtend) {
+                opExtend.getSubOp().visit(this);
+            }
+
+            @Override
+            public void visit(OpGroup opGroup) {
+                opGroup.getSubOp().visit(this);
+            }
+
+            @Override
+            public void visit(OpTable opTable) {
+            }
+        };
+        ope.visit(allbgp);
+
+        if (var.size() == 0 && ent.size() >= 2)
+            return true;
+        if (var.size() == 0)
+            return false;
+
+        double score = (double) ent.size();
+        score = score / (double) var.size();
+        if (score >= threshold)
+            return true;
+
+        return false;
     }
 
     private static List<Triple> getALLtriples(String inputString, List<Integer> count, HashMap<String, org.apache.jena.graph.Node> dict){
