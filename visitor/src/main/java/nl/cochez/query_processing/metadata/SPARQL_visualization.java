@@ -338,7 +338,7 @@ public class SPARQL_visualization {
             
             // con.connect();
             // System.out.println( "connected url: " + con.getURL() );
-            shortURI = getRedirectedUrl(link).replace("https://prefix.cc/", "");
+            shortURI = getRedirectedUrl(link).replace("https://prefix.cc/?q=", "").replace("https://prefix.cc/", "");
         } catch (Exception e) {
             // TODO: handle exception
         }
