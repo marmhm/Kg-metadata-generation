@@ -89,6 +89,11 @@
       <artifactId>graphviz-java</artifactId>
       <version>0.18.1</version>
   </dependency>
+    <dependency>
+      <groupId>me.tongfei</groupId>
+      <artifactId>progressbar</artifactId>
+      <version>0.9.4</version>
+  </dependency>
 	</dependencies>
 
 

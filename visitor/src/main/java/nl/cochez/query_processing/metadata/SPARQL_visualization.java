@@ -39,6 +39,8 @@ import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.model.Node;
+import me.tongfei.progressbar.ProgressBar;
+
 import static guru.nidi.graphviz.model.Link.to;
 import static guru.nidi.graphviz.engine.Format.*;
 
@@ -48,7 +50,7 @@ import static guru.nidi.graphviz.model.Factory.node;
 public class SPARQL_visualization {
     public static void main(String[] args) {
         double threshold = 1.75; // threshold for entity/variable rate
-        String queryFilePath = ""; // path to query file, one query per line
+        String queryFilePath = "/home/xuwang/Downloads/uniquesbio.csv"; // path to query file, one query per line
         List<String> queries = new ArrayList<String>();
         if(queryFilePath!="" && !queryFilePath.isEmpty()){
             queries = readFromFile(queryFilePath); // add queries from file with bufferedreader
@@ -93,6 +95,7 @@ public class SPARQL_visualization {
             }
         } catch (Exception e) {
             // TODO: handle exception
+            e.printStackTrace();
         }
         return queries;
     }
@@ -121,13 +124,17 @@ public class SPARQL_visualization {
         
         List<Integer> count = new ArrayList<Integer>();
         count.add(1);
+        ProgressBar pb = new ProgressBar("Porgress", queries.size());
         for(String query :queries){
-            if (!check_entity_rate(query, threshold))
+            if (!check_entity_rate(query, threshold)){
+                pb.step();
                 continue;
+            }
             HashMap<String, org.apache.jena.graph.Node> dict = new HashMap<String, org.apache.jena.graph.Node>();
             for (Triple t : getALLtriples(query,count,dict)){
                 nodes.add(Triple2Node(t));
             }
+            pb.step();
         }
 
         return nodes;
@@ -231,7 +238,8 @@ public class SPARQL_visualization {
             return true;
         } catch (Exception e) {
             // TODO: handle exception
-            System.out.println("Error with SPARQL query:\n"+qString);
+            // System.out.println("Error with SPARQL query:\n"+qString);
+            // e.printStackTrace();
         }
         
 
