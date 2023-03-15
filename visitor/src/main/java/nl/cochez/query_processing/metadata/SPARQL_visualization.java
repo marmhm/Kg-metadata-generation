@@ -1,8 +1,10 @@
 package nl.cochez.query_processing.metadata;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -17,10 +19,16 @@ import org.apache.jena.arq.querybuilder.ConstructBuilder;
 import org.apache.jena.arq.querybuilder.DescribeBuilder;
 import org.apache.jena.arq.querybuilder.SelectBuilder;
 import org.apache.jena.arq.querybuilder.handlers.HandlerBlock;
+import org.apache.jena.graph.Factory;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryFactory;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.algebra.Algebra;
 import org.apache.jena.sparql.algebra.Op;
 import org.apache.jena.sparql.algebra.op.OpBGP;
@@ -49,8 +57,8 @@ import static guru.nidi.graphviz.model.Factory.node;
 
 public class SPARQL_visualization {
     public static void main(String[] args) {
-        double threshold = 1.75; // threshold for entity/variable rate
-        String queryFilePath = "/home/xuwang/Downloads/uniquesbio.csv"; // path to query file, one query per line
+        double threshold = 0.5; // threshold for entity/variable rate
+        String queryFilePath = "samplequeries.csv"; // path to query file, one query per line
         List<String> queries = new ArrayList<String>();
         if(queryFilePath!="" && !queryFilePath.isEmpty()){
             queries = readFromFile(queryFilePath); // add queries from file with bufferedreader
@@ -66,7 +74,7 @@ public class SPARQL_visualization {
         // add query into String list "queries"
         Graph g = graph().directed().with(nodes);
         try {
-            Graphviz.fromGraph(g).render(Format.PNG).toFile(new File("SPARQL_graph.png")); // output as png graph
+            // Graphviz.fromGraph(g).render(Format.PNG).toFile(new File("SPARQL_graph.png")); // output as png graph
             Graphviz.fromGraph(g).render(Format.DOT).toFile(new File("SPARQL_graph.dot")); // output as .dot file which you analyse this graph with this file
         } catch (IOException e) {
             e.printStackTrace();
@@ -120,7 +128,7 @@ public class SPARQL_visualization {
 
     private static List<Node> display_multi_SPARQL(List<String> queries,double threshold){
         List<Node> nodes = new ArrayList<Node>();
-
+        List<Triple> all_triples = new ArrayList<Triple>();
         
         List<Integer> count = new ArrayList<Integer>();
         count.add(1);
@@ -131,11 +139,27 @@ public class SPARQL_visualization {
                 continue;
             }
             HashMap<String, org.apache.jena.graph.Node> dict = new HashMap<String, org.apache.jena.graph.Node>();
-            for (Triple t : getALLtriples(query,count,dict)){
+            List<Triple> temp_list = getALLtriples(query,count,dict);
+            all_triples.addAll(temp_list);
+            for (Triple t : temp_list){
                 nodes.add(Triple2Node(t));
             }
             pb.step();
         }
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter("SPARQL_graph.tsv",true));
+            for(Triple t : all_triples){
+                bw.write(t.getSubject().toString()+"\t"+t.getPredicate().toString()+"\t"+t.getObject().toString());
+                bw.newLine();
+                bw.flush();
+            }
+            bw.close();
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
+        
+        
 
         return nodes;
     }
@@ -256,6 +280,7 @@ public class SPARQL_visualization {
             @Override
             public void visit(OpBGP opBGP) {
                 for (Triple t : opBGP.getPattern()) {
+                    
                     NodeFactory model = new NodeFactory();
                     org.apache.jena.graph.Node s = t.getSubject();
                     org.apache.jena.graph.Node p = t.getPredicate();
