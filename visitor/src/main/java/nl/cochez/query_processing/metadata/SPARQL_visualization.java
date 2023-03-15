@@ -147,7 +147,7 @@ public class SPARQL_visualization {
             pb.step();
         }
         try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter("SPARQL_graph.tsv",true));
+            BufferedWriter bw = new BufferedWriter(new FileWriter("SPARQL_graph.tsv",false));
             for(Triple t : all_triples){
                 bw.write(t.getSubject().toString()+"\t"+t.getPredicate().toString()+"\t"+t.getObject().toString());
                 bw.newLine();
