@@ -94,7 +94,28 @@ public class PatternDisplay {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		br1: for (Query q : instance_freq.keySet()) {
+		List<Query> valid_unique_query = new ArrayList<Query>();
+		for (Query uniQuery : instance_freq.keySet()) {
+			if (checkEndpoint) {
+				if (StoreOrRead(uniQuery, dict_query, sparqlendpoint, dict_name)) {
+					valid_unique_query.add(uniQuery);
+				}
+			}
+		}
+		Collections.shuffle(valid_unique_query);
+		ArrayList<Query> random_select_50_queries = new ArrayList<Query>(valid_unique_query.subList(0, 50));
+		try {
+			BufferedWriter bw_random50 = new BufferedWriter(new FileWriter("random_50_valid_unique_queries.csv",true));
+			for(Query uqf:random_select_50_queries){
+				bw_random50.write(uqf.serialize().replace("\r", "\\r").replace("\n", "\\n"));
+				bw_random50.newLine();
+				bw_random50.flush();
+			}
+			bw_random50.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		br1: for (Query q : valid_unique_query) {
 			// System.out.println(q.queryType().name());
 			List<Triple> triples = new ArrayList<Triple>();
 			Map<String, String> replace_map = new HashMap<String, String>();
