@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.json.JsonObject;
@@ -72,16 +73,23 @@ import nl.cochez.query_processing.metadata.OpAsQuery.Converter;
 import java.io.IOException;
 
 public class PatternDisplay {
-    public static void rankPattern(ArrayList<Query> queryList, int top,int offset, int tripleNumber, boolean checkEndpoint, String sparqlendpoint, String dict_name) {
+    public static void rankPattern(ArrayList<Query> queryList, int top,int offset, int tripleNumber, boolean checkEndpoint, String sparqlendpoint, String dict_name, List<String> stop_list, List<String> ptop_List, List<String> otop_list, List<String> typetop_list) {
 		// List<Query> pattern_query = new ArrayList<Query>();
+		double threshold_subject = 1.0; // change the threshold for ratio
+		double threshold_predicate = 1.0; // change the threshold for ratio
+		double threshold_object = 1.0; // change the threshold for ratio
+		double threshold_type = 1.0; // change the threshold for ratio
 		List<Query> invalid_pattern_query = new ArrayList<Query>();
 		Map<Query,Boolean> dict_query = getDict(dict_name);
-		// Map<Query, Query> pattern_instance_pair = new HashMap<Query,Query>();
+		Graph<Query, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
 		HashMap<Query, HashMultiset<Query>> pattern_instance = new HashMap<Query, HashMultiset<Query>>(); // hashmap for pattern and a set of unique queries for this pattern
 		Graph<Query, DefaultEdge> pattern_query_graph = new DefaultDirectedGraph<Query, DefaultEdge>(DefaultEdge.class);
 		Map<Query, Integer> patter_length_map = new HashMap<Query,Integer>();
 		Map<Integer, Integer> pattern_numbers = new HashMap<Integer, Integer>();
 		Map<Integer, Integer> instance_numbers = new HashMap<Integer, Integer>();
+		Map<String, Query> query_type = new HashMap<String, Query>();
+		HashMap<String, HashMultiset<Query>> iri_query = new HashMap<String, HashMultiset<Query>>();
+		List<String> type_counting_list = new ArrayList<String>();
 		HashMap<Query, Integer> instance_freq = sortInstanceByValue(findFrequentQuery(queryList)); // get unique query list and the frequency of each unique query
 		try {
 			BufferedWriter bw1 = new BufferedWriter(new FileWriter("unique_query_frequency.csv",true));
@@ -126,6 +134,7 @@ public class PatternDisplay {
 			Set<Long> number_set = new HashSet<Long>();
 			Set<String> bind_set = get_bind_vars(q);
 			Set<String> values_set = new HashSet<String>();
+			Set<String> no_change_set = new HashSet<String>();
 			// Set<String> count_set = new HashSet<String>();
 			Map<String, Integer> count_count = new HashMap<String, Integer>();
 			HashMap<Var, Var> extend_dict = new HashMap<Var, Var>();
@@ -136,11 +145,17 @@ public class PatternDisplay {
 				//TODO: handle exception
 				continue br1;
 			}
+			// List<Triple> triple_list = new ArrayList<Triple>();
 			AllOpVisitor allbgp = new AllOpVisitor() {
 				@Override
 				public void visit(OpBGP opBGP) {
 					for (Triple t : opBGP.getPattern()) {
 						triples.add(t);
+						if (t.getPredicate().toString().equals("rdf:type") || t.getPredicate().toString().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#type") || t.getPredicate().toString().equals("a") || t.getPredicate().toString().equals("http://www.wikidata.org/prop/qualifier/P31")){
+							no_change_set.add(t.getObject().toString());
+							query_type.put(t.getObject().toString(),q);
+							type_counting_list.add(t.getObject().toString());
+						}
 						if (t.getSubject().isVariable() || t.getSubject().toString().startsWith("?")) {
 							var_set.add(t.getSubject().toString());
 						}
@@ -154,7 +169,8 @@ public class PatternDisplay {
 							entity_set.add(t.getSubject().toString());
 						}
 						if (t.getObject().isURI() || t.getObject().isBlank()) {
-							entity_set.add(t.getObject().toString());
+							if(!no_change_set.contains(t.getObject().toString()))
+								entity_set.add(t.getObject().toString());
 						}
 						if (t.getSubject().isLiteral()){
 							literal_set.add(t.getSubject().getLiteralLexicalForm());
@@ -162,6 +178,9 @@ public class PatternDisplay {
 						if (t.getObject().isLiteral()){
 							literal_set.add(t.getObject().getLiteralLexicalForm());
 						}
+
+						
+						
 					}
 				}
 
@@ -215,6 +234,74 @@ public class PatternDisplay {
 				}
 			};
 			ope.visit(allbgp);
+			double new_score = entity_vairable_score(triples);
+			try {
+				BufferedWriter bw_ratio = new BufferedWriter(new FileWriter("query_ratio.txt",true));
+				bw_ratio.write(q.serialize()+" & "+Double.toString(new_score));
+				bw_ratio.newLine();
+				bw_ratio.flush();	
+				bw_ratio.close();
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+
+			for (Triple t : triples) {
+				if (stop_list.contains(t.getSubject().toString())) {
+					if (new_score > threshold_subject) {
+						if (iri_query.containsKey(t.getSubject().toString())) {
+
+							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+								iri_query.get(t.getSubject().toString()).add(construcQuery_removeLimitOffset(q));
+						} else {
+							iri_query.put(t.getSubject().toString(), HashMultiset.create());
+							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+								iri_query.get(t.getSubject().toString()).add(construcQuery_removeLimitOffset(q));
+						}
+					}
+				}
+
+				if (ptop_List.contains(t.getPredicate().toString())) {
+					if (new_score > threshold_subject) {
+						if (iri_query.containsKey(t.getPredicate().toString())) {
+
+							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+								iri_query.get(t.getPredicate().toString()).add(construcQuery_removeLimitOffset(q));
+
+						} else {
+							iri_query.put(t.getPredicate().toString(), HashMultiset.create());
+							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+								iri_query.get(t.getPredicate().toString()).add(construcQuery_removeLimitOffset(q));
+						}
+					}
+				}
+
+				if (otop_list.contains(t.getObject().toString())) {
+					if (new_score > threshold_subject) {
+						if (iri_query.containsKey(t.getObject().toString())) {
+							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+								iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
+
+						} else {
+							iri_query.put(t.getObject().toString(), HashMultiset.create());
+							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+								iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
+						}
+					}
+				}
+
+				if (typetop_list.contains(t.getObject().toString())) {
+					if (new_score > threshold_subject) {
+						if (iri_query.containsKey(t.getObject().toString())) {
+							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+								iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
+						}
+					} else {
+						iri_query.put(t.getObject().toString(), HashMultiset.create());
+						if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+							iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
+					}
+				}
+			}
 			String replace_query_string = "";
 			try {
 				replace_query_string = q.serialize();
@@ -287,6 +374,9 @@ public class PatternDisplay {
 						pattern_instance.put(pattern_q, HashMultiset.create());
 						pattern_instance.get(pattern_q).add(q);
 					}
+					graph.addVertex(pattern_q);
+					graph.addVertex(q);
+					graph.addEdge(pattern_q, q);
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
 					pattern_query_graph.addVertex(q);
@@ -340,6 +430,9 @@ public class PatternDisplay {
 						pattern_instance.put(pattern_q, HashMultiset.create());
 						pattern_instance.get(pattern_q).add(q);
 					}
+					graph.addVertex(pattern_q);
+					graph.addVertex(q);
+					graph.addEdge(pattern_q, q);
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
 					pattern_query_graph.addVertex(q);
@@ -393,6 +486,9 @@ public class PatternDisplay {
 						pattern_instance.put(pattern_q, HashMultiset.create());
 						pattern_instance.get(pattern_q).add(q);
 					}
+					graph.addVertex(pattern_q);
+					graph.addVertex(q);
+					graph.addEdge(pattern_q, q);
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
 					pattern_query_graph.addVertex(q);
@@ -445,6 +541,9 @@ public class PatternDisplay {
 						pattern_instance.put(pattern_q, HashMultiset.create());
 						pattern_instance.get(pattern_q).add(q);
 					}
+					graph.addVertex(pattern_q);
+					graph.addVertex(q);
+					graph.addEdge(pattern_q, q);
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
 					pattern_query_graph.addVertex(q);
@@ -480,6 +579,74 @@ public class PatternDisplay {
 				instance_numbers.put(length, instance_freq.get(q));
 			}
 		}
+		Map<String, Long> couterMap = sortByValue(type_counting_list.stream().collect(Collectors.groupingBy(e -> e.toString(),Collectors.counting())));
+		System.out.println("Statistics of number of query for each type:"+couterMap);
+		try {
+			BufferedWriter bw_type = new BufferedWriter(new FileWriter("rdftype_statistics.csv",true));
+			for(Map.Entry<String, Long> type_item : couterMap.entrySet()){
+				bw_type.write(type_item.getKey().replace("\n", "\\n")+" & "+type_item.getValue().toString()+" & "+query_type.get(type_item.getKey()).serialize().replace("\n", "\\n"));
+				bw_type.newLine();
+				bw_type.flush();
+			}
+			bw_type.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		try {
+			BufferedWriter bw_type_top = new BufferedWriter(new FileWriter("type_top_query.txt", true));
+			bw_type_top.write("subject");
+			bw_type_top.newLine();
+			bw_type_top.flush();
+			for (String item : stop_list) {
+				if(iri_query.containsKey(item))
+				for (Query query : iri_query.get(item).elementSet()) {
+					bw_type_top.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
+					bw_type_top.newLine();
+					bw_type_top.flush();
+				}
+			}
+
+			bw_type_top.write("predicate");
+			bw_type_top.newLine();
+			bw_type_top.flush();
+			for (String item : ptop_List) {
+				if(iri_query.containsKey(item))
+				for (Query query : iri_query.get(item).elementSet()) {
+					bw_type_top.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
+					bw_type_top.newLine();
+					bw_type_top.flush();
+				}
+			}
+
+			bw_type_top.write("object");
+			bw_type_top.newLine();
+			bw_type_top.flush();
+			for (String item : otop_list) {
+				if(iri_query.containsKey(item))
+				for (Query query : iri_query.get(item).elementSet()) {
+					bw_type_top.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
+					bw_type_top.newLine();
+					bw_type_top.flush();
+				}
+			}
+
+			bw_type_top.write("type");
+			bw_type_top.newLine();
+			bw_type_top.flush();
+			for (String item : typetop_list) {
+				if(iri_query.containsKey(item))
+				for (Query query : iri_query.get(item).elementSet()) {
+					bw_type_top.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
+					bw_type_top.newLine();
+					bw_type_top.flush();
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			System.exit(1);
+		}
 
 		// System.out.println("Statistics of number of pattern in each length:"+pattern_numbers);
 		System.out.println("Statistics of number of instance in each length:"+instance_numbers);
@@ -500,10 +667,10 @@ public class PatternDisplay {
 			BufferedWriter bw_pattern_instance = new BufferedWriter(new FileWriter("pattern_statistics.csv", true));
 			for (Query pattern_q : pattern_instance.keySet()) {
 				int count=0;
-				for(Query unique : pattern_instance.get(pattern_q)){
-					count += instance_freq.get(unique);
+				for(DefaultEdge edge : graph.edgesOf(pattern_q)){
+					count += instance_freq.get(graph.getEdgeTarget(edge));
 				}
-				bw_pattern_instance.write(pattern_q.serialize().replace("\r", "\\r").replace("\n", "\\n")+" & "+Integer.toString(pattern_instance.get(pattern_q).size())+" & "+Integer.toString(count));
+				bw_pattern_instance.write(pattern_q.serialize().replace("\r", "\\r").replace("\n", "\\n")+" & "+Integer.toString(graph.edgesOf(pattern_q).size())+" & "+Integer.toString(count));
 				bw_pattern_instance.newLine();
 				bw_pattern_instance.flush();
 			}
@@ -613,11 +780,17 @@ public class PatternDisplay {
 				System.exit(1);
 			}
 
+<<<<<<< HEAD
 			int freq = 0;
 			for (DefaultEdge edge : pattern_query_graph.edgesOf(pattern_query)){
 				freq += instance_freq.get(pattern_query_graph.getEdgeTarget(edge));
 			}
 			jo.put("Frequency", freq);
+=======
+
+
+			jo.put("Frequency", pattern_instance.get(pattern_query).size());
+>>>>>>> origin/SPO_top
 			try {
 				bw_all.write(jo.toString());
 				bw_all.newLine();
@@ -989,6 +1162,25 @@ public class PatternDisplay {
 		return temp;
 	}
 
+	public static HashMap<String, Long> sortByValue(Map<String, Long> hm) {
+		List<Map.Entry<String, Long>> list = new LinkedList<Map.Entry<String, Long>>(hm.entrySet());
+		Collections.sort(list, new Comparator<Map.Entry<String, Long>>() {
+			public int compare(Map.Entry<String, Long> o1, Map.Entry<String, Long> o2) {
+				return (o2.getValue()).compareTo(o1.getValue());
+			}
+		});
+		HashMap<String, Long> temp = new LinkedHashMap<String, Long>();
+		for (Map.Entry<String, Long> aa : list) {
+			try {
+				temp.put(aa.getKey(), aa.getValue());
+				// temp.put(aa.getKey(), aa.getValue());
+			} catch (Exception e) {
+				//TODO: handle exception
+			}
+		}
+		return temp;
+	}
+
 	private static boolean check_with_endpoint(Query query, String sparqlendpoint) { // check if query will return results via bio2rdf SPARQL endpoint
 		boolean check = false;
 		if(!query.isSelectType()){
@@ -1287,6 +1479,49 @@ public class PatternDisplay {
 		return query;
 	}
 
+	private static Query construcQuery_removeLimitOffset(Query query){
+		// Query query = QueryFactory.create(queryString);
+		// Op op = Algebra.compile(query);
+		// query = OpAsQuery.asQuery(op);
+		if(query.isSelectType()){
+			SelectBuilder builder = new SelectBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			builder.getHandlerBlock().addAll(handlerBlock);
+			builder.setBase(null);
+			builder.setLimit(0);
+			builder.setOffset(0);
+			query = builder.build();
+		}
+		else if(query.isAskType()){
+			AskBuilder builder = new AskBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			builder.getHandlerBlock().addAll(handlerBlock);
+			builder.setBase(null);
+			builder.setLimit(0);
+			builder.setOffset(0);
+			query = builder.build();
+		}
+		else if (query.isConstructType()){
+			ConstructBuilder builder = new ConstructBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			builder.getHandlerBlock().addAll(handlerBlock);
+			builder.setBase(null);
+			builder.setLimit(0);
+			builder.setOffset(0);
+			query = builder.build();
+		}
+		else if (query.isDescribeType()){
+			DescribeBuilder builder = new DescribeBuilder();
+			HandlerBlock handlerBlock = new HandlerBlock(query);
+			builder.getHandlerBlock().addAll(handlerBlock);
+			builder.setBase(null);
+			builder.setLimit(0);
+			builder.setOffset(0);
+			query = builder.build();
+		}
+		return query;
+	}
+
 	private static Set<String> get_bind_vars(Query query){
 		HashSet<String> bindvars = new HashSet<String>();
 		SerializationContext cxt = new SerializationContext();
@@ -1398,5 +1633,115 @@ public class PatternDisplay {
 				e.printStackTrace();
 			}
 			return query;
+	}
+
+	private static double entity_vairable_score(Query query){
+		List<String> ent_set = new ArrayList<String>();
+		List<String> var_set = new ArrayList<String>();
+		Op op = Algebra.compile(query);
+		AllOpVisitor allbgp = new AllOpVisitor() {
+			@Override
+			public void visit(OpBGP opBGP) {
+				for(Triple t: opBGP.getPattern().getList()){
+					org.apache.jena.graph.Node s = t.getSubject();
+						if (s.isURI()) {
+							ent_set.add(s.getURI());
+						} else if (s.isVariable()) {
+							// TODO
+							var_set.add(s.toString());
+						} else {
+							// blank nodes ingored
+						}
+						org.apache.jena.graph.Node p = t.getPredicate();
+						if (p.isURI()) {
+							ent_set.add(p.getURI());
+						} else if (p.isVariable()) {
+							// TODO
+							var_set.add(p.toString());
+						} else {
+							throw new AssertionError("This should never happen");
+						}
+						org.apache.jena.graph.Node o = t.getObject();
+						if (o.isURI()) {
+							ent_set.add(o.getURI());
+						} else if (o.isVariable()) {
+							// TODO
+							var_set.add(o.toString());
+						} else if (o.isLiteral()) {
+		
+						} else {
+							// blank nodes ingored
+						}
+				}
+			}
+
+			@Override
+			public void visit(OpSlice opSlice) {
+				opSlice.getSubOp().visit(this);
+			}
+
+			public void visit(OpExtend opExtend){
+				opExtend.getSubOp().visit(this);
+			}
+
+			@Override
+			public void visit(OpGroup opGroup){
+				opGroup.getSubOp().visit(this);
+			}
+
+			@Override
+			public void visit(OpTable opTable){
+			}
+		};
+		op.visit(allbgp);
+		
+		
+		if(var_set.isEmpty())
+			return ent_set.size();
+        
+        System.out.println(ent_set);
+        System.out.println(var_set);
+		
+		return ((double) ent_set.size())/((double) var_set.size());
+	}
+
+	private static double entity_vairable_score(List<Triple> opBGP){
+		List<String> ent_set = new ArrayList<String>();
+		List<String> var_set = new ArrayList<String>();
+		for(Triple t: opBGP){
+			org.apache.jena.graph.Node s = t.getSubject();
+				if (s.isURI()) {
+					ent_set.add(s.getURI());
+				} else if (s.isVariable()) {
+					// TODO
+					var_set.add(s.toString());
+				} else {
+					// blank nodes ingored
+				}
+				org.apache.jena.graph.Node p = t.getPredicate();
+				if (p.isURI()) {
+					ent_set.add(p.getURI());
+				} else if (p.isVariable()) {
+					// TODO
+					var_set.add(p.toString());
+				} else {
+					throw new AssertionError("This should never happen");
+				}
+				org.apache.jena.graph.Node o = t.getObject();
+				if (o.isURI()) {
+					ent_set.add(o.getURI());
+				} else if (o.isVariable()) {
+					// TODO
+					var_set.add(o.toString());
+				} else if (o.isLiteral()) {
+
+				} else {
+					// blank nodes ingored
+				}
+		}
+		if(var_set.isEmpty())
+			return (double)ent_set.size();
+		
+		return ((double) ent_set.size())/((double) var_set.size());
 	}
 }
