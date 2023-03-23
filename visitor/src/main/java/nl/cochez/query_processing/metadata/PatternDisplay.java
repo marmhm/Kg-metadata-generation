@@ -51,6 +51,7 @@ import org.apache.jena.sparql.syntax.ElementBind;
 import org.apache.jena.sparql.syntax.ElementData;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
@@ -77,6 +78,7 @@ public class PatternDisplay {
 		Map<Query,Boolean> dict_query = getDict(dict_name);
 		// Map<Query, Query> pattern_instance_pair = new HashMap<Query,Query>();
 		HashMap<Query, HashMultiset<Query>> pattern_instance = new HashMap<Query, HashMultiset<Query>>(); // hashmap for pattern and a set of unique queries for this pattern
+		Graph<Query, DefaultEdge> pattern_query_graph = new DefaultDirectedGraph<Query, DefaultEdge>(DefaultEdge.class);
 		Map<Query, Integer> patter_length_map = new HashMap<Query,Integer>();
 		Map<Integer, Integer> pattern_numbers = new HashMap<Integer, Integer>();
 		Map<Integer, Integer> instance_numbers = new HashMap<Integer, Integer>();
@@ -92,7 +94,28 @@ public class PatternDisplay {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		br1: for (Query q : instance_freq.keySet()) {
+		List<Query> valid_unique_query = new ArrayList<Query>();
+		for (Query uniQuery : instance_freq.keySet()) {
+			if (checkEndpoint) {
+				if (StoreOrRead(uniQuery, dict_query, sparqlendpoint, dict_name)) {
+					valid_unique_query.add(uniQuery);
+				}
+			}
+		}
+		Collections.shuffle(valid_unique_query);
+		ArrayList<Query> random_select_50_queries = new ArrayList<Query>(valid_unique_query.subList(0, 50));
+		try {
+			BufferedWriter bw_random50 = new BufferedWriter(new FileWriter("random_50_valid_unique_queries.csv",true));
+			for(Query uqf:random_select_50_queries){
+				bw_random50.write(uqf.serialize().replace("\r", "\\r").replace("\n", "\\n"));
+				bw_random50.newLine();
+				bw_random50.flush();
+			}
+			bw_random50.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		br1: for (Query q : valid_unique_query) {
 			// System.out.println(q.queryType().name());
 			List<Triple> triples = new ArrayList<Triple>();
 			Map<String, String> replace_map = new HashMap<String, String>();
@@ -231,7 +254,7 @@ public class PatternDisplay {
 				replace_query_string = replace_query_string.replace(var + " ", replace_map.get(var) + " ")
 						.replace(var + "\n", replace_map.get(var) + "\n").replace(var + ")", replace_map.get(var) + ")")
 						.replace(var + "\r", replace_map.get(var) + "\r").replace(var + ",", replace_map.get(var) + ",")
-						.replace("<" + var + ">", "<" + replace_map.get(var) + ">");
+						.replace("<" + var + ">", "<" + replace_map.get(var) + ">").replace(var+"}", replace_map.get(var)+"}");
 			}
 
 			if(q.isSelectType()){
@@ -266,6 +289,9 @@ public class PatternDisplay {
 					}
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
+					pattern_query_graph.addVertex(q);
+					pattern_query_graph.addVertex(pattern_q);
+					pattern_query_graph.addEdge(pattern_q, q);
 					// if(!pattern_instance_pair.containsKey(pattern_q)){
 					// 	if(checkEndpoint){
 					// 		if(StoreOrRead(q,dict_query)){
@@ -316,6 +342,9 @@ public class PatternDisplay {
 					}
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
+					pattern_query_graph.addVertex(q);
+					pattern_query_graph.addVertex(pattern_q);
+					pattern_query_graph.addEdge(pattern_q, q);
 					// if(!pattern_instance_pair.containsKey(pattern_q)){
 					// 	if(checkEndpoint){
 					// 		if(StoreOrRead(q,dict_query)){
@@ -366,6 +395,9 @@ public class PatternDisplay {
 					}
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
+					pattern_query_graph.addVertex(q);
+					pattern_query_graph.addVertex(pattern_q);
+					pattern_query_graph.addEdge(pattern_q, q);
 					// if(!pattern_instance_pair.containsKey(pattern_q)){
 					// 	if(checkEndpoint){
 					// 		if(StoreOrRead(q,dict_query)){
@@ -415,6 +447,9 @@ public class PatternDisplay {
 					}
 					invalid_pattern_query.add(pattern_q);
 					patter_length_map.put(pattern_q, triples.size());
+					pattern_query_graph.addVertex(q);
+					pattern_query_graph.addVertex(pattern_q);
+					pattern_query_graph.addEdge(pattern_q, q);
 					// if(!pattern_instance_pair.containsKey(pattern_q)){
 					// 	if(checkEndpoint){
 					// 		if(StoreOrRead(q,dict_query)){
@@ -507,7 +542,7 @@ public class PatternDisplay {
 		for (int i =1;i<=tripleNumber;i++){
 			count_map.put(i, 0);
 		}
-		result = sortPatternByValue(findFrequentPattern_checkQueryEquavalence(pattern_instance,sparqlendpoint));
+		result = sortPatternByValue(findFrequentPattern_checkQueryEquavalence(pattern_instance,instance_freq, sparqlendpoint));
 		Map<Integer, Integer> unique_pattern_numbers = new HashMap<Integer, Integer>();
 		for (Entry<Query, Integer> res : result) {
 			int length = patter_length_map.get(res.getKey());
@@ -578,7 +613,11 @@ public class PatternDisplay {
 				System.exit(1);
 			}
 
-			jo.put("Frequency", pattern_instance.get(pattern_query).size());
+			int freq = 0;
+			for (DefaultEdge edge : pattern_query_graph.edgesOf(pattern_query)){
+				freq += instance_freq.get(pattern_query_graph.getEdgeTarget(edge));
+			}
+			jo.put("Frequency", freq);
 			try {
 				bw_all.write(jo.toString());
 				bw_all.newLine();
@@ -741,7 +780,7 @@ public class PatternDisplay {
 		return false;
 	}
 
-	private static HashMap<Query, Integer> findFrequentPattern_checkQueryEquavalence(HashMap<Query, HashMultiset<Query>> pattern_instance, String endpoint) {
+	private static HashMap<Query, Integer> findFrequentPattern_checkQueryEquavalence(HashMap<Query, HashMultiset<Query>> pattern_instance,HashMap<Query, Integer> instance_freq, String endpoint) {
 		List<Query> inputArr = new ArrayList<Query>(pattern_instance.keySet());
 		HashMap<Query, Integer> numberMap = new HashMap<Query, Integer>();
 		int frequency = -1;
@@ -751,9 +790,9 @@ public class PatternDisplay {
 
 			value = -1;
 			if (numberMap.containsKey(inputArr.get(i)))
-				if (listOflistContains_checkQueryEquavalence(inputArr.get(i), numberMap.keySet(), endpoint,pattern_instance)) {
+				// if (listOflistContains_checkQueryEquavalence(inputArr.get(i), numberMap.keySet(), endpoint,pattern_instance)) {
 					value = numberMap.get(inputArr.get(i));
-				}
+				// }
 			if (value != -1) {
 
 				value += 1;
@@ -764,8 +803,11 @@ public class PatternDisplay {
 
 				numberMap.put(inputArr.get(i), value);
 			} else {
-
-				numberMap.put(inputArr.get(i), 1);
+				int freq = 0;
+				for(Query uni_q : pattern_instance.get(inputArr.get(i))){
+					freq+= instance_freq.get(uni_q);
+				}
+				numberMap.put(inputArr.get(i), freq);
 			}
 
 		}
