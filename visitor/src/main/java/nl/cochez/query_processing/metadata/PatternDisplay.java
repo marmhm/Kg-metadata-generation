@@ -110,6 +110,19 @@ public class PatternDisplay {
 				}
 			}
 		}
+
+		try {
+			BufferedWriter bw_valid = new BufferedWriter(new FileWriter("unique_valid_query_frequency.csv",true));
+			for(Query uqf:valid_unique_query){
+				bw_valid.write(uqf.serialize().replace("\r", "\\r").replace("\n", "\\n")+" & "+Integer.toString(instance_freq.get(uqf)));
+				bw_valid.newLine();
+				bw_valid.flush();
+			}
+			bw_valid.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
 		Collections.shuffle(valid_unique_query);
 		ArrayList<Query> random_select_50_queries = new ArrayList<Query>(valid_unique_query.subList(0, 50));
 		try {
