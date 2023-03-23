@@ -780,17 +780,11 @@ public class PatternDisplay {
 				System.exit(1);
 			}
 
-<<<<<<< HEAD
 			int freq = 0;
 			for (DefaultEdge edge : pattern_query_graph.edgesOf(pattern_query)){
 				freq += instance_freq.get(pattern_query_graph.getEdgeTarget(edge));
 			}
 			jo.put("Frequency", freq);
-=======
-
-
-			jo.put("Frequency", pattern_instance.get(pattern_query).size());
->>>>>>> origin/SPO_top
 			try {
 				bw_all.write(jo.toString());
 				bw_all.newLine();
