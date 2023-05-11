@@ -42,14 +42,19 @@ import org.apache.jena.sparql.core.BasicPattern;
 import org.apache.jena.sparql.core.Var;
 import org.apache.jena.sparql.engine.binding.Binding;
 import org.apache.jena.sparql.engine.binding.BindingBuilder;
+import org.apache.jena.sparql.expr.E_Equals;
+import org.apache.jena.sparql.expr.Expr;
 import org.apache.jena.sparql.expr.ExprAggregator;
+import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.lang.sparql_11.ParseException;
 import org.apache.jena.sparql.serializer.FormatterElement;
 import org.apache.jena.sparql.serializer.SerializationContext;
 import org.apache.jena.sparql.syntax.Element;
 import org.apache.jena.sparql.syntax.ElementGroup;
+import org.apache.jena.sparql.syntax.ElementVisitorBase;
 import org.apache.jena.sparql.syntax.ElementBind;
 import org.apache.jena.sparql.syntax.ElementData;
+import org.apache.jena.sparql.syntax.ElementFilter;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
@@ -247,6 +252,34 @@ public class PatternDisplay {
 				}
 			};
 			ope.visit(allbgp);
+			try {
+				Element pattern = q.getQueryPattern();
+				ElementVisitorBase filtervisitor = new ElementVisitorBase() {
+					@Override
+					public void visit(ElementFilter el) {
+						Expr filterExpression = el.getExpr();
+						if (filterExpression instanceof E_Equals) {
+							E_Equals equals = (E_Equals) filterExpression;
+							Expr right = equals.getArg2();
+							if (right instanceof NodeValue) {
+								NodeValue nodeValue = (NodeValue) right;
+								if (nodeValue.isIRI()) {
+									entity_set.add(nodeValue.asNode().getURI());
+									// System.out.println("Filter URI: " + nodeValue.asNode().getURI());
+								} else if (nodeValue.isLiteral()) {
+									literal_set.add(nodeValue.asQuotedString());
+									// System.out.println("Filter Literal: " + nodeValue.asQuotedString());
+								}
+							}
+						}
+					}
+				};
+				pattern.visit(filtervisitor);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			
+
 			double new_score = entity_vairable_score(triples);
 			try {
 				BufferedWriter bw_ratio = new BufferedWriter(new FileWriter("query_ratio.txt",true));
