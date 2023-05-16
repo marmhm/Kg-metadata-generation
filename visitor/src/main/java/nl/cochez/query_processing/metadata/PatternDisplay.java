@@ -62,6 +62,8 @@ import org.jgrapht.graph.DefaultEdge;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 
+import me.tongfei.progressbar.ProgressBar;
+
 import org.apache.jena.arq.querybuilder.AskBuilder;
 import org.apache.jena.arq.querybuilder.ConstructBuilder;
 import org.apache.jena.arq.querybuilder.DescribeBuilder;
@@ -108,12 +110,19 @@ public class PatternDisplay {
 			// TODO: handle exception
 		}
 		List<Query> valid_unique_query = new ArrayList<Query>();
-		for (Query uniQuery : instance_freq.keySet()) {
-			if (checkEndpoint) {
-				if (StoreOrRead(uniQuery, dict_query, sparqlendpoint, dict_name)) {
-					valid_unique_query.add(uniQuery);
-				}
+		if(checkEndpoint){
+			ProgressBar pb = new ProgressBar("Checking valid of unique queries: ", instance_freq.keySet().size());
+		
+			for (Query uniQuery : instance_freq.keySet()) {
+					if (StoreOrRead(uniQuery, dict_query, sparqlendpoint, dict_name)) {
+						valid_unique_query.add(uniQuery);
+					}
+					pb.step();
 			}
+			pb.close();
+		}
+		else {
+			valid_unique_query.addAll(instance_freq.keySet());
 		}
 
 		try {
