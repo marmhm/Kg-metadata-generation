@@ -109,21 +109,26 @@ public class PatternDisplay {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
+
 		List<Query> valid_unique_query = new ArrayList<Query>();
-		if(checkEndpoint){
-			ProgressBar pb = new ProgressBar("Checking valid of unique queries: ", instance_freq.keySet().size());
+		valid_unique_query.addAll(instance_freq.keySet());
+
+		// //check valid for all unique queries
+		// List<Query> valid_unique_query = new ArrayList<Query>();
+		// if(checkEndpoint){
+		// 	ProgressBar pb = new ProgressBar("Checking valid of unique queries: ", instance_freq.keySet().size());
 		
-			for (Query uniQuery : instance_freq.keySet()) {
-					if (StoreOrRead(uniQuery, dict_query, sparqlendpoint, dict_name)) {
-						valid_unique_query.add(uniQuery);
-					}
-					pb.step();
-			}
-			pb.close();
-		}
-		else {
-			valid_unique_query.addAll(instance_freq.keySet());
-		}
+		// 	for (Query uniQuery : instance_freq.keySet()) {
+		// 			if (StoreOrRead(uniQuery, dict_query, sparqlendpoint, dict_name)) {
+		// 				valid_unique_query.add(uniQuery);
+		// 			}
+		// 			pb.step();
+		// 	}
+		// 	pb.close();
+		// }
+		// else {
+		// 	valid_unique_query.addAll(instance_freq.keySet());
+		// }
 
 		try {
 			BufferedWriter bw_valid = new BufferedWriter(new FileWriter("unique_valid_query_frequency.csv",true));
