@@ -86,6 +86,7 @@ public class PatternDisplay {
 		double threshold_predicate = 1.0; // change the threshold for ratio
 		double threshold_object = 1.0; // change the threshold for ratio
 		double threshold_type = 1.0; // change the threshold for ratio
+		int valid_top = 50; // the number that you want to display top frequency unique queries
 		List<Query> invalid_pattern_query = new ArrayList<Query>();
 		Map<Query,Boolean> dict_query = getDict(dict_name);
 		Graph<Query, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
@@ -129,6 +130,21 @@ public class PatternDisplay {
 		// else {
 		// 	valid_unique_query.addAll(instance_freq.keySet());
 		// }
+
+		if (checkEndpoint) {
+			ProgressBar pb = new ProgressBar("Finding top-" + valid_top + " valid of unique queries: ", valid_top);
+			int count = 0;
+			for (Query uniQuery : instance_freq.keySet()) {
+				if (count >= valid_top)
+					break;
+				if (StoreOrRead(uniQuery, dict_query, sparqlendpoint, dict_name)) {
+					valid_unique_query.add(uniQuery);
+					pb.step();
+					count ++;
+				}
+			}
+			pb.close();
+		}
 
 		try {
 			BufferedWriter bw_valid = new BufferedWriter(new FileWriter("unique_valid_query_frequency.csv",true));
@@ -661,9 +677,11 @@ public class PatternDisplay {
 			for (String item : stop_list) {
 				if(iri_query.containsKey(item))
 				for (Query query : iri_query.get(item).elementSet()) {
-					bw_type_top.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
-					bw_type_top.newLine();
-					bw_type_top.flush();
+					if (StoreOrRead(query, dict_query, sparqlendpoint, dict_name)){
+						bw_type_top.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
+						bw_type_top.newLine();
+						bw_type_top.flush();
+					}
 				}
 			}
 
