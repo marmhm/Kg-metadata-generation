@@ -660,7 +660,12 @@ public class PatternDisplay {
 		try {
 			BufferedWriter bw_type = new BufferedWriter(new FileWriter("rdftype_statistics.csv",true));
 			for(Map.Entry<String, Long> type_item : couterMap.entrySet()){
-				bw_type.write(type_item.getKey().replace("\n", "\\n")+" & "+type_item.getValue().toString()+" & "+query_type.get(type_item.getKey()).serialize().replace("\n", "\\n"));
+				Query typequery = query_type.get(type_item.getKey());
+				if(checkEndpoint){
+					if (!StoreOrRead(typequery, dict_query, sparqlendpoint, dict_name))
+						continue;
+				}
+				bw_type.write(type_item.getKey().replace("\n", "\\n")+" & "+type_item.getValue().toString()+" & "+typequery.serialize().replace("\n", "\\n"));
 				bw_type.newLine();
 				bw_type.flush();
 			}
