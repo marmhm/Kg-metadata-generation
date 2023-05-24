@@ -743,6 +743,7 @@ public class PatternDisplay {
 					}
 				}
 			}
+			bw_type_top.close();
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
