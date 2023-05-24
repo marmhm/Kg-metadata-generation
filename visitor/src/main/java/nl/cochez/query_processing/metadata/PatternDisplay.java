@@ -130,20 +130,27 @@ public class PatternDisplay {
 		// else {
 		// 	valid_unique_query.addAll(instance_freq.keySet());
 		// }
-
-		if (checkEndpoint) {
-			ProgressBar pb = new ProgressBar("Finding top-" + valid_top + " valid of unique queries: ", valid_top);
-			int count = 0;
-			for (Query uniQuery : instance_freq.keySet()) {
-				if (count >= valid_top)
-					break;
-				if (StoreOrRead(uniQuery, dict_query, sparqlendpoint, dict_name)) {
-					valid_unique_query.add(uniQuery);
-					pb.step();
-					count ++;
+		try {
+			BufferedWriter bw_top_valid = new BufferedWriter(new FileWriter("top_unique_valid_query_frequency.csv",true));
+			if (checkEndpoint) {
+				ProgressBar pb = new ProgressBar("Finding top-" + valid_top + " valid of unique queries: ", valid_top);
+				int count = 0;
+				for (Query uniQuery : instance_freq.keySet()) {
+					if (count >= valid_top)
+						break;
+					if (StoreOrRead(uniQuery, dict_query, sparqlendpoint, dict_name)) {
+						bw_top_valid.write(uniQuery.serialize().replace("\r", "\\r").replace("\n", "\\n")+" & "+Integer.toString(instance_freq.get(uniQuery)));
+						bw_top_valid.newLine();
+						bw_top_valid.flush();
+						pb.step();
+						count ++;
+					}
 				}
+				pb.close();
 			}
-			pb.close();
+			bw_top_valid.close();
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 
 		try {
