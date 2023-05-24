@@ -166,13 +166,18 @@ public class PatternDisplay {
 		}
 
 		Collections.shuffle(valid_unique_query);
-		ArrayList<Query> random_select_50_queries = new ArrayList<Query>(valid_unique_query.subList(0, 50));
 		try {
 			BufferedWriter bw_random50 = new BufferedWriter(new FileWriter("random_50_valid_unique_queries.csv",true));
-			for(Query uqf:random_select_50_queries){
-				bw_random50.write(uqf.serialize().replace("\r", "\\r").replace("\n", "\\n"));
-				bw_random50.newLine();
-				bw_random50.flush();
+			int random_count = 0;
+			for(Query uqf:valid_unique_query){
+				if(random_count>=50)
+					break;
+				if (StoreOrRead(uqf, dict_query, sparqlendpoint, dict_name)){
+					bw_random50.write(uqf.serialize().replace("\r", "\\r").replace("\n", "\\n"));
+					bw_random50.newLine();
+					bw_random50.flush();
+					random_count ++;
+				}
 			}
 			bw_random50.close();
 		} catch (Exception e) {
