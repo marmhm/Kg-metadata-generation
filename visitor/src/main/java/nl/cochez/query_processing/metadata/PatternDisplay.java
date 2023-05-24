@@ -80,7 +80,7 @@ import nl.cochez.query_processing.metadata.OpAsQuery.Converter;
 import java.io.IOException;
 
 public class PatternDisplay {
-    public static void rankPattern(ArrayList<Query> queryList, int top,int offset, int tripleNumber, boolean checkEndpoint, String sparqlendpoint, String dict_name, List<String> stop_list, List<String> ptop_List, List<String> otop_list, List<String> typetop_list) {
+    public static void rankPattern(ArrayList<Query> queryList, int top,int offset, int tripleNumber, boolean checkEndpoint, String sparqlendpoint, String dict_name,List<String> entity_rank_list, List<String> stop_list, List<String> ptop_List, List<String> otop_list, List<String> typetop_list) {
 		// List<Query> pattern_query = new ArrayList<Query>();
 		double threshold_subject = 1.0; // change the threshold for ratio
 		double threshold_predicate = 1.0; // change the threshold for ratio
@@ -684,6 +684,32 @@ public class PatternDisplay {
 			bw_type.close();
 		} catch (Exception e) {
 			// TODO: handle exception
+		}
+
+		try {
+			BufferedWriter bw_function2 = new BufferedWriter(new FileWriter("function2_results.txt", true));
+			int function2_count = 0;
+			br_f2: for (String item : entity_rank_list) {
+				if (function2_count >= 50)
+					break;
+				if (iri_query.containsKey(item)) {
+					for (Query query : iri_query.get(item).elementSet()) {
+						if (StoreOrRead(query, dict_query, sparqlendpoint, dict_name)) {
+							bw_function2
+									.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
+							bw_function2.newLine();
+							bw_function2.flush();
+							function2_count++;
+							continue br_f2;
+						}
+					}
+				}
+			}
+
+			bw_function2.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.err.println("Error during Function 2!!!");
 		}
 
 		try {

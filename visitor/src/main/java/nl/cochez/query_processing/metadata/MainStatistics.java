@@ -141,6 +141,8 @@ public class MainStatistics {
 		List<String> ptop_list = new ArrayList<String>();
 		List<String> otop_list = new ArrayList<String>();
 		List<String> typetop_list = new ArrayList<String>();
+
+		List<String> entity_rank_list = new ArrayList<String>();
 		
 		InputStream in = new FileInputStream(filename);
         
@@ -176,13 +178,21 @@ public class MainStatistics {
 				}
 				PrintStream ps = new PrintStream(fos);
 				System.setOut(ps);
+
+				Multiset<String> entities = HashMultiset.create();
+				entities.addAll(visitor.subjects);
+				entities.addAll(visitor.predicates);
+				entities.addAll(visitor.objects);
+				Iterable<Entry<String>> entitys = Iterables.limit(Multisets.copyHighestCountFirst(entities).entrySet(), Multisets.copyHighestCountFirst(entities).entrySet().size());
+				entity_rank_list.addAll(get_top(entitys, entities.size(), sparqlendpoint));
+
 				System.out.println("subject,label,frequency");
 				System.out.println(Multisets.copyHighestCountFirst(visitor.subjects).entrySet().size());
 				Iterable<Entry<String>> subjets = Iterables.limit(Multisets.copyHighestCountFirst(visitor.subjects).entrySet(), Multisets.copyHighestCountFirst(visitor.subjects).entrySet().size());
 				stop_list.addAll(get_top(subjets, 10, sparqlendpoint));
 				print_with_label(subjets,"s",100,sparqlendpoint);
 				System.out.println("predicate,label,frequency");
-				Iterable<Entry<String>> predicates = Iterables.limit(Multisets.copyHighestCountFirst(visitor.predicates).entrySet(), Multisets.copyHighestCountFirst(visitor.subjects).entrySet().size());
+				Iterable<Entry<String>> predicates = Iterables.limit(Multisets.copyHighestCountFirst(visitor.predicates).entrySet(), Multisets.copyHighestCountFirst(visitor.predicates).entrySet().size());
 				ptop_list.addAll(get_top(predicates, 10, sparqlendpoint));
 				System.out.println(Multisets.copyHighestCountFirst(visitor.predicates).entrySet().size());
 				print_with_label(predicates,"p",100,sparqlendpoint);
@@ -249,7 +259,7 @@ public class MainStatistics {
 		System.out.println("Elapsed" + watch.elapsed(TimeUnit.SECONDS));
 
 		collector.stats();
-		PatternDisplay.rankPattern(collector.getQueryList(), 10, 1,25,true, sparqlendpoint, dict_name,stop_list,ptop_list,otop_list,typetop_list);//input is (queryList, top number of display, max number of triples in pattern query)
+		PatternDisplay.rankPattern(collector.getQueryList(), 10, 1,25,true, sparqlendpoint, dict_name,entity_rank_list,stop_list,ptop_list,otop_list,typetop_list);//input is (queryList, top number of display, max number of triples in pattern query)
 		System.out.println("Finished!" + watch.elapsed(TimeUnit.SECONDS));
 	}
 

@@ -37,7 +37,7 @@ public class MainIsomorphisms {
 
 		collector.stats();
 		
-		PatternDisplay.rankPattern(collector.queryList,10,5,5,true, sparqlendpoint, dict_name,null,null,null,null);
+		PatternDisplay.rankPattern(collector.queryList,10,5,5,true, sparqlendpoint, dict_name,null,null,null,null,null);
 	}
 
 }
