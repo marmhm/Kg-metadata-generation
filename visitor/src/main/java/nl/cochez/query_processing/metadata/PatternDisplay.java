@@ -88,6 +88,7 @@ public class PatternDisplay {
 		double threshold_type = 1.0; // change the threshold for ratio
 		int valid_top = 50; // the number that you want to display top frequency unique queries
 		List<Query> invalid_pattern_query = new ArrayList<Query>();
+		Map<Query,Double> dict_informativeness = new HashMap<Query,Double>();
 		Map<Query,Boolean> dict_query = getDict(dict_name);
 		Graph<Query, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
 		HashMap<Query, HashMultiset<Query>> pattern_instance = new HashMap<Query, HashMultiset<Query>>(); // hashmap for pattern and a set of unique queries for this pattern
@@ -131,7 +132,7 @@ public class PatternDisplay {
 		// 	valid_unique_query.addAll(instance_freq.keySet());
 		// }
 		try {
-			BufferedWriter bw_top_valid = new BufferedWriter(new FileWriter("top_unique_valid_query_frequency.csv",true));
+			BufferedWriter bw_top_valid = new BufferedWriter(new FileWriter("function1.csv",true));
 			if (checkEndpoint) {
 				ProgressBar pb = new ProgressBar("Finding top-" + valid_top + " valid of unique queries: ", valid_top);
 				int count = 0;
@@ -167,7 +168,7 @@ public class PatternDisplay {
 
 		Collections.shuffle(valid_unique_query);
 		try {
-			BufferedWriter bw_random50 = new BufferedWriter(new FileWriter("random_50_valid_unique_queries.csv",true));
+			BufferedWriter bw_random50 = new BufferedWriter(new FileWriter("function4.txt",true));
 			int random_count = 0;
 			for(Query uqf:valid_unique_query){
 				if(random_count>=50)
