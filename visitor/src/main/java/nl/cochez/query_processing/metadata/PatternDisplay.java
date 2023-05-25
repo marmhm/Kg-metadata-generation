@@ -132,14 +132,19 @@ public class PatternDisplay {
 		// 	valid_unique_query.addAll(instance_freq.keySet());
 		// }
 		try {
-			BufferedWriter bw_top_valid = new BufferedWriter(new FileWriter("function1.csv",true));
+			BufferedWriter bw_top_valid = new BufferedWriter(new FileWriter("function1.txt",true));
 			if (checkEndpoint) {
+				List<Double> func1scores = new ArrayList<Double>();
+				Set<Integer> complexities = new HashSet<Integer>();
 				ProgressBar pb = new ProgressBar("Finding top-" + valid_top + " valid of unique queries: ", valid_top);
 				int count = 0;
 				for (Query uniQuery : instance_freq.keySet()) {
 					if (count >= valid_top)
 						break;
 					if (StoreOrRead(uniQuery, dict_query, sparqlendpoint, dict_name)) {
+						complexities.add(getBGPtripleNumber(uniQuery));
+						double score = informativeness(uniQuery);
+						func1scores.add(score);
 						bw_top_valid.write(uniQuery.serialize().replace("\r", "\\r").replace("\n", "\\n")+" & "+Integer.toString(instance_freq.get(uniQuery)));
 						bw_top_valid.newLine();
 						bw_top_valid.flush();
@@ -147,11 +152,21 @@ public class PatternDisplay {
 						count ++;
 					}
 				}
+				double[] scores = new double[func1scores.size()];
+				for (int i = 0; i < func1scores.size(); i++)
+					scores[i] = func1scores.get(i);
+				bw_top_valid.write(func1scores.toString());
+				bw_top_valid.newLine();
+				bw_top_valid.write(ZScore(scores).toString());
+				bw_top_valid.newLine();
+				bw_top_valid.write(complexities.size());
+				bw_top_valid.flush();
 				pb.close();
 			}
 			bw_top_valid.close();
 		} catch (Exception e) {
 			// TODO: handle exception
+			System.err.println("Error in function 1!");
 		}
 
 		try {
@@ -169,20 +184,35 @@ public class PatternDisplay {
 		Collections.shuffle(valid_unique_query);
 		try {
 			BufferedWriter bw_random50 = new BufferedWriter(new FileWriter("function4.txt",true));
+			List<Double> func4scores = new ArrayList<Double>();
+			Set<Integer> complexities = new HashSet<Integer>();
 			int random_count = 0;
 			for(Query uqf:valid_unique_query){
 				if(random_count>=50)
 					break;
 				if (StoreOrRead(uqf, dict_query, sparqlendpoint, dict_name)){
+					complexities.add(getBGPtripleNumber(uqf));
+					double score = informativeness(uqf);
+					func4scores.add(score);
 					bw_random50.write(uqf.serialize().replace("\r", "\\r").replace("\n", "\\n"));
 					bw_random50.newLine();
 					bw_random50.flush();
 					random_count ++;
 				}
 			}
+			double[] scores = new double[func4scores.size()];
+			for (int i = 0; i < func4scores.size(); i++)
+				scores[i] = func4scores.get(i);
+				bw_random50.write(func4scores.toString());
+			bw_random50.newLine();
+			bw_random50.write(ZScore(scores).toString());
+			bw_random50.newLine();
+			bw_random50.write(complexities.size());
+			bw_random50.flush();
 			bw_random50.close();
 		} catch (Exception e) {
 			// TODO: handle exception
+			System.err.println("Error in function 4!");
 		}
 		br1: for (Query q : valid_unique_query) {
 			// System.out.println(q.queryType().name());
@@ -689,6 +719,8 @@ public class PatternDisplay {
 
 		try {
 			BufferedWriter bw_function2 = new BufferedWriter(new FileWriter("function2_results.txt", true));
+			List<Double> func2scores = new ArrayList<Double>();
+			Set<Integer> complexities = new HashSet<Integer>();
 			int function2_count = 0;
 			br_f2: for (String item : entity_rank_list) {
 				if (function2_count >= 50)
@@ -696,6 +728,9 @@ public class PatternDisplay {
 				if (iri_query.containsKey(item)) {
 					for (Query query : iri_query.get(item).elementSet()) {
 						if (StoreOrRead(query, dict_query, sparqlendpoint, dict_name)) {
+							complexities.add(getBGPtripleNumber(query));
+							double score = informativeness(query);
+							func2scores.add(score);
 							bw_function2
 									.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
 							bw_function2.newLine();
@@ -706,7 +741,15 @@ public class PatternDisplay {
 					}
 				}
 			}
-
+			double[] scores = new double[func2scores.size()];
+			for (int i = 0; i < func2scores.size(); i++)
+				scores[i] = func2scores.get(i);
+			bw_function2.write(func2scores.toString());
+			bw_function2.newLine();
+			bw_function2.write(ZScore(scores).toString());
+			bw_function2.newLine();
+			bw_function2.write(complexities.size());
+			bw_function2.flush();
 			bw_function2.close();
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -850,80 +893,101 @@ public class PatternDisplay {
 			// Algebra.compile(res.getKey()).visit(get_pattern_visitor);
 		}
 		System.out.println("Statistics of number of unique pattern in each length:"+unique_pattern_numbers);
-		br2: for (int i = 0; !(check_count_all(count_map,top,offset,tripleNumber)) && i < result.size();i++){
-			Query pattern_query = result.get(i).getKey();
-			int num = getBGPtripleNumber(pattern_query);
-			if (num < offset || num > tripleNumber)
-				continue br2;
-			if (check_count(count_map, num, top)) {
-				continue br2;
-			}
-			if (checkEndpoint)
-				if (!pattern_query.isSelectType())
-					if (!StoreOrRead(pattern_query,dict_query, sparqlendpoint, dict_name))
-						continue br2;
-			if (checkEndpoint)
-				if (!StoreOrRead(pattern_query,dict_query, sparqlendpoint, dict_name)) {
+		try {
+			BufferedWriter bw_func3 = new BufferedWriter(new FileWriter("function3.txt",true));
+			List<Double> func3scores = new ArrayList<Double>();
+			Set<Integer> complexities = new HashSet<Integer>();
+			br2: for (int i = 0; !(check_count_all(count_map,top,offset,tripleNumber)) && i < result.size();i++){
+				Query pattern_query = result.get(i).getKey();
+				double score = informativeness(pattern_query);
+				func3scores.add(score);
+				int num = getBGPtripleNumber(pattern_query);
+				complexities.add(num);
+				if (num < offset || num > tripleNumber)
+					continue br2;
+				if (check_count(count_map, num, top)) {
 					continue br2;
 				}
-			Query query = null;
-			br3: for (Query q : pattern_instance.get(pattern_query)) {
 				if (checkEndpoint)
-					if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name)) {
-						query = q;
-						break br3;
+					if (!pattern_query.isSelectType())
+						if (!StoreOrRead(pattern_query,dict_query, sparqlendpoint, dict_name))
+							continue br2;
+				if (checkEndpoint)
+					if (!StoreOrRead(pattern_query,dict_query, sparqlendpoint, dict_name)) {
+						continue br2;
 					}
-			}
-			if(query == null)
-				continue br2;
-			
-			
-			BufferedWriter bw = null;
-			BufferedWriter bw_all = null;
-			try {
-				bw = new BufferedWriter(new FileWriter(
-						"top" + Integer.toString(top) + "_pattern" + "_length" + Integer.toString(num) + ".json",
-						true));
-				bw_all = new BufferedWriter(
-						new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency" + "_length"
-								+ Integer.toString(num) + ".json", true));
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.exit(1);
-			}
-			JsonObject jo = new JsonObject();
-			jo.put("Title", "");
-			// jo.put("Pattern Rank Number",
-			// Integer.toString(count+1)+"("+Integer.toString(i+1)+")");
-			jo.put("SPARQL Query Pattern", pattern_query.serialize());
-			jo.put("Instance Query", query.serialize());
-			jo.put("Contained Triple's Number", num);
+				Query query = null;
+				br3: for (Query q : pattern_instance.get(pattern_query)) {
+					if (checkEndpoint)
+						if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name)) {
+							query = q;
+							break br3;
+						}
+				}
+				if(query == null)
+					continue br2;
+				
+				
+				BufferedWriter bw = null;
+				BufferedWriter bw_all = null;
+				try {
+					bw = new BufferedWriter(new FileWriter(
+							"top" + Integer.toString(top) + "_pattern" + "_length" + Integer.toString(num) + ".json",
+							true));
+					bw_all = new BufferedWriter(
+							new FileWriter("top" + Integer.toString(top) + "_pattern_with_frequency" + "_length"
+									+ Integer.toString(num) + ".json", true));
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+				JsonObject jo = new JsonObject();
+				jo.put("Title", "");
+				// jo.put("Pattern Rank Number",
+				// Integer.toString(count+1)+"("+Integer.toString(i+1)+")");
+				jo.put("SPARQL Query Pattern", pattern_query.serialize());
+				jo.put("Instance Query", query.serialize());
+				jo.put("Contained Triple's Number", num);
 
-			try {
-				bw.write(jo.toString());
-				bw.newLine();
-				bw.flush();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				System.exit(1);
-			}
+				try {
+					bw.write(jo.toString());
+					bw.newLine();
+					bw.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.exit(1);
+				}
 
-			int freq = 0;
-			for (DefaultEdge edge : pattern_query_graph.edgesOf(pattern_query)){
-				freq += instance_freq.get(pattern_query_graph.getEdgeTarget(edge));
+				int freq = 0;
+				for (DefaultEdge edge : pattern_query_graph.edgesOf(pattern_query)){
+					freq += instance_freq.get(pattern_query_graph.getEdgeTarget(edge));
+				}
+				jo.put("Frequency", freq);
+				try {
+					bw_all.write(jo.toString());
+					bw_all.newLine();
+					bw_all.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.exit(1);
+				}
+				count_map.put(num, count_map.get(num) + 1);
 			}
-			jo.put("Frequency", freq);
-			try {
-				bw_all.write(jo.toString());
-				bw_all.newLine();
-				bw_all.flush();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				System.exit(1);
-			}
-			count_map.put(num, count_map.get(num) + 1);
+			double[] scores = new double[func3scores.size()];
+			for (int i = 0; i < func3scores.size(); i++)
+				scores[i] = func3scores.get(i);
+			bw_func3.write(func3scores.toString());
+			bw_func3.newLine();
+			bw_func3.write(ZScore(scores).toString());
+			bw_func3.newLine();
+			bw_func3.write(complexities.size());
+			bw_func3.flush();
+			bw_func3.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.err.println("Error in function 3!");
 		}
 		System.out.print("Statistics of each length: ");
 		System.out.println(count_map);
@@ -1024,6 +1088,37 @@ public class PatternDisplay {
 		}
 		return numberMap;
 	}
+
+	private static double[] ZScore(double[] scores){
+		double mean = 0.0;
+		double std_dev = 0.0;
+		calculateMeanAndStdDev(scores,mean,std_dev);
+		for (int i = 0; i < scores.length; i++) {
+            scores[i] = zScoreNormalization(scores[i],mean,std_dev);
+            System.out.println(scores[i]);
+        }
+		return scores;
+	}
+
+	private static void calculateMeanAndStdDev(double[] scores, double mean, double std_dev) {
+        int length = scores.length;
+        
+        double sum = 0.0;
+        for (double score : scores) {
+            sum += score;
+        }
+        mean = sum / length;
+        
+        double temp = 0;
+        for (double score : scores) {
+            temp += (score - mean) * (score - mean);
+        }
+        std_dev = Math.sqrt(temp / length);
+    }
+
+    public static double zScoreNormalization(double x, double mean, double std_dev) {
+        return (x - mean) / std_dev;
+    }
 
 	private static boolean listOflistContains(Query list, Set<Query> listlist) {
 		if (listlist.contains(list))
@@ -1758,43 +1853,14 @@ public class PatternDisplay {
 			return query;
 	}
 
-	private static double entity_vairable_score(Query query){
-		List<String> ent_set = new ArrayList<String>();
-		List<String> var_set = new ArrayList<String>();
+	private static double informativeness(Query query){
+		List<Triple> triples = new ArrayList<Triple>();
 		Op op = Algebra.compile(query);
 		AllOpVisitor allbgp = new AllOpVisitor() {
 			@Override
 			public void visit(OpBGP opBGP) {
 				for(Triple t: opBGP.getPattern().getList()){
-					org.apache.jena.graph.Node s = t.getSubject();
-						if (s.isURI()) {
-							ent_set.add(s.getURI());
-						} else if (s.isVariable()) {
-							// TODO
-							var_set.add(s.toString());
-						} else {
-							// blank nodes ingored
-						}
-						org.apache.jena.graph.Node p = t.getPredicate();
-						if (p.isURI()) {
-							ent_set.add(p.getURI());
-						} else if (p.isVariable()) {
-							// TODO
-							var_set.add(p.toString());
-						} else {
-							throw new AssertionError("This should never happen");
-						}
-						org.apache.jena.graph.Node o = t.getObject();
-						if (o.isURI()) {
-							ent_set.add(o.getURI());
-						} else if (o.isVariable()) {
-							// TODO
-							var_set.add(o.toString());
-						} else if (o.isLiteral()) {
-		
-						} else {
-							// blank nodes ingored
-						}
+					triples.add(t);
 				}
 			}
 
@@ -1816,16 +1882,8 @@ public class PatternDisplay {
 			public void visit(OpTable opTable){
 			}
 		};
-		op.visit(allbgp);
-		
-		
-		if(var_set.isEmpty())
-			return ent_set.size();
-        
-        System.out.println(ent_set);
-        System.out.println(var_set);
-		
-		return ((double) ent_set.size())/((double) var_set.size());
+		op.visit(allbgp);		
+		return entity_vairable_score(triples);
 	}
 
 	private static double entity_vairable_score(List<Triple> opBGP){
