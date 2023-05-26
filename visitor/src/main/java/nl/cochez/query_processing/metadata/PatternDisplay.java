@@ -969,6 +969,8 @@ public class PatternDisplay {
 				jo.put("Instance Query", query.serialize());
 				jo.put("Contained Triple's Number", num);
 
+				bw_func3.write(query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
+
 				try {
 					bw.write(jo.toString());
 					bw.newLine();
