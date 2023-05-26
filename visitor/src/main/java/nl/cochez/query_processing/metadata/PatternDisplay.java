@@ -117,22 +117,19 @@ public class PatternDisplay {
 		List<Query> valid_unique_query = new ArrayList<Query>();
 		valid_unique_query.addAll(instance_freq.keySet());
 
-		// //check valid for all unique queries
-		// List<Query> valid_unique_query = new ArrayList<Query>();
-		// if(checkEndpoint){
-		// 	ProgressBar pb = new ProgressBar("Checking valid of unique queries: ", instance_freq.keySet().size());
+		double sum_info_func1 = 0.0;
+		double sum_info_func2 = 0.0;
+		double sum_info_func3 = 0.0;
+		double sum_info_func4 = 0.0;
+
+		double cc1 = 0.0;
+		double cc2 = 0.0;
+		double cc3 = 0.0;
+		double cc4 = 0.0;
+
+		Set<Integer> complex = new HashSet<Integer>();
 		
-		// 	for (Query uniQuery : instance_freq.keySet()) {
-		// 			if (StoreOrRead(uniQuery, dict_query, sparqlendpoint, dict_name)) {
-		// 				valid_unique_query.add(uniQuery);
-		// 			}
-		// 			pb.step();
-		// 	}
-		// 	pb.close();
-		// }
-		// else {
-		// 	valid_unique_query.addAll(instance_freq.keySet());
-		// }
+
 		try {
 			BufferedWriter bw_top_valid = new BufferedWriter(new FileWriter("function1.txt",true));
 			if (checkEndpoint) {
@@ -157,6 +154,9 @@ public class PatternDisplay {
 				double[] scores = new double[func1scores.size()];
 				for (int i = 0; i < func1scores.size(); i++)
 					scores[i] = func1scores.get(i);
+				for(double s :ZScore(scores)){
+					sum_info_func1+=s;
+				}
 				bw_top_valid.write("Informativeness list:");
 				bw_top_valid.newLine();
 				bw_top_valid.write(func1scores.toString());
@@ -211,6 +211,9 @@ public class PatternDisplay {
 			double[] scores = new double[func4scores.size()];
 			for (int i = 0; i < func4scores.size(); i++)
 				scores[i] = func4scores.get(i);
+			for(double s :ZScore(scores)){
+				sum_info_func4+=s;
+			}
 			bw_random50.write("Informativeness list:");
 			bw_random50.newLine();	
 			bw_random50.write(func4scores.toString());
@@ -758,6 +761,9 @@ public class PatternDisplay {
 			double[] scores = new double[func2scores.size()];
 			for (int i = 0; i < func2scores.size(); i++)
 				scores[i] = func2scores.get(i);
+			for(double s :ZScore(scores)){
+				sum_info_func2+=s;
+			}
 			bw_function2.write("Informativeness list:");
 			bw_function2.newLine();
 			bw_function2.write(func2scores.toString());
@@ -913,6 +919,16 @@ public class PatternDisplay {
 			// Algebra.compile(res.getKey()).visit(get_pattern_visitor);
 		}
 		System.out.println("Statistics of number of unique pattern in each length:"+unique_pattern_numbers);
+
+		for (int qi = 0; qi < result.size(); qi ++) {
+			Query qq = result.get(qi).getKey();
+			int n = getBGPtripleNumber(qq);
+			if (complex.contains(n))
+				continue;
+			if (StoreOrRead(qq, dict_query, sparqlendpoint, dict_name))
+				complex.add(getBGPtripleNumber(qq));
+		}
+
 		try {
 			BufferedWriter bw_func3 = new BufferedWriter(new FileWriter("function3.txt",true));
 			List<Double> func3scores = new ArrayList<Double>();
@@ -1000,6 +1016,9 @@ public class PatternDisplay {
 			double[] scores = new double[func3scores.size()];
 			for (int i = 0; i < func3scores.size(); i++)
 				scores[i] = func3scores.get(i);
+			for(double s :ZScore(scores)){
+				sum_info_func3+=s;
+			}
 			bw_func3.write("Informativeness list:");
 			bw_func3.newLine();
 			bw_func3.write(func3scores.toString());
@@ -1020,6 +1039,66 @@ public class PatternDisplay {
 		System.out.print("Statistics of each length: ");
 		System.out.println(count_map);
 		// storeDict(dict_query);
+
+		try {
+			cc1 = cc1 / complex.size();
+			cc2 = cc2 / complex.size();
+			cc3 = cc3 / complex.size();
+			cc4 = cc4 / complex.size();
+
+			double[] zarray = new double[]{sum_info_func1,sum_info_func2,sum_info_func3,sum_info_func4};
+
+			zarray = ZScore(zarray);
+
+			double u1 = cc1 + zarray[0];
+			double u2 = cc2 + zarray[1];
+			double u3 = cc3 + zarray[2];
+			double u4 = cc4 + zarray[3];
+
+			BufferedWriter bw_final_results = new BufferedWriter(new FileWriter("evaluation_results.txt",true));
+
+			bw_final_results.write("Function 1:");
+			bw_final_results.newLine();
+			bw_final_results.write("Normalized Informativeness sum: "+zarray[0]);
+			bw_final_results.newLine();
+			bw_final_results.write("complexity coverage: "+cc1);
+			bw_final_results.newLine();
+			bw_final_results.write("Usefullness: "+u1);
+			bw_final_results.newLine();
+
+			bw_final_results.write("Function 2:");
+			bw_final_results.newLine();
+			bw_final_results.write("Normalized Informativenss sum: "+zarray[1]);
+			bw_final_results.newLine();
+			bw_final_results.write("complexity coverage: "+cc2);
+			bw_final_results.newLine();
+			bw_final_results.write("usefullness: "+u2);
+			bw_final_results.newLine();
+
+			bw_final_results.write("Function 3");
+			bw_final_results.newLine();
+			bw_final_results.write("Normalized Informativenss sum: "+zarray[2]);
+			bw_final_results.newLine();
+			bw_final_results.write("complexity coverage: "+cc3);
+			bw_final_results.newLine();
+			bw_final_results.write("usefullness: "+u3);
+			bw_final_results.newLine();
+
+			bw_final_results.write("Function 4");
+			bw_final_results.newLine();
+			bw_final_results.write("Normalized Informativenss sum: "+zarray[3]);
+			bw_final_results.newLine();
+			bw_final_results.write("complexity coverage: "+cc4);
+			bw_final_results.newLine();
+			bw_final_results.write("usefullness: "+u4);
+			bw_final_results.newLine();
+			bw_final_results.flush();
+
+			bw_final_results.close();
+
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	private static boolean check_count(Map<Integer,Integer> count_map,int num, int top){
