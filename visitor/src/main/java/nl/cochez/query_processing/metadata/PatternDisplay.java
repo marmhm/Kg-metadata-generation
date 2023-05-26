@@ -1197,14 +1197,31 @@ public class PatternDisplay {
 	}
 
 	private static double[] ZScore(double[] scores){
-		double mean = 0.0;
-		double std_dev = 0.0;
-		calculateMeanAndStdDev(scores,mean,std_dev);
-		for (int i = 0; i < scores.length; i++) {
-            scores[i] = zScoreNormalization(scores[i],mean,std_dev);
-            System.out.println(scores[i]);
+		int length = scores.length;
+        double mean;
+        double std_dev;
+
+        // Calculate mean
+        double sum = 0.0;
+        for (double score : scores) {
+            sum += score;
         }
-		return scores;
+        mean = sum / length;
+
+        // Calculate standard deviation
+        double temp = 0;
+        for (double score : scores) {
+            temp += (score - mean) * (score - mean);
+        }
+        std_dev = Math.sqrt(temp / length);
+
+        // Normalize scores
+        double[] normalizedScores = new double[length];
+        for (int i = 0; i < length; i++) {
+            normalizedScores[i] = (scores[i] - mean) / std_dev;
+        }
+
+        return normalizedScores;
 	}
 
 	private static void calculateMeanAndStdDev(double[] scores, double mean, double std_dev) {
