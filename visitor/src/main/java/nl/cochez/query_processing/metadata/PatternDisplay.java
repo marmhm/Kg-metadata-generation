@@ -167,7 +167,8 @@ public class PatternDisplay {
 				bw_top_valid.newLine();
 				bw_top_valid.write("Complexity count:");
 				bw_top_valid.newLine();
-				bw_top_valid.write(complexities.size());
+				bw_top_valid.write(Integer.toString(complexities.size()));
+				cc1 = complexities.size();
 				bw_top_valid.flush();
 				pb.close();
 			}
@@ -224,7 +225,8 @@ public class PatternDisplay {
 			bw_random50.newLine();
 			bw_random50.write("Complexity count:");
 			bw_random50.newLine();
-			bw_random50.write(complexities.size());
+			bw_random50.write(Integer.toString(complexities.size()));
+			cc4 = complexities.size();
 			bw_random50.flush();
 			bw_random50.close();
 		} catch (Exception e) {
@@ -774,7 +776,8 @@ public class PatternDisplay {
 			bw_function2.newLine();
 			bw_function2.write("Complexity count:");
 			bw_function2.newLine();
-			bw_function2.write(complexities.size());
+			bw_function2.write(Integer.toString(complexities.size()));
+			cc2 = complexities.size();
 			bw_function2.flush();
 			bw_function2.close();
 		} catch (Exception e) {
@@ -936,11 +939,7 @@ public class PatternDisplay {
 			br2: for (int i = 0; !(check_count_all(count_map,top,offset,tripleNumber)) && i < result.size();i++){
 				Query pattern_query = result.get(i).getKey();
 				int num = getBGPtripleNumber(pattern_query);
-				if (func3scores.size()<50){
-					double score = informativeness(pattern_query);
-					func3scores.add(score);
-					complexities.add(num);
-				}
+				
 				
 				
 				if (num < offset || num > tripleNumber)
@@ -988,6 +987,11 @@ public class PatternDisplay {
 				jo.put("SPARQL Query Pattern", pattern_query.serialize());
 				jo.put("Instance Query", query.serialize());
 				jo.put("Contained Triple's Number", num);
+				if (func3scores.size()<50){
+					double score = informativeness(pattern_query);
+					func3scores.add(score);
+					complexities.add(num);
+				}
 				if (func3scores.size()<50)
 					bw_func3.write(query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
 
@@ -1033,7 +1037,8 @@ public class PatternDisplay {
 			bw_func3.newLine();
 			bw_func3.write("Complexity count:");
 			bw_func3.newLine();
-			bw_func3.write(complexities.size());
+			bw_func3.write(Integer.toString(complexities.size()));
+			cc3 = complexities.size();
 			bw_func3.flush();
 			bw_func3.close();
 		} catch (Exception e) {
