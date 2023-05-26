@@ -155,9 +155,15 @@ public class PatternDisplay {
 				double[] scores = new double[func1scores.size()];
 				for (int i = 0; i < func1scores.size(); i++)
 					scores[i] = func1scores.get(i);
+				bw_top_valid.write("Informativeness list:");
+				bw_top_valid.newLine();
 				bw_top_valid.write(func1scores.toString());
 				bw_top_valid.newLine();
+				bw_top_valid.write("Normalized Informativeness list:");
+				bw_top_valid.newLine();
 				bw_top_valid.write(ZScore(scores).toString());
+				bw_top_valid.newLine();
+				bw_top_valid.write("Complexity count:");
 				bw_top_valid.newLine();
 				bw_top_valid.write(complexities.size());
 				bw_top_valid.flush();
@@ -203,9 +209,15 @@ public class PatternDisplay {
 			double[] scores = new double[func4scores.size()];
 			for (int i = 0; i < func4scores.size(); i++)
 				scores[i] = func4scores.get(i);
-				bw_random50.write(func4scores.toString());
+			bw_random50.write("Informativeness list:");
+			bw_random50.newLine();	
+			bw_random50.write(func4scores.toString());
+			bw_random50.newLine();
+			bw_random50.write("Normalized Informativeness list:");
 			bw_random50.newLine();
 			bw_random50.write(ZScore(scores).toString());
+			bw_random50.newLine();
+			bw_random50.write("Complexity count:");
 			bw_random50.newLine();
 			bw_random50.write(complexities.size());
 			bw_random50.flush();
@@ -744,9 +756,15 @@ public class PatternDisplay {
 			double[] scores = new double[func2scores.size()];
 			for (int i = 0; i < func2scores.size(); i++)
 				scores[i] = func2scores.get(i);
+			bw_function2.write("Informativeness list:");
+			bw_function2.newLine();
 			bw_function2.write(func2scores.toString());
 			bw_function2.newLine();
+			bw_function2.write("Normalized Informativeness list:");
+			bw_function2.newLine();
 			bw_function2.write(ZScore(scores).toString());
+			bw_function2.newLine();
+			bw_function2.write("Complexity count:");
 			bw_function2.newLine();
 			bw_function2.write(complexities.size());
 			bw_function2.flush();
@@ -978,9 +996,15 @@ public class PatternDisplay {
 			double[] scores = new double[func3scores.size()];
 			for (int i = 0; i < func3scores.size(); i++)
 				scores[i] = func3scores.get(i);
+			bw_func3.write("Informativeness list:");
+			bw_func3.newLine();
 			bw_func3.write(func3scores.toString());
 			bw_func3.newLine();
+			bw_func3.write("Normalized Informativeness list:");
+			bw_func3.newLine();
 			bw_func3.write(ZScore(scores).toString());
+			bw_func3.newLine();
+			bw_func3.write("Complexity count:");
 			bw_func3.newLine();
 			bw_func3.write(complexities.size());
 			bw_func3.flush();
