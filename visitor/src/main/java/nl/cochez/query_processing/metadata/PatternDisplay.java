@@ -935,10 +935,14 @@ public class PatternDisplay {
 			Set<Integer> complexities = new HashSet<Integer>();
 			br2: for (int i = 0; !(check_count_all(count_map,top,offset,tripleNumber)) && i < result.size();i++){
 				Query pattern_query = result.get(i).getKey();
-				double score = informativeness(pattern_query);
-				func3scores.add(score);
 				int num = getBGPtripleNumber(pattern_query);
-				complexities.add(num);
+				if (func3scores.size()<50){
+					double score = informativeness(pattern_query);
+					func3scores.add(score);
+					complexities.add(num);
+				}
+				
+				
 				if (num < offset || num > tripleNumber)
 					continue br2;
 				if (check_count(count_map, num, top)) {
@@ -984,8 +988,8 @@ public class PatternDisplay {
 				jo.put("SPARQL Query Pattern", pattern_query.serialize());
 				jo.put("Instance Query", query.serialize());
 				jo.put("Contained Triple's Number", num);
-
-				bw_func3.write(query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
+				if (func3scores.size()<50)
+					bw_func3.write(query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
 
 				try {
 					bw.write(jo.toString());
