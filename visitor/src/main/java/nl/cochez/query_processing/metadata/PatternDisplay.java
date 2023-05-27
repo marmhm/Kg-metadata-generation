@@ -163,7 +163,7 @@ public class PatternDisplay {
 				bw_top_valid.newLine();
 				bw_top_valid.write("Normalized Informativeness list:");
 				bw_top_valid.newLine();
-				bw_top_valid.write(Arrays.toString(ZScore(scores)));
+				bw_top_valid.write(Arrays.toString(ZScore(scores)) + scores.length);
 				bw_top_valid.newLine();
 				bw_top_valid.write("Complexity count:");
 				bw_top_valid.newLine();
@@ -221,7 +221,7 @@ public class PatternDisplay {
 			bw_random50.newLine();
 			bw_random50.write("Normalized Informativeness list:");
 			bw_random50.newLine();
-			bw_random50.write(Arrays.toString(ZScore(scores)));
+			bw_random50.write(Arrays.toString(ZScore(scores)) + scores.length);
 			bw_random50.newLine();
 			bw_random50.write("Complexity count:");
 			bw_random50.newLine();
@@ -772,7 +772,7 @@ public class PatternDisplay {
 			bw_function2.newLine();
 			bw_function2.write("Normalized Informativeness list:");
 			bw_function2.newLine();
-			bw_function2.write(Arrays.toString(ZScore(scores)));
+			bw_function2.write(Arrays.toString(ZScore(scores)) + scores.length);
 			bw_function2.newLine();
 			bw_function2.write("Complexity count:");
 			bw_function2.newLine();
@@ -990,10 +990,9 @@ public class PatternDisplay {
 				if (func3scores.size()<50){
 					double score = informativeness(pattern_query);
 					func3scores.add(score);
+					bw_func3.write(pattern_query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
 					complexities.add(num);
 				}
-				if (func3scores.size()<50)
-					bw_func3.write(query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
 
 				try {
 					bw.write(jo.toString());
@@ -1033,7 +1032,7 @@ public class PatternDisplay {
 			bw_func3.newLine();
 			bw_func3.write("Normalized Informativeness list:");
 			bw_func3.newLine();
-			bw_func3.write(Arrays.toString(ZScore(scores)));
+			bw_func3.write(Arrays.toString(ZScore(scores)) + scores.length);
 			bw_func3.newLine();
 			bw_func3.write("Complexity count:");
 			bw_func3.newLine();
