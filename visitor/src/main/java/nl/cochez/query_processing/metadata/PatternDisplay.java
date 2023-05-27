@@ -89,19 +89,21 @@ public class PatternDisplay {
 		double threshold_object = 1.0; // change the threshold for ratio
 		double threshold_type = 1.0; // change the threshold for ratio
 		int valid_top = 50; // the number that you want to display top frequency unique queries
-		List<Query> invalid_pattern_query = new ArrayList<Query>();
-		Map<Query,Double> dict_informativeness = new HashMap<Query,Double>();
-		Map<Query,Boolean> dict_query = getDict(dict_name);
-		Graph<Query, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+		List<Query> invalid_pattern_query = new ArrayList<Query>(); // the list of invalid pattern queries
+		Map<Query,Double> dict_informativeness = new HashMap<Query,Double>(); // the map of query and its informativeness
+		Map<Query,Boolean> dict_query = getDict(dict_name); // the map of query and its validity
+		Graph<Query, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class); // the graph of pattern and query
 		HashMap<Query, HashMultiset<Query>> pattern_instance = new HashMap<Query, HashMultiset<Query>>(); // hashmap for pattern and a set of unique queries for this pattern
-		Graph<Query, DefaultEdge> pattern_query_graph = new DefaultDirectedGraph<Query, DefaultEdge>(DefaultEdge.class);
-		Map<Query, Integer> patter_length_map = new HashMap<Query,Integer>();
-		Map<Integer, Integer> pattern_numbers = new HashMap<Integer, Integer>();
-		Map<Integer, Integer> instance_numbers = new HashMap<Integer, Integer>();
-		Map<String, Query> query_type = new HashMap<String, Query>();
-		HashMap<String, HashMultiset<Query>> iri_query = new HashMap<String, HashMultiset<Query>>();
-		List<String> type_counting_list = new ArrayList<String>();
+		Graph<Query, DefaultEdge> pattern_query_graph = new DefaultDirectedGraph<Query, DefaultEdge>(DefaultEdge.class); // the graph of pattern and query
+		Map<Query, Integer> patter_length_map = new HashMap<Query,Integer>(); // the map of pattern and its length
+		Map<Integer, Integer> pattern_numbers = new HashMap<Integer, Integer>(); // the map of pattern length and its frequency
+		Map<Integer, Integer> instance_numbers = new HashMap<Integer, Integer>(); // the map of instance length and its frequency
+		Map<String, Query> query_type = new HashMap<String, Query>(); // the map of instance and its type
+		HashMap<String, HashMultiset<Query>> iri_query = new HashMap<String, HashMultiset<Query>>(); // the map of iri and its queries
+		List<String> type_counting_list = new ArrayList<String>(); // the list of type counting
 		HashMap<Query, Integer> instance_freq = sortInstanceByValue(findFrequentQuery(queryList)); // get unique query list and the frequency of each unique query
+		
+		// comment of following code: get the frequency of each pattern
 		try {
 			BufferedWriter bw1 = new BufferedWriter(new FileWriter("unique_query_frequency.csv",true));
 			for(Entry<Query,Integer> uqf:instance_freq.entrySet()){
@@ -114,58 +116,60 @@ public class PatternDisplay {
 			// TODO: handle exception
 		}
 
-		List<Query> valid_unique_query = new ArrayList<Query>();
-		valid_unique_query.addAll(instance_freq.keySet());
+		List<Query> valid_unique_query = new ArrayList<Query>(); // the list of valid unique queries
+		valid_unique_query.addAll(instance_freq.keySet()); // add all unique queries to the list
 
-		double sum_info_func1 = 0.0;
-		double sum_info_func2 = 0.0;
-		double sum_info_func3 = 0.0;
-		double sum_info_func4 = 0.0;
+		double sum_info_func1 = 0.0; // the sum of informativeness of function 1
+		double sum_info_func2 = 0.0; // the sum of informativeness of function 2
+		double sum_info_func3 = 0.0; // the sum of informativeness of function 3
+		double sum_info_func4 = 0.0; // the sum of informativeness of function 4
 
-		double cc1 = 0.0;
-		double cc2 = 0.0;
-		double cc3 = 0.0;
-		double cc4 = 0.0;
+		double cc1 = 0.0; // the number of complexity coverage of function 1
+		double cc2 = 0.0; // the number of complexity coverage of function 2
+		double cc3 = 0.0; // the number of complexity coverage of function 3
+		double cc4 = 0.0; // the number of complexity coverage of function 4
 
-		Set<Integer> complex = new HashSet<Integer>();
+		Set<Integer> complex = new HashSet<Integer>(); // the set of complexity, used to count the total number of complexity
 		
 
 		try {
-			BufferedWriter bw_top_valid = new BufferedWriter(new FileWriter("function1.txt",true));
-			if (checkEndpoint) {
-				List<Double> func1scores = new ArrayList<Double>();
-				Set<Integer> complexities = new HashSet<Integer>();
-				ProgressBar pb = new ProgressBar("Finding top-" + valid_top + " valid of unique queries: ", valid_top);
-				int count = 0;
-				for (Query uniQuery : instance_freq.keySet()) {
-					if (count >= valid_top)
+			BufferedWriter bw_top_valid = new BufferedWriter(new FileWriter("function1.txt",true)); // the file to store the top valid queries of function 1
+			if (checkEndpoint) { // if checkEndpoint is true, then we need to check the validity of queries
+				List<Double> func1scores = new ArrayList<Double>(); // the list of informativeness of function 1
+				Set<Integer> complexities = new HashSet<Integer>(); // the set of complexity, used to count the number of complexity
+				ProgressBar pb = new ProgressBar("Finding top-" + valid_top + " valid of unique queries: ", valid_top); // the progress bar
+				int count = 0; // count for only select 50 queries
+				for (Query uniQuery : instance_freq.keySet()) { // for each unique query
+					if (count >= valid_top) // if the number of valid queries is more than valid_top, then break
 						break;
-					if (StoreOrRead(uniQuery, dict_query, sparqlendpoint, dict_name)) {
-						complexities.add(getBGPtripleNumber(uniQuery));
-						double score = informativeness(uniQuery);
-						func1scores.add(score);
-						bw_top_valid.write(uniQuery.serialize().replace("\r", "\\r").replace("\n", "\\n")+" & "+Integer.toString(instance_freq.get(uniQuery)));
-						bw_top_valid.newLine();
-						bw_top_valid.flush();
-						pb.step();
+					if (StoreOrRead(uniQuery, dict_query, sparqlendpoint, dict_name)) { // if the query is valid
+						complexities.add(getBGPtripleNumber(uniQuery)); // add the complexity to the set
+						double score = informativeness(uniQuery); // get the informativeness of the query
+						func1scores.add(score); // add the informativeness to the list
+						bw_top_valid.write(uniQuery.serialize().replace("\r", "\\r").replace("\n", "\\n")); // write the query to the file
+						bw_top_valid.newLine(); // write a new line
+						bw_top_valid.flush(); // flush the buffer
+						pb.step(); // step the progress bar
 						count ++;
 					}
 				}
-				double[] scores = new double[func1scores.size()];
-				for (int i = 0; i < func1scores.size(); i++)
-					scores[i] = func1scores.get(i);
-				for(double s :ZScore(scores)){
-					sum_info_func1+=s;
+				double[] scores = new double[func1scores.size()]; // the array of informativeness of function 1
+				for (int i = 0; i < func1scores.size(); i++) // for each informativeness
+					scores[i] = func1scores.get(i); // add the informativeness to the array
+				for(double s :ZScore(scores)){ // for each normalized informativeness
+					sum_info_func1+=s; // add the normalized informativeness to the sum
 				}
+				if (func1scores.size() != 50)
+					System.err.println("The number of funciton 1 outputs is not 50!");
 				bw_top_valid.write("Informativeness list:");
 				bw_top_valid.newLine();
-				bw_top_valid.write(func1scores.toString());
+				bw_top_valid.write(func1scores.toString()); // write the informativeness list to the file
 				bw_top_valid.newLine();
 				bw_top_valid.write("Normalized Informativeness list:");
 				bw_top_valid.newLine();
-				bw_top_valid.write(Arrays.toString(ZScore(scores)) + scores.length);
+				bw_top_valid.write(Arrays.toString(ZScore(scores)) + scores.length); // write the normalized informativeness list to the file
 				bw_top_valid.newLine();
-				bw_top_valid.write("Complexity count:");
+				bw_top_valid.write("Complexity count:"); // write the complexity count to the file
 				bw_top_valid.newLine();
 				bw_top_valid.write(Integer.toString(complexities.size()));
 				cc1 = complexities.size();
@@ -178,54 +182,56 @@ public class PatternDisplay {
 			System.err.println("Error in function 1!");
 		}
 
-		try {
-			BufferedWriter bw_valid = new BufferedWriter(new FileWriter("unique_valid_query_frequency.csv",true));
-			for(Query uqf:valid_unique_query){
-				bw_valid.write(uqf.serialize().replace("\r", "\\r").replace("\n", "\\n")+" & "+Integer.toString(instance_freq.get(uqf)));
-				bw_valid.newLine();
-				bw_valid.flush();
-			}
-			bw_valid.close();
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+		// try {
+		// 	BufferedWriter bw_valid = new BufferedWriter(new FileWriter("unique_valid_query_frequency.csv",true));
+		// 	for(Query uqf:valid_unique_query){
+		// 		bw_valid.write(uqf.serialize().replace("\r", "\\r").replace("\n", "\\n")+" & "+Integer.toString(instance_freq.get(uqf)));
+		// 		bw_valid.newLine();
+		// 		bw_valid.flush();
+		// 	}
+		// 	bw_valid.close();
+		// } catch (Exception e) {
+		// 	// TODO: handle exception
+		// }
 
-		Collections.shuffle(valid_unique_query);
+		Collections.shuffle(valid_unique_query); // shuffle the valid unique queries
 		try {
-			BufferedWriter bw_random50 = new BufferedWriter(new FileWriter("function4.txt",true));
-			List<Double> func4scores = new ArrayList<Double>();
-			Set<Integer> complexities = new HashSet<Integer>();
+			BufferedWriter bw_random50 = new BufferedWriter(new FileWriter("function4.txt",true)); // the file to store the random 50 queries of function 4
+			List<Double> func4scores = new ArrayList<Double>(); // the list of informativeness of function 4
+			Set<Integer> complexities = new HashSet<Integer>(); // the set of complexity, used to count the number of complexity
 			int random_count = 0;
-			for(Query uqf:valid_unique_query){
-				if(random_count>=50)
+			for(Query uqf:valid_unique_query){ // for each unique query
+				if(random_count>=50) // if the number of random queries is more than 50, then stop
 					break;
-				if (StoreOrRead(uqf, dict_query, sparqlendpoint, dict_name)){
-					complexities.add(getBGPtripleNumber(uqf));
-					double score = informativeness(uqf);
-					func4scores.add(score);
-					bw_random50.write(uqf.serialize().replace("\r", "\\r").replace("\n", "\\n"));
-					bw_random50.newLine();
-					bw_random50.flush();
+				if (StoreOrRead(uqf, dict_query, sparqlendpoint, dict_name)){ // if the query is valid
+					complexities.add(getBGPtripleNumber(uqf)); // add the complexity to the set
+					double score = informativeness(uqf); // get the informativeness of the query
+					func4scores.add(score); // add the informativeness to the list
+					bw_random50.write(uqf.serialize().replace("\r", "\\r").replace("\n", "\\n")); // write the query to the file
+					bw_random50.newLine(); // write a new line
+					bw_random50.flush(); // flush the buffer
 					random_count ++;
 				}
 			}
-			double[] scores = new double[func4scores.size()];
-			for (int i = 0; i < func4scores.size(); i++)
-				scores[i] = func4scores.get(i);
-			for(double s :ZScore(scores)){
-				sum_info_func4+=s;
+			double[] scores = new double[func4scores.size()]; // the array of informativeness of function 4
+			for (int i = 0; i < func4scores.size(); i++) // for each informativeness
+				scores[i] = func4scores.get(i); // add the informativeness to the array
+			for(double s :ZScore(scores)){ // for each normalized informativeness
+				sum_info_func4+=s; // add the normalized informativeness to the sum
 			}
+			if (func4scores.size() != 50)
+					System.err.println("The number of funciton 4 outputs is not 50!");
 			bw_random50.write("Informativeness list:");
 			bw_random50.newLine();	
-			bw_random50.write(func4scores.toString());
+			bw_random50.write(func4scores.toString()); // write the informativeness list to the file
 			bw_random50.newLine();
 			bw_random50.write("Normalized Informativeness list:");
 			bw_random50.newLine();
-			bw_random50.write(Arrays.toString(ZScore(scores)) + scores.length);
+			bw_random50.write(Arrays.toString(ZScore(scores)) + scores.length); // write the normalized informativeness list to the file
 			bw_random50.newLine();
 			bw_random50.write("Complexity count:");
 			bw_random50.newLine();
-			bw_random50.write(Integer.toString(complexities.size()));
+			bw_random50.write(Integer.toString(complexities.size())); // write the complexity count to the file
 			cc4 = complexities.size();
 			bw_random50.flush();
 			bw_random50.close();
@@ -233,60 +239,62 @@ public class PatternDisplay {
 			// TODO: handle exception
 			System.err.println("Error in function 4!");
 		}
-		br1: for (Query q : valid_unique_query) {
+
+
+		br1: for (Query q : valid_unique_query) { // for each unique query
 			// System.out.println(q.queryType().name());
-			List<Triple> triples = new ArrayList<Triple>();
-			Map<String, String> replace_map = new HashMap<String, String>();
-			Set<String> var_set = new HashSet<String>();
-			Set<String> entity_set = new HashSet<String>();
-			Set<String> literal_set = new HashSet<String>();
-			Set<String> predicate_set = new HashSet<String>();
-			Set<Long> number_set = new HashSet<Long>();
-			Set<String> bind_set = get_bind_vars(q);
-			Set<String> values_set = new HashSet<String>();
-			Set<String> no_change_set = new HashSet<String>();
+			List<Triple> triples = new ArrayList<Triple>(); // the list of triples
+			Map<String, String> replace_map = new HashMap<String, String>(); // the map of string and its replacement
+			Set<String> var_set = new HashSet<String>(); // the set of variables
+			Set<String> entity_set = new HashSet<String>(); // the set of entities
+			Set<String> literal_set = new HashSet<String>(); // the set of literals
+			Set<String> predicate_set = new HashSet<String>(); // the set of predicates
+			Set<Long> number_set = new HashSet<Long>(); // the set of numbers
+			Set<String> bind_set = get_bind_vars(q); // the set of bind variables
+			Set<String> values_set = new HashSet<String>(); // the set of values
+			Set<String> no_change_set = new HashSet<String>(); // the set of no change variables, which is in predicate position
 			// Set<String> count_set = new HashSet<String>();
-			Map<String, Integer> count_count = new HashMap<String, Integer>();
-			HashMap<Var, Var> extend_dict = new HashMap<Var, Var>();
+			Map<String, Integer> count_count = new HashMap<String, Integer>(); // the map of count and its frequency
+			HashMap<Var, Var> extend_dict = new HashMap<Var, Var>(); // the map of extend and its variable
 			Op ope = null;
 			try {
-				ope = Algebra.compile(q);
+				ope = Algebra.compile(q); // compile the query
 			} catch (Exception e) {
 				//TODO: handle exception
 				continue br1;
 			}
 			// List<Triple> triple_list = new ArrayList<Triple>();
-			AllOpVisitor allbgp = new AllOpVisitor() {
+			AllOpVisitor allbgp = new AllOpVisitor() { // the visitor to visit all the op
 				@Override
-				public void visit(OpBGP opBGP) {
+				public void visit(OpBGP opBGP) { // visit the opBGP, which is the basic pattern
 					for (Triple t : opBGP.getPattern()) {
-						triples.add(t);
+						triples.add(t); // add the triple to the list
 						if (t.getPredicate().toString().equals("rdf:type") || t.getPredicate().toString().equals("http://www.w3.org/1999/02/22-rdf-syntax-ns#type") || t.getPredicate().toString().equals("a") || t.getPredicate().toString().equals("http://www.wikidata.org/prop/qualifier/P31")){
-							no_change_set.add(t.getObject().toString());
-							query_type.put(t.getObject().toString(),q);
-							type_counting_list.add(t.getObject().toString());
+							no_change_set.add(t.getObject().toString()); // add the object to the no change set
+							query_type.put(t.getObject().toString(),q); // add the object and its type to the map
+							type_counting_list.add(t.getObject().toString()); // add the object to the type counting list
 						}
-						if (t.getSubject().isVariable() || t.getSubject().toString().startsWith("?")) {
-							var_set.add(t.getSubject().toString());
+						if (t.getSubject().isVariable() || t.getSubject().toString().startsWith("?")) { // if the subject is a variable
+							var_set.add(t.getSubject().toString()); // add the subject to the variable set
 						}
-						if (t.getObject().isVariable() || t.getObject().toString().startsWith("?")) {
-							var_set.add(t.getObject().toString());
+						if (t.getObject().isVariable() || t.getObject().toString().startsWith("?")) { // if the object is a variable
+							var_set.add(t.getObject().toString()); // add the object to the variable set
 						}
-						if (t.getPredicate().isVariable() || t.getPredicate().toString().startsWith("?")) {
-							predicate_set.add(t.getPredicate().toString());
+						if (t.getPredicate().isVariable() || t.getPredicate().toString().startsWith("?")) { // if the predicate is a variable
+							predicate_set.add(t.getPredicate().toString()); // add the predicate to the predicate set
 						}
-						if (t.getSubject().isURI() || t.getSubject().isBlank()) {
-							entity_set.add(t.getSubject().toString());
+						if (t.getSubject().isURI() || t.getSubject().isBlank()) { // if the subject is a URI or blank node
+							entity_set.add(t.getSubject().toString()); // add the subject to the entity set
 						}
-						if (t.getObject().isURI() || t.getObject().isBlank()) {
-							if(!no_change_set.contains(t.getObject().toString()))
-								entity_set.add(t.getObject().toString());
+						if (t.getObject().isURI() || t.getObject().isBlank()) { // if the object is a URI or blank node
+							if(!no_change_set.contains(t.getObject().toString())) // if the object is not in the no change set
+								entity_set.add(t.getObject().toString()); // add the object to the entity set
 						}
-						if (t.getSubject().isLiteral()){
-							literal_set.add(t.getSubject().getLiteralLexicalForm());
+						if (t.getSubject().isLiteral()){ // if the subject is a literal
+							literal_set.add(t.getSubject().getLiteralLexicalForm()); // add the subject to the literal set
 						}
-						if (t.getObject().isLiteral()){
-							literal_set.add(t.getObject().getLiteralLexicalForm());
+						if (t.getObject().isLiteral()){ // if the object is a literal
+							literal_set.add(t.getObject().getLiteralLexicalForm()); // add the object to the literal set
 						}
 
 						
@@ -297,15 +305,15 @@ public class PatternDisplay {
 				@Override
 				public void visit(OpSlice opSlice) {
 					// TODO Auto-generated method stub
-					number_set.add(opSlice.getStart());
-					number_set.add(opSlice.getLength());
+					number_set.add(opSlice.getStart()); // add the start number to the number set
+					number_set.add(opSlice.getLength()); // add the length number to the number set
 					opSlice.getSubOp().visit(this);
 				}
 
 				public void visit(OpExtend opExtend){
-					for(Var var : opExtend.getVarExprList().getExprs().keySet()){
+					for(Var var : opExtend.getVarExprList().getExprs().keySet()){ // for each variable in the extend
 						try {
-							extend_dict.put(opExtend.getVarExprList().getExprs().get(var).asVar(), var);
+							extend_dict.put(opExtend.getVarExprList().getExprs().get(var).asVar(), var); // add the variable and its extend to the map
 						} catch (Exception e) {
 							//TODO: handle exception
 						}
@@ -316,16 +324,16 @@ public class PatternDisplay {
 	
 				@Override
 				public void visit(OpGroup opGroup){
-					for(ExprAggregator exp : opGroup.getAggregators()){
+					for(ExprAggregator exp : opGroup.getAggregators()){ // for each aggregator
 						// System.out.println(extend_dict.get(exp.getVar()).getVarName()+" "+exp.getAggregator().getName().toLowerCase()); 
 						try {
-							if(count_count.containsKey(exp.getAggregator().getName().toLowerCase())){
-								count_count.put(exp.getAggregator().getName().toLowerCase(), count_count.get(exp.getAggregator().getName().toLowerCase())+1);
-								replace_map.put("?"+extend_dict.get(exp.getVar()).getVarName(), "?"+exp.getAggregator().getName().toLowerCase()+Integer.toString(count_count.get(exp.getAggregator().getName().toLowerCase())));
+							if(count_count.containsKey(exp.getAggregator().getName().toLowerCase())){ // if the count map contains the aggregator
+								count_count.put(exp.getAggregator().getName().toLowerCase(), count_count.get(exp.getAggregator().getName().toLowerCase())+1); // add the frequency of the aggregator
+								replace_map.put("?"+extend_dict.get(exp.getVar()).getVarName(), "?"+exp.getAggregator().getName().toLowerCase()+Integer.toString(count_count.get(exp.getAggregator().getName().toLowerCase()))); // add the aggregator and its replacement to the map
 							}
 							else{
-								count_count.put(exp.getAggregator().getName().toLowerCase(), 1);
-								replace_map.put("?"+extend_dict.get(exp.getVar()).getVarName(), "?"+exp.getAggregator().getName().toLowerCase()+Integer.toString(count_count.get(exp.getAggregator().getName().toLowerCase())));
+								count_count.put(exp.getAggregator().getName().toLowerCase(), 1); // add the aggregator and its frequency to the map
+								replace_map.put("?"+extend_dict.get(exp.getVar()).getVarName(), "?"+exp.getAggregator().getName().toLowerCase()+Integer.toString(count_count.get(exp.getAggregator().getName().toLowerCase()))); // add the aggregator and its replacement to the map
 							}
 						} catch (Exception e) {
 							//TODO: handle exception
@@ -344,6 +352,8 @@ public class PatternDisplay {
 				}
 			};
 			ope.visit(allbgp);
+
+			// comment of following code: consider entity or literal in filter
 			try {
 				Element pattern = q.getQueryPattern();
 				ElementVisitorBase filtervisitor = new ElementVisitorBase() {
@@ -372,7 +382,9 @@ public class PatternDisplay {
 			}
 			
 
-			double new_score = entity_vairable_score(triples);
+			double new_score = entity_vairable_score(triples); // get the informativeness of the query
+
+			//following code: store the query and its informativeness to file
 			try {
 				BufferedWriter bw_ratio = new BufferedWriter(new FileWriter("query_ratio.txt",true));
 				bw_ratio.write(q.serialize()+" & "+Double.toString(new_score));
@@ -383,22 +395,22 @@ public class PatternDisplay {
 				// TODO: handle exception
 			}
 
-			for (Triple t : triples) {
-				if (stop_list.contains(t.getSubject().toString())) {
-					if (new_score > threshold_subject) {
-						if (iri_query.containsKey(t.getSubject().toString())) {
+			for (Triple t : triples) { // for each triple
+				if (stop_list.contains(t.getSubject().toString())) { // if the subject is in the sub/obj/predicate/type list
+					if (new_score > threshold_subject) { // if the informativeness is more than the threshold
+						if (iri_query.containsKey(t.getSubject().toString())) { // if the iri is in the map
 
-							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-								iri_query.get(t.getSubject().toString()).add(construcQuery_removeLimitOffset(q));
+							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name)) // if the query is valid
+								iri_query.get(t.getSubject().toString()).add(construcQuery_removeLimitOffset(q)); // add the query to the set
 						} else {
-							iri_query.put(t.getSubject().toString(), HashMultiset.create());
-							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-								iri_query.get(t.getSubject().toString()).add(construcQuery_removeLimitOffset(q));
+							iri_query.put(t.getSubject().toString(), HashMultiset.create()); // add the iri and its set to the map
+							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name)) // if the query is valid
+								iri_query.get(t.getSubject().toString()).add(construcQuery_removeLimitOffset(q)); // add the query to the set
 						}
 					}
 				}
 
-				if (ptop_List.contains(t.getPredicate().toString())) {
+				if (ptop_List.contains(t.getPredicate().toString())) { // if the predicate is in the sub/obj/predicate/type list
 					if (new_score > threshold_subject) {
 						if (iri_query.containsKey(t.getPredicate().toString())) {
 
@@ -413,7 +425,7 @@ public class PatternDisplay {
 					}
 				}
 
-				if (otop_list.contains(t.getObject().toString())) {
+				if (otop_list.contains(t.getObject().toString())) { // if the object is in the sub/obj/predicate/type list
 					if (new_score > threshold_subject) {
 						if (iri_query.containsKey(t.getObject().toString())) {
 							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
@@ -427,7 +439,7 @@ public class PatternDisplay {
 					}
 				}
 
-				if (typetop_list.contains(t.getObject().toString())) {
+				if (typetop_list.contains(t.getObject().toString())) { // if the object is in the sub/obj/predicate/type list
 					if (new_score > threshold_subject) {
 						if (iri_query.containsKey(t.getObject().toString())) {
 							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
@@ -440,6 +452,8 @@ public class PatternDisplay {
 					}
 				}
 			}
+
+			// following code: generate string of query under transfring to pattern
 			String replace_query_string = "";
 			try {
 				replace_query_string = q.serialize();
@@ -447,6 +461,7 @@ public class PatternDisplay {
 				continue;
 			}
 
+			// following code: generating pattern query
 			List<String> ent_vars = new ArrayList<String>();
 			List<String> lit_vars = new ArrayList<String>();
 			int count = 1;
@@ -710,21 +725,21 @@ public class PatternDisplay {
 				continue;
 			}
 			
-			int length = triples.size();
-			if (instance_numbers.containsKey(length)) {
-				instance_numbers.put(length, instance_numbers.get(length) + instance_freq.get(q));
+			int length = triples.size(); // get the length of the query
+			if (instance_numbers.containsKey(length)) { // if the length is in the map
+				instance_numbers.put(length, instance_numbers.get(length) + instance_freq.get(q)); // add the frequency of the query
 			} else {
-				instance_numbers.put(length, instance_freq.get(q));
+				instance_numbers.put(length, instance_freq.get(q)); // add the length and its frequency to the map
 			}
 		}
-		Map<String, Long> couterMap = sortByValue(type_counting_list.stream().collect(Collectors.groupingBy(e -> e.toString(),Collectors.counting())));
-		System.out.println("Statistics of number of query for each type:"+couterMap);
+		Map<String, Long> couterMap = sortByValue(type_counting_list.stream().collect(Collectors.groupingBy(e -> e.toString(),Collectors.counting()))); // sort the map
+		System.out.println("Statistics of number of query for each type:"+couterMap); // print the map
 		try {
-			BufferedWriter bw_type = new BufferedWriter(new FileWriter("rdftype_statistics.csv",true));
-			for(Map.Entry<String, Long> type_item : couterMap.entrySet()){
-				Query typequery = query_type.get(type_item.getKey());
-				if(checkEndpoint){
-					if (!StoreOrRead(typequery, dict_query, sparqlendpoint, dict_name))
+			BufferedWriter bw_type = new BufferedWriter(new FileWriter("rdftype_statistics.csv",true)); // write the map to file
+			for(Map.Entry<String, Long> type_item : couterMap.entrySet()){ // for each type
+				Query typequery = query_type.get(type_item.getKey()); // get the query of the type
+				if(checkEndpoint){ // if check valid
+					if (!StoreOrRead(typequery, dict_query, sparqlendpoint, dict_name)) // if the query is not valid
 						continue;
 				}
 				bw_type.write(type_item.getKey().replace("\n", "\\n")+" & "+type_item.getValue().toString()+" & "+typequery.serialize().replace("\n", "\\n"));
@@ -736,6 +751,8 @@ public class PatternDisplay {
 			// TODO: handle exception
 		}
 
+
+		// following code: function 2 results 
 		try {
 			BufferedWriter bw_function2 = new BufferedWriter(new FileWriter("function2_results.txt", true));
 			List<Double> func2scores = new ArrayList<Double>();
@@ -751,7 +768,7 @@ public class PatternDisplay {
 							double score = informativeness(query);
 							func2scores.add(score);
 							bw_function2
-									.write(item + " & " + query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
+									.write(query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
 							bw_function2.newLine();
 							bw_function2.flush();
 							function2_count++;
@@ -766,6 +783,8 @@ public class PatternDisplay {
 			for(double s :ZScore(scores)){
 				sum_info_func2+=s;
 			}
+			if (func2scores.size() != 50)
+				System.err.println("The number of function2 outputs is not 50!!!");
 			bw_function2.write("Informativeness list:");
 			bw_function2.newLine();
 			bw_function2.write(func2scores.toString());
@@ -785,8 +804,10 @@ public class PatternDisplay {
 			System.err.println("Error during Function 2!!!");
 		}
 
+
+		// following code: top queries based on type
 		try {
-			BufferedWriter bw_type_top = new BufferedWriter(new FileWriter("type_top_query.txt", true));
+			BufferedWriter bw_type_top = new BufferedWriter(new FileWriter("type_top_query.txt", true)); 
 			bw_type_top.write("subject");
 			bw_type_top.newLine();
 			bw_type_top.flush();
@@ -851,7 +872,10 @@ public class PatternDisplay {
 
 		// System.out.println("Statistics of number of pattern in each length:"+pattern_numbers);
 		System.out.println("Statistics of number of instance in each length:"+instance_numbers);
-		List<Map.Entry<Query, Integer>> result = sortPatternByValue(findFrequentPattern(invalid_pattern_query));
+		List<Map.Entry<Query, Integer>> result = sortPatternByValue(findFrequentPattern(invalid_pattern_query)); // sort the map
+
+
+		// following code: write the pattern and its frequency to file
 		try {
 			BufferedWriter bw2 = new BufferedWriter(new FileWriter("allPattern_frequency.csv",true));
 			for(Entry<Query,Integer> uqf:result){
@@ -864,6 +888,8 @@ public class PatternDisplay {
 			// TODO: handle exception
 		}
 		
+
+		// following code: write the pattern and its statistics to file
 		try {
 			BufferedWriter bw_pattern_instance = new BufferedWriter(new FileWriter("pattern_statistics.csv", true));
 			for (Query pattern_q : pattern_instance.keySet()) {
@@ -880,7 +906,7 @@ public class PatternDisplay {
 			//TODO: handle exception
 		}
 		
-
+		// following code: write the pattern and all instance to file
 		try {
 			BufferedWriter bw1 = new BufferedWriter(new FileWriter("patter_allQuery.csv",true));
 			for(Entry<Query, HashMultiset<Query>> uqf:pattern_instance.entrySet()){
@@ -932,6 +958,8 @@ public class PatternDisplay {
 				complex.add(getBGPtripleNumber(qq));
 		}
 
+
+		// following code: function 3 results
 		try {
 			BufferedWriter bw_func3 = new BufferedWriter(new FileWriter("function3.txt",true));
 			List<Double> func3scores = new ArrayList<Double>();
@@ -1026,6 +1054,8 @@ public class PatternDisplay {
 			for(double s :ZScore(scores)){
 				sum_info_func3+=s;
 			}
+			if (func3scores.size() != 50)
+				System.err.println("The number of function3 outputs is not 50!!!");
 			bw_func3.write("Informativeness list:");
 			bw_func3.newLine();
 			bw_func3.write(func3scores.toString());
@@ -1048,6 +1078,8 @@ public class PatternDisplay {
 		System.out.println(count_map);
 		// storeDict(dict_query);
 
+
+		// following code: evaluation results
 		try {
 			cc1 = cc1 / complex.size();
 			cc2 = cc2 / complex.size();
@@ -1109,14 +1141,14 @@ public class PatternDisplay {
 		}
 	}
 
-	private static boolean check_count(Map<Integer,Integer> count_map,int num, int top){
+	private static boolean check_count(Map<Integer,Integer> count_map,int num, int top){ // check if the number of pattern with length num is larger than top
 		if (count_map.get(num) >= top) {
 			return true;
 		}
 		return false;
 	}
 
-	private static boolean check_count_all(Map<Integer,Integer> count_map, int top, int offset, int tripleNumber){
+	private static boolean check_count_all(Map<Integer,Integer> count_map, int top, int offset, int tripleNumber){ // 
 		for (int i =offset;i<=tripleNumber;i++){
 			if(count_map.get(i)<top){
 				return false;
@@ -1125,7 +1157,7 @@ public class PatternDisplay {
 		return true;
 	}
 
-	private static int getBGPtripleNumber(Query q){
+	private static int getBGPtripleNumber(Query q){ // get the number of triples in the query
 		List<Integer> num = new ArrayList<Integer>();
 		AllBGPOpVisitor visitor = new AllBGPOpVisitor() {
 			@Override
@@ -1144,7 +1176,7 @@ public class PatternDisplay {
 		return num.size();
 	}
 
-	private static HashMap<Query, Integer> findFrequentQuery(List<Query> inputArr) {
+	private static HashMap<Query, Integer> findFrequentQuery(List<Query> inputArr) { // sort list of queries by frequency
 		HashMap<Query, Integer> numberMap = new HashMap<Query, Integer>();
 		int frequency = -1;
 
@@ -1174,7 +1206,7 @@ public class PatternDisplay {
 		return numberMap;
 	}
 
-	private static HashMap<Query, Integer> findFrequentPattern(List<Query> inputArr) {
+	private static HashMap<Query, Integer> findFrequentPattern(List<Query> inputArr) { // sort list of pattern by frequency
 		HashMap<Query, Integer> numberMap = new HashMap<Query, Integer>();
 		int frequency = -1;
 
@@ -1204,7 +1236,7 @@ public class PatternDisplay {
 		return numberMap;
 	}
 
-	private static double[] ZScore(double[] scores){
+	private static double[] ZScore(double[] scores){ // z-score normalization
 		int length = scores.length;
         double mean;
         double std_dev;
@@ -1232,27 +1264,7 @@ public class PatternDisplay {
         return normalizedScores;
 	}
 
-	private static void calculateMeanAndStdDev(double[] scores, double mean, double std_dev) {
-        int length = scores.length;
-        
-        double sum = 0.0;
-        for (double score : scores) {
-            sum += score;
-        }
-        mean = sum / length;
-        
-        double temp = 0;
-        for (double score : scores) {
-            temp += (score - mean) * (score - mean);
-        }
-        std_dev = Math.sqrt(temp / length);
-    }
-
-    public static double zScoreNormalization(double x, double mean, double std_dev) {
-        return (x - mean) / std_dev;
-    }
-
-	private static boolean listOflistContains(Query list, Set<Query> listlist) {
+	private static boolean listOflistContains(Query list, Set<Query> listlist) { // check if the list of list contains the list
 		if (listlist.contains(list))
 			return true;
 		List<Triple> list_pattern = new ArrayList<Triple>();
@@ -1303,7 +1315,7 @@ public class PatternDisplay {
 		return false;
 	}
 
-	private static HashMap<Query, Integer> findFrequentPattern_checkQueryEquavalence(HashMap<Query, HashMultiset<Query>> pattern_instance,HashMap<Query, Integer> instance_freq, String endpoint) {
+	private static HashMap<Query, Integer> findFrequentPattern_checkQueryEquavalence(HashMap<Query, HashMultiset<Query>> pattern_instance,HashMap<Query, Integer> instance_freq, String endpoint) { // sort list of pattern by frequency
 		List<Query> inputArr = new ArrayList<Query>(pattern_instance.keySet());
 		HashMap<Query, Integer> numberMap = new HashMap<Query, Integer>();
 		int frequency = -1;
@@ -1393,7 +1405,7 @@ public class PatternDisplay {
 		return false;
 	}
 
-	private static boolean check_query_equavalence(Query q1, Query q2, String endpoint){
+	private static boolean check_query_equavalence(Query q1, Query q2, String endpoint){ // check if two queries are equavalent
 		boolean bl = true;
 		List<String> result1 = get_query_top_results_and_result_count(q1, endpoint);
 		List<String> result2 = get_query_top_results_and_result_count(q2, endpoint);
@@ -1409,7 +1421,7 @@ public class PatternDisplay {
 		return bl;
 	}
 
-	private static List<String> get_query_top_results_and_result_count(Query q, String endpoint){
+	private static List<String> get_query_top_results_and_result_count(Query q, String endpoint){ // get the top 5 results of the query
 		List<String> outputs = new ArrayList<String>();
 		QueryExecution qexec = QueryExecutionFactory.sparqlService(endpoint, q.serialize());
         ResultSet rs = null;
@@ -1436,7 +1448,7 @@ public class PatternDisplay {
 		return outputs;
 	}
 
-	private static BasicPattern simplify(BasicPattern bgp) {
+	private static BasicPattern simplify(BasicPattern bgp) { // simplify the query
 		Model model = ModelFactory.createDefaultModel();
 		BasicPattern bp = new BasicPattern();
 		for (Triple triple : bgp) {
@@ -1475,7 +1487,7 @@ public class PatternDisplay {
 
 	}
 
-	public static List<Map.Entry<Query, Integer>> sortPatternByValue(HashMap<Query, Integer> hm) {
+	public static List<Map.Entry<Query, Integer>> sortPatternByValue(HashMap<Query, Integer> hm) { // sort pattern by frequency
 		List<Map.Entry<Query, Integer>> list = new LinkedList<Map.Entry<Query, Integer>>(hm.entrySet());
 		Collections.sort(list, new Comparator<Map.Entry<Query, Integer>>() {
 			public int compare(Map.Entry<Query, Integer> o1, Map.Entry<Query, Integer> o2) {
@@ -1493,7 +1505,7 @@ public class PatternDisplay {
 		return list;
 	}
 
-	public static HashMap<Query, Integer> sortInstanceByValue(HashMap<Query, Integer> hm) {
+	public static HashMap<Query, Integer> sortInstanceByValue(HashMap<Query, Integer> hm) { // sort instance by frequency
 		List<Map.Entry<Query, Integer>> list = new LinkedList<Map.Entry<Query, Integer>>(hm.entrySet());
 		Collections.sort(list, new Comparator<Map.Entry<Query, Integer>>() {
 			public int compare(Map.Entry<Query, Integer> o1, Map.Entry<Query, Integer> o2) {
@@ -1512,7 +1524,7 @@ public class PatternDisplay {
 		return temp;
 	}
 
-	public static HashMap<String, Long> sortByValue(Map<String, Long> hm) {
+	public static HashMap<String, Long> sortByValue(Map<String, Long> hm) { // sort map by value
 		List<Map.Entry<String, Long>> list = new LinkedList<Map.Entry<String, Long>>(hm.entrySet());
 		Collections.sort(list, new Comparator<Map.Entry<String, Long>>() {
 			public int compare(Map.Entry<String, Long> o1, Map.Entry<String, Long> o2) {
@@ -1556,7 +1568,7 @@ public class PatternDisplay {
         return check;
 	}
 
-	private static boolean check_ASK_CONSTRUCT_DESCRIBE(Query query, String sparqlendpint){ // "https://bio2rdf.org/sparql"
+	private static boolean check_ASK_CONSTRUCT_DESCRIBE(Query query, String sparqlendpint){ // check if query will return results via bio2rdf SPARQL endpoint
 		boolean check = false;
 		if (query.isAskType()) {
 			AskBuilder selectBuilder = new AskBuilder();
@@ -1657,7 +1669,7 @@ public class PatternDisplay {
         return var_results;
 	}
 	
-	private static Graph toGraph(Query pattern){
+	private static Graph toGraph(Query pattern){ // convert query to graph
 		Graph<Node, RelationshipEdge> graph = new DefaultDirectedGraph<Node, RelationshipEdge>(RelationshipEdge.class);
 		AllBGPOpVisitor visitor = new AllBGPOpVisitor() {
 
@@ -1713,7 +1725,7 @@ public class PatternDisplay {
 		return graph;
 	}
 
-	private static boolean StoreOrRead(Query query,Map<Query, Boolean> dict_query, String sparqlendpoint, String dict_name){
+	private static boolean StoreOrRead(Query query,Map<Query, Boolean> dict_query, String sparqlendpoint, String dict_name){ // store or read query results
 		if(dict_query.keySet().contains(query)){
 			return dict_query.get(query);
 		}
@@ -1732,7 +1744,7 @@ public class PatternDisplay {
 		return bl;
 	}
 
-	private static Map<Query, Boolean> getDict(String dict_name) {
+	private static Map<Query, Boolean> getDict(String dict_name) { // read query results
 		Map<Query, Boolean> dict_query = new HashMap<Query, Boolean>();
 		if (!new File(dict_name).exists()) {
 			return dict_query;
@@ -1759,7 +1771,7 @@ public class PatternDisplay {
 		return dict_query;
 	}
 
-    private static Query construcQuery(String queryString){
+    private static Query construcQuery(String queryString){ // construct query
 		Query query = QueryFactory.create(queryString);
 		// Op op = Algebra.compile(query);
 		// query = OpAsQuery.asQuery(op);
@@ -1794,7 +1806,7 @@ public class PatternDisplay {
 		return query;
 	}
 
-	private static Query construcQuery(Query query){
+	private static Query construcQuery(Query query){ // construct query
 		// Query query = QueryFactory.create(queryString);
 		// Op op = Algebra.compile(query);
 		// query = OpAsQuery.asQuery(op);
@@ -1829,7 +1841,7 @@ public class PatternDisplay {
 		return query;
 	}
 
-	private static Query construcQuery_removeLimitOffset(Query query){
+	private static Query construcQuery_removeLimitOffset(Query query){ // construct query remove limit and offset
 		// Query query = QueryFactory.create(queryString);
 		// Op op = Algebra.compile(query);
 		// query = OpAsQuery.asQuery(op);
@@ -1872,7 +1884,7 @@ public class PatternDisplay {
 		return query;
 	}
 
-	private static Set<String> get_bind_vars(Query query){
+	private static Set<String> get_bind_vars(Query query){ // get bind vars
 		HashSet<String> bindvars = new HashSet<String>();
 		SerializationContext cxt = new SerializationContext();
         IndentedLineBuffer b = new IndentedLineBuffer();
@@ -1890,102 +1902,7 @@ public class PatternDisplay {
 		return bindvars;
 	}
 
-	private static Query generalize_VALUES(Query q){
-		Query query = construcQuery(q.serialize());
-		Map<String,String> replace_map = new HashMap<String, String>();
-		List<Integer> rowCount = new ArrayList<Integer>();
-			List<Var> bindVars = new ArrayList<Var>();
-			List<Binding> rowlist = new ArrayList<>();
-			try {
-				List<Element> elements = new ArrayList<Element>();
-				if (query.getQueryPattern() instanceof ElementGroup)
-					elements = ((ElementGroup) query.getQueryPattern()).getElements();
-				else if (query.getQueryPattern() instanceof Element) {
-					elements.add(query.getQueryPattern());
-				} else {
-					return query;
-				}
-				Element queryel = query.cloneQuery().getQueryPattern();
-				GroupElementVisitor elvisitor = new GroupElementVisitor(){
-
-					@Override
-					public void visit(ElementData ele) {
-						// TODO Auto-generated method stub
-						if(ele.toString().strip().startsWith("VALUES") || ele.toString().strip().startsWith("{ VALUES")) {
-							Op op = Algebra.compile(ele);
-							AllOpVisitor visitorBind = new AllOpVisitor() {
-								@Override
-								public void visit(OpBGP opBGP) {
-									// Do nothing
-								}
-	
-								@Override
-								public void visit(OpSlice opSlice) {
-									opSlice.getSubOp().visit(this);
-								}
-	
-								@Override
-								public void visit(OpTable opTable) {
-									Iterator<Binding> rows = opTable.getTable().rows();
-									for (; rows.hasNext();) {
-										Binding row = rows.next();
-										// BindingBuilder.create().add(null, null)
-										// System.out.println(row.vars().next() + " " +
-										// row.get(row.vars().next()).toString());
-										Iterator<Var> varIte = row.vars();
-										BindingBuilder bindingBuilder = BindingBuilder.create();
-										for (; varIte.hasNext();) {
-											Var var = varIte.next();
-											if (!bindVars.contains(var)) {
-												bindVars.add(var);
-												// Binding varRow = BindingBuilder.create().add(null, null);
-												// varRow
-												// rowlist.add(BindingBuilder.create().add(row.vars().next(), new
-												// Node_Variable("ValuesVar")).build());
-											}
-											bindingBuilder.add(var,NodeFactory.createURI("https://example.org/ValuesVar" + Integer.toString(rowCount.size() + 1)));
-											rowCount.add(1);
-										}
-										Binding newBinding = bindingBuilder.build();
-										if (!rowlist.contains(newBinding)) {
-											rowlist.add(newBinding);
-										}
-									}
-								}
-	
-							};
-							op.visit(visitorBind);
-							op = OpTable.create(new TableData(bindVars, rowlist));
-							Converter converter = new Converter(op);
-							// ((ElementGroup) q.getQueryPattern()).getElements().remove(ele);
-							// ((ElementGroup) q.getQueryPattern()).getElements().add(converter.asElement(op));
-							// System.out.println(ele.toString());
-							replace_map.put(ele.toString().strip(), "");
-					}
-				}
-				};
-				queryel.visit(elvisitor);
-				String queryString = query.serialize().replace("\n", "").replace("\r", "");
-				for(Entry<String,String> replace_ele : replace_map.entrySet()){
-					queryString = queryString.replace(replace_ele.getKey(), replace_ele.getValue());
-				}
-				// System.out.println(queryString);
-				try {
-					return construcQuery(queryString);
-				} catch (Exception e) {
-					// TODO: handle exception
-					// System.out.println(queryString);
-				}
-				
-				// System.out.println(q.serialize());
-			} catch (Exception e) {
-				//TODO: handle exception
-				e.printStackTrace();
-			}
-			return query;
-	}
-
-	private static double informativeness(Query query){
+	private static double informativeness(Query query){ // calculate informativeness
 		List<Triple> triples = new ArrayList<Triple>();
 		Op op = Algebra.compile(query);
 		AllOpVisitor allbgp = new AllOpVisitor() {
@@ -2018,7 +1935,7 @@ public class PatternDisplay {
 		return entity_vairable_score(triples);
 	}
 
-	private static double entity_vairable_score(List<Triple> opBGP){
+	private static double entity_vairable_score(List<Triple> opBGP){ // calculate entity variable score
 		List<String> ent_set = new ArrayList<String>();
 		List<String> var_set = new ArrayList<String>();
 		for(Triple t: opBGP){
