@@ -397,7 +397,7 @@ public class PatternDisplay {
 
 			for (Triple t : triples) { // for each triple
 				if(entity_rank_list.contains(t.getSubject().toString()) || entity_rank_list.contains(t.getPredicate().toString()) || entity_rank_list.contains(t.getObject().toString())){
-					if (new_score > threshold_subject) { // if the informativeness is more than the threshold
+					// if (new_score > threshold_subject) { // if the informativeness is more than the threshold
 						if (iri_query.containsKey(t.getSubject().toString())) { // if the iri is in the map
 
 							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name)) // if the query is valid
@@ -407,7 +407,7 @@ public class PatternDisplay {
 							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name)) // if the query is valid
 								iri_query.get(t.getSubject().toString()).add(construcQuery_removeLimitOffset(q)); // add the query to the set
 						}
-					}
+					// }
 				}
 
 				// if (stop_list.contains(t.getSubject().toString())) { // if the subject is in the sub/obj/predicate/type list
