@@ -220,6 +220,7 @@ public class MainStatistics {
 				print_with_label(types,"o",100, sparqlendpoint);
 				System.setOut(ps_console);
 				System.out.println("Number of failures is : " + failures);
+				System.out.println("We select " + entities.size() +" vocabularies for function 2");
 			}
 
 			@Override
