@@ -396,7 +396,7 @@ public class PatternDisplay {
 			}
 
 			for (Triple t : triples) { // for each triple
-				if (stop_list.contains(t.getSubject().toString())) { // if the subject is in the sub/obj/predicate/type list
+				if(entity_rank_list.contains(t.getSubject().toString()) || entity_rank_list.contains(t.getPredicate().toString()) || entity_rank_list.contains(t.getObject().toString())){
 					if (new_score > threshold_subject) { // if the informativeness is more than the threshold
 						if (iri_query.containsKey(t.getSubject().toString())) { // if the iri is in the map
 
@@ -410,47 +410,61 @@ public class PatternDisplay {
 					}
 				}
 
-				if (ptop_List.contains(t.getPredicate().toString())) { // if the predicate is in the sub/obj/predicate/type list
-					if (new_score > threshold_subject) {
-						if (iri_query.containsKey(t.getPredicate().toString())) {
+				// if (stop_list.contains(t.getSubject().toString())) { // if the subject is in the sub/obj/predicate/type list
+				// 	if (new_score > threshold_subject) { // if the informativeness is more than the threshold
+				// 		if (iri_query.containsKey(t.getSubject().toString())) { // if the iri is in the map
 
-							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-								iri_query.get(t.getPredicate().toString()).add(construcQuery_removeLimitOffset(q));
+				// 			if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name)) // if the query is valid
+				// 				iri_query.get(t.getSubject().toString()).add(construcQuery_removeLimitOffset(q)); // add the query to the set
+				// 		} else {
+				// 			iri_query.put(t.getSubject().toString(), HashMultiset.create()); // add the iri and its set to the map
+				// 			if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name)) // if the query is valid
+				// 				iri_query.get(t.getSubject().toString()).add(construcQuery_removeLimitOffset(q)); // add the query to the set
+				// 		}
+				// 	}
+				// }
 
-						} else {
-							iri_query.put(t.getPredicate().toString(), HashMultiset.create());
-							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-								iri_query.get(t.getPredicate().toString()).add(construcQuery_removeLimitOffset(q));
-						}
-					}
-				}
+				// if (ptop_List.contains(t.getPredicate().toString())) { // if the predicate is in the sub/obj/predicate/type list
+				// 	if (new_score > threshold_subject) {
+				// 		if (iri_query.containsKey(t.getPredicate().toString())) {
 
-				if (otop_list.contains(t.getObject().toString())) { // if the object is in the sub/obj/predicate/type list
-					if (new_score > threshold_subject) {
-						if (iri_query.containsKey(t.getObject().toString())) {
-							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-								iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
+				// 			if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+				// 				iri_query.get(t.getPredicate().toString()).add(construcQuery_removeLimitOffset(q));
 
-						} else {
-							iri_query.put(t.getObject().toString(), HashMultiset.create());
-							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-								iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
-						}
-					}
-				}
+				// 		} else {
+				// 			iri_query.put(t.getPredicate().toString(), HashMultiset.create());
+				// 			if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+				// 				iri_query.get(t.getPredicate().toString()).add(construcQuery_removeLimitOffset(q));
+				// 		}
+				// 	}
+				// }
 
-				if (typetop_list.contains(t.getObject().toString())) { // if the object is in the sub/obj/predicate/type list
-					if (new_score > threshold_subject) {
-						if (iri_query.containsKey(t.getObject().toString())) {
-							if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-								iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
-						}
-					} else {
-						iri_query.put(t.getObject().toString(), HashMultiset.create());
-						if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
-							iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
-					}
-				}
+				// if (otop_list.contains(t.getObject().toString())) { // if the object is in the sub/obj/predicate/type list
+				// 	if (new_score > threshold_subject) {
+				// 		if (iri_query.containsKey(t.getObject().toString())) {
+				// 			if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+				// 				iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
+
+				// 		} else {
+				// 			iri_query.put(t.getObject().toString(), HashMultiset.create());
+				// 			if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+				// 				iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
+				// 		}
+				// 	}
+				// }
+
+				// if (typetop_list.contains(t.getObject().toString())) { // if the object is in the sub/obj/predicate/type list
+				// 	if (new_score > threshold_subject) {
+				// 		if (iri_query.containsKey(t.getObject().toString())) {
+				// 			if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+				// 				iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
+				// 		}
+				// 	} else {
+				// 		iri_query.put(t.getObject().toString(), HashMultiset.create());
+				// 		if (StoreOrRead(q, dict_query, sparqlendpoint, dict_name))
+				// 			iri_query.get(t.getObject().toString()).add(construcQuery_removeLimitOffset(q));
+				// 	}
+				// }
 			}
 
 			// following code: generate string of query under transfring to pattern
