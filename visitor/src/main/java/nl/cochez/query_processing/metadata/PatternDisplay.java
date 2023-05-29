@@ -771,12 +771,13 @@ public class PatternDisplay {
 			BufferedWriter bw_function2 = new BufferedWriter(new FileWriter("function2_results.txt", true));
 			List<Double> func2scores = new ArrayList<Double>();
 			Set<Integer> complexities = new HashSet<Integer>();
-			int function2_count = 0;
 			br_f2: for (String item : entity_rank_list) {
-				if (function2_count >= 50)
-					break;
+				if (func2scores.size() >= 50)
+					break br_f2;
 				if (iri_query.containsKey(item)) {
 					for (Query query : iri_query.get(item).elementSet()) {
+						if (func2scores.size() >= 50)
+							break br_f2;
 						if (StoreOrRead(query, dict_query, sparqlendpoint, dict_name)) {
 							complexities.add(getBGPtripleNumber(query));
 							double score = informativeness(query);
@@ -785,7 +786,6 @@ public class PatternDisplay {
 									.write(query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
 							bw_function2.newLine();
 							bw_function2.flush();
-							function2_count++;
 							continue br_f2;
 						}
 					}
@@ -978,6 +978,11 @@ public class PatternDisplay {
 			BufferedWriter bw_func3 = new BufferedWriter(new FileWriter("function3.txt",true));
 			List<Double> func3scores = new ArrayList<Double>();
 			Set<Integer> complexities = new HashSet<Integer>();
+
+			List<Double> func3scores_candidate = new ArrayList<Double>();
+			Set<Integer> complexities_candidate = new HashSet<Integer>();
+			List<Query> candidate_query = new ArrayList<Query>();
+			HashMap<Query, Double> candidates = new HashMap<Query, Double>();
 			br2: for (int i = 0; !(check_count_all(count_map,top,offset,tripleNumber)) && i < result.size();i++){
 				Query pattern_query = result.get(i).getKey();
 				int num = getBGPtripleNumber(pattern_query);
@@ -1029,11 +1034,15 @@ public class PatternDisplay {
 				jo.put("SPARQL Query Pattern", pattern_query.serialize());
 				jo.put("Instance Query", query.serialize());
 				jo.put("Contained Triple's Number", num);
-				if (func3scores.size()<50){
+				if (!complexities.contains(num)){
 					double score = informativeness(pattern_query);
 					func3scores.add(score);
-					bw_func3.write(pattern_query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
+					bw_func3.write(query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
 					complexities.add(num);
+				}
+				else {
+					double score = informativeness(pattern_query);
+					candidates.put(query, score);
 				}
 
 				try {
@@ -1062,6 +1071,30 @@ public class PatternDisplay {
 				}
 				count_map.put(num, count_map.get(num) + 1);
 			}
+
+			for(Entry<Query, Double> qd : candidates.entrySet()){
+				if(func3scores.size()<50){
+					func3scores.add(qd.getValue());
+					bw_func3.write(qd.getKey().serialize().replace("\r", "\\r").replace("\n", "\\n"));
+				}
+			}
+
+			Collections.shuffle(valid_unique_query);
+			while(func3scores.size()<50){
+				for(Query uqf:valid_unique_query){ // for each unique query
+					if(func3scores.size()>=50) // if the number of random queries is more than 50, then stop
+						break;
+					if (StoreOrRead(uqf, dict_query, sparqlendpoint, dict_name)){ // if the query is valid
+						complexities.add(getBGPtripleNumber(uqf)); // add the complexity to the set
+						double score = informativeness(uqf); // get the informativeness of the query
+						func3scores.add(score); // add the informativeness to the list
+						bw_func3.write(uqf.serialize().replace("\r", "\\r").replace("\n", "\\n")); // write the query to the file
+						bw_func3.newLine(); // write a new line
+						bw_func3.flush(); // flush the buffer
+					}
+				}
+			}
+
 			double[] scores = new double[func3scores.size()];
 			for (int i = 0; i < func3scores.size(); i++)
 				scores[i] = func3scores.get(i);
