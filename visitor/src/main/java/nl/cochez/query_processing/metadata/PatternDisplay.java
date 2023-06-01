@@ -963,14 +963,14 @@ public class PatternDisplay {
 		}
 		System.out.println("Statistics of number of unique pattern in each length:"+unique_pattern_numbers);
 
-		for (int qi = 0; qi < result.size(); qi ++) {
-			Query qq = result.get(qi).getKey();
-			int n = getBGPtripleNumber(qq);
-			if (complex.contains(n))
-				continue;
-			if (StoreOrRead(qq, dict_query, sparqlendpoint, dict_name))
-				complex.add(getBGPtripleNumber(qq));
-		}
+		// for (int qi = 0; qi < result.size(); qi ++) {
+		// 	Query qq = result.get(qi).getKey();
+		// 	int n = getBGPtripleNumber(qq);
+		// 	if (complex.contains(n))
+		// 		continue;
+		// 	if (StoreOrRead(qq, dict_query, sparqlendpoint, dict_name))
+		// 		complex.add(getBGPtripleNumber(qq));
+		// }
 
 
 		// following code: function 3 results
@@ -1042,6 +1042,8 @@ public class PatternDisplay {
 					func3scores.add(score);
 					bw_func3.write(query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
 					complexities.add(num);
+					if (!complex.contains(num))
+						complex.add(num);
 				}
 				else {
 					double score = informativeness(pattern_query);
