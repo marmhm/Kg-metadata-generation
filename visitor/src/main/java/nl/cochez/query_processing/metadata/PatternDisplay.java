@@ -975,7 +975,7 @@ public class PatternDisplay {
 
 		// following code: function 3 results
 		// 1. select 1 query per length
-		// 2. if size < 50, continue find other queries from patterns
+		// 2. if size < 50, continue find other queries from valid patterns
 		// 3. if size still < 50, continue find random valid query
 		try {
 			BufferedWriter bw_func3 = new BufferedWriter(new FileWriter("function3.txt",true));
