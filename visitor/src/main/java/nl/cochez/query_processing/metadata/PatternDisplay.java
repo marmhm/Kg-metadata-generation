@@ -979,24 +979,29 @@ public class PatternDisplay {
 		// 3. if size still < 50, continue find random valid query
 		try {
 			BufferedWriter bw_func3 = new BufferedWriter(new FileWriter("function3.txt",true));
-			List<Double> func3scores = new ArrayList<Double>();
-			Set<Integer> complexities = new HashSet<Integer>();
+			List<Double> func3scores = new ArrayList<Double>();// list to store all informativeness
+			Set<Integer> complexities = new HashSet<Integer>();// set to store all length
 
-			List<Double> func3scores_candidate = new ArrayList<Double>();
-			Set<Integer> complexities_candidate = new HashSet<Integer>();
-			List<Query> candidate_query = new ArrayList<Query>();
-			HashMap<Query, Double> candidates = new HashMap<Query, Double>();
+			ProgressBar pb = new ProgressBar("Progress of function 3: ", 50);
+			List<String> considered = new ArrayList<String>();
+
+			// List<Double> func3scores_candidate = new ArrayList<Double>();
+			// Set<Integer> complexities_candidate = new HashSet<Integer>();
+			// List<Query> candidate_query = new ArrayList<Query>();
+			HashMap<Query, Double> candidates = new HashMap<Query, Double>(); // hashmap to store all queries whose length already considered in outputs
 			br2: for (int i = 0; !(check_count_all(count_map,top,offset,tripleNumber)) && i < result.size();i++){
-				Query pattern_query = result.get(i).getKey();
-				int num = getBGPtripleNumber(pattern_query);
+				Query pattern_query = result.get(i).getKey(); // pattern query
+				int num = getBGPtripleNumber(pattern_query); // length of pattern query
 				
 				
 				
-				if (num < offset || num > tripleNumber)
+				if (num < offset || num > tripleNumber) // continue if length < 0 or > max which we set
 					continue br2;
-				if (check_count(count_map, num, top)) {
+				if (check_count(count_map, num, top)) { // check if we already consider enough queries in current length
 					continue br2;
 				}
+
+				// check if valid
 				if (checkEndpoint)
 					if (!pattern_query.isSelectType())
 						if (!StoreOrRead(pattern_query,dict_query, sparqlendpoint, dict_name))
@@ -1005,6 +1010,8 @@ public class PatternDisplay {
 					if (!StoreOrRead(pattern_query,dict_query, sparqlendpoint, dict_name)) {
 						continue br2;
 					}
+
+				// find one valid instance
 				Query query = null;
 				br3: for (Query q : pattern_instance.get(pattern_query)) {
 					if (checkEndpoint)
@@ -1016,7 +1023,7 @@ public class PatternDisplay {
 				if(query == null)
 					continue br2;
 				
-				
+				// write to files, one file per length
 				BufferedWriter bw = null;
 				BufferedWriter bw_all = null;
 				try {
@@ -1037,13 +1044,17 @@ public class PatternDisplay {
 				jo.put("SPARQL Query Pattern", pattern_query.serialize());
 				jo.put("Instance Query", query.serialize());
 				jo.put("Contained Triple's Number", num);
+
+				// if current length does not have one query as output in function 3, we consider it
 				if (!complexities.contains(num)){
-					double score = informativeness(pattern_query);
+					double score = informativeness(pattern_query); // get informativeness of current query
 					func3scores.add(score);
 					bw_func3.write(query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
 					complexities.add(num);
 					if (!complex.contains(num))
 						complex.add(num);
+					considered.add(query.serialize());
+					pb.step();
 				}
 				else {
 					double score = informativeness(pattern_query);
@@ -1060,6 +1071,8 @@ public class PatternDisplay {
 					System.exit(1);
 				}
 
+
+				// get frequency of current pattern and write to file
 				int freq = 0;
 				for (DefaultEdge edge : pattern_query_graph.edgesOf(pattern_query)){
 					freq += instance_freq.get(pattern_query_graph.getEdgeTarget(edge));
@@ -1077,16 +1090,24 @@ public class PatternDisplay {
 				count_map.put(num, count_map.get(num) + 1);
 			}
 
+			// if function 3 outputs do not contains 50 query, add queries from candidates
 			for(Entry<Query, Double> qd : candidates.entrySet()){
 				if(func3scores.size()<50){
 					func3scores.add(qd.getValue());
 					bw_func3.write(qd.getKey().serialize().replace("\r", "\\r").replace("\n", "\\n"));
+					bw_func3.newLine(); // write a new line
+					bw_func3.flush(); // flush the buffer
+					considered.add(query.serialize());
+					pb.step();
 				}
 			}
 
+			// if still not enough (50 queries), random add valid queries
 			Collections.shuffle(valid_unique_query);
 			while(func3scores.size()<50){
 				for(Query uqf:valid_unique_query){ // for each unique query
+					if(considered.contains(uqf.serialize()))
+						continue;
 					if(func3scores.size()>=50) // if the number of random queries is more than 50, then stop
 						break;
 					if (StoreOrRead(uqf, dict_query, sparqlendpoint, dict_name)){ // if the query is valid
@@ -1096,9 +1117,11 @@ public class PatternDisplay {
 						bw_func3.write(uqf.serialize().replace("\r", "\\r").replace("\n", "\\n")); // write the query to the file
 						bw_func3.newLine(); // write a new line
 						bw_func3.flush(); // flush the buffer
+						pb.step();
 					}
 				}
 			}
+			pb.close();
 
 			double[] scores = new double[func3scores.size()];
 			for (int i = 0; i < func3scores.size(); i++)
