@@ -1097,7 +1097,7 @@ public class PatternDisplay {
 					bw_func3.write(qd.getKey().serialize().replace("\r", "\\r").replace("\n", "\\n"));
 					bw_func3.newLine(); // write a new line
 					bw_func3.flush(); // flush the buffer
-					considered.add(query.serialize());
+					considered.add(qd.getKey().serialize());
 					pb.step();
 				}
 			}
