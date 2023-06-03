@@ -1050,6 +1050,8 @@ public class PatternDisplay {
 					double score = informativeness(pattern_query); // get informativeness of current query
 					func3scores.add(score);
 					bw_func3.write(query.serialize().replace("\r", "\\r").replace("\n", "\\n"));
+					bw_func3.newLine(); // write a new line
+					bw_func3.flush(); // flush the buffer
 					complexities.add(num);
 					if (!complex.contains(num))
 						complex.add(num);
