@@ -88,7 +88,7 @@ public class PatternDisplay {
 		double threshold_predicate = 1.0; // change the threshold for ratio
 		double threshold_object = 1.0; // change the threshold for ratio
 		double threshold_type = 1.0; // change the threshold for ratio
-		int valid_top = 50; // the number that you want to display top frequency unique queries
+		int valid_top = 50; // the number of queries that will be considered in each functions
 		List<Query> invalid_pattern_query = new ArrayList<Query>(); // the list of invalid pattern queries
 		Map<Query,Double> dict_informativeness = new HashMap<Query,Double>(); // the map of query and its informativeness
 		Map<Query,Boolean> dict_query = getDict(dict_name); // the map of query and its validity
@@ -134,6 +134,7 @@ public class PatternDisplay {
 
 		try {
 			BufferedWriter bw_top_valid = new BufferedWriter(new FileWriter("function1.txt",true)); // the file to store the top valid queries of function 1
+			BufferedWriter bw_func_statistics = new BufferedWriter(new FileWriter("function1_statistiscs.txt",true)); // the file to store the random 50 queries of function 4
 			if (checkEndpoint) { // if checkEndpoint is true, then we need to check the validity of queries
 				List<Double> func1scores = new ArrayList<Double>(); // the list of informativeness of function 1
 				Set<Integer> complexities = new HashSet<Integer>(); // the set of complexity, used to count the number of complexity
@@ -161,22 +162,25 @@ public class PatternDisplay {
 				}
 				if (func1scores.size() != 50)
 					System.err.println("The number of funciton 1 outputs is not 50!");
-				bw_top_valid.write("Informativeness list:");
-				bw_top_valid.newLine();
-				bw_top_valid.write(func1scores.toString()); // write the informativeness list to the file
-				bw_top_valid.newLine();
-				bw_top_valid.write("Normalized Informativeness list:");
-				bw_top_valid.newLine();
-				bw_top_valid.write(Arrays.toString(ZScore(scores)) + scores.length); // write the normalized informativeness list to the file
-				bw_top_valid.newLine();
-				bw_top_valid.write("Complexity count:"); // write the complexity count to the file
-				bw_top_valid.newLine();
-				bw_top_valid.write(Integer.toString(complexities.size()));
+					bw_func_statistics.write("Informativeness list:");
+					bw_func_statistics.newLine();
+					bw_func_statistics.write(func1scores.toString()); // write the informativeness list to the file
+					bw_func_statistics.newLine();
+					bw_func_statistics.write("Sum of informativeness:"+ sum_info_func1);// write the sum of informativeness to the file
+					bw_func_statistics.newLine();
+					bw_func_statistics.write("Normalized Informativeness list:");
+					bw_func_statistics.newLine();
+					bw_func_statistics.write(Arrays.toString(ZScore(scores)) + scores.length); // write the normalized informativeness list to the file
+					bw_func_statistics.newLine();
+					bw_func_statistics.write("Complexity count:"); // write the complexity count to the file
+					bw_func_statistics.newLine();
+					bw_func_statistics.write(Integer.toString(complexities.size()));
 				cc1 = complexities.size();
 				bw_top_valid.flush();
 				pb.close();
 			}
 			bw_top_valid.close();
+			bw_func_statistics.close();
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.err.println("Error in function 1!");
@@ -196,7 +200,8 @@ public class PatternDisplay {
 
 		Collections.shuffle(valid_unique_query); // shuffle the valid unique queries
 		try {
-			BufferedWriter bw_random50 = new BufferedWriter(new FileWriter("function4.txt",true)); // the file to store the random 50 queries of function 4
+			BufferedWriter bw_random50 = new BufferedWriter(new FileWriter("function4_queries.txt",true)); // the file to store the random 50 queries of function 4
+			BufferedWriter bw_func_statistics = new BufferedWriter(new FileWriter("function4_statistiscs.txt",true)); // the file to store the random 50 queries of function 4
 			List<Double> func4scores = new ArrayList<Double>(); // the list of informativeness of function 4
 			Set<Integer> complexities = new HashSet<Integer>(); // the set of complexity, used to count the number of complexity
 			int random_count = 0;
@@ -221,20 +226,23 @@ public class PatternDisplay {
 			}
 			if (func4scores.size() != 50)
 					System.err.println("The number of funciton 4 outputs is not 50!");
-			bw_random50.write("Informativeness list:");
-			bw_random50.newLine();	
-			bw_random50.write(func4scores.toString()); // write the informativeness list to the file
-			bw_random50.newLine();
-			bw_random50.write("Normalized Informativeness list:");
-			bw_random50.newLine();
-			bw_random50.write(Arrays.toString(ZScore(scores)) + scores.length); // write the normalized informativeness list to the file
-			bw_random50.newLine();
-			bw_random50.write("Complexity count:");
-			bw_random50.newLine();
-			bw_random50.write(Integer.toString(complexities.size())); // write the complexity count to the file
+					bw_func_statistics.write("Informativeness list:");
+					bw_func_statistics.newLine();	
+					bw_func_statistics.write(func4scores.toString()); // write the informativeness list to the file
+					bw_func_statistics.newLine();
+					bw_func_statistics.write("Sum of informativeness:"+ sum_info_func4);// write the sum of informativeness to the file
+					bw_func_statistics.newLine();
+					bw_func_statistics.write("Normalized Informativeness list:");
+					bw_func_statistics.newLine();
+					bw_func_statistics.write(Arrays.toString(ZScore(scores)) + scores.length); // write the normalized informativeness list to the file
+					bw_func_statistics.newLine();
+					bw_func_statistics.write("Complexity count:");
+					bw_func_statistics.newLine();
+					bw_func_statistics.write(Integer.toString(complexities.size())); // write the complexity count to the file
 			cc4 = complexities.size();
 			bw_random50.flush();
 			bw_random50.close();
+			bw_func_statistics.close();
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.err.println("Error in function 4!");
@@ -767,8 +775,10 @@ public class PatternDisplay {
 
 
 		// following code: function 2 results 
+		Collections.shuffle(entity_rank_list);
 		try {
 			BufferedWriter bw_function2 = new BufferedWriter(new FileWriter("function2_results.txt", true));
+			BufferedWriter bw_func_statistics = new BufferedWriter(new FileWriter("function2_statistiscs.txt",true)); // the file to store the random 50 queries of function 4
 			List<Double> func2scores = new ArrayList<Double>();
 			Set<Integer> complexities = new HashSet<Integer>();
 			br_f2: for (String item : entity_rank_list) {
@@ -799,20 +809,23 @@ public class PatternDisplay {
 			}
 			if (func2scores.size() != 50)
 				System.err.println("The number of function2 outputs is not 50!!!");
-			bw_function2.write("Informativeness list:");
-			bw_function2.newLine();
-			bw_function2.write(func2scores.toString());
-			bw_function2.newLine();
-			bw_function2.write("Normalized Informativeness list:");
-			bw_function2.newLine();
-			bw_function2.write(Arrays.toString(ZScore(scores)) + scores.length);
-			bw_function2.newLine();
-			bw_function2.write("Complexity count:");
-			bw_function2.newLine();
-			bw_function2.write(Integer.toString(complexities.size()));
+				bw_func_statistics.write("Informativeness list:");
+				bw_func_statistics.newLine();
+				bw_func_statistics.write(func2scores.toString());
+				bw_func_statistics.newLine();
+				bw_func_statistics.write("Sum of informativeness:"+ sum_info_func2);
+				bw_func_statistics.newLine();
+				bw_func_statistics.write("Normalized Informativeness list:");
+				bw_func_statistics.newLine();
+				bw_func_statistics.write(Arrays.toString(ZScore(scores)) + scores.length);
+				bw_func_statistics.newLine();
+				bw_func_statistics.write("Complexity count:");
+				bw_func_statistics.newLine();
+				bw_func_statistics.write(Integer.toString(complexities.size()));
 			cc2 = complexities.size();
 			bw_function2.flush();
 			bw_function2.close();
+			bw_func_statistics.close();
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.err.println("Error during Function 2!!!");
@@ -979,6 +992,7 @@ public class PatternDisplay {
 		// 3. if size still < 50, continue find random valid query
 		try {
 			BufferedWriter bw_func3 = new BufferedWriter(new FileWriter("function3.txt",true));
+			BufferedWriter bw_func_statistics = new BufferedWriter(new FileWriter("function3_statistiscs.txt",true)); // the file to store the random 50 queries of function 4
 			List<Double> func3scores = new ArrayList<Double>();// list to store all informativeness
 			Set<Integer> complexities = new HashSet<Integer>();// set to store all length
 
@@ -1133,20 +1147,23 @@ public class PatternDisplay {
 			}
 			if (func3scores.size() != 50)
 				System.err.println("The number of function3 outputs is not 50!!!");
-			bw_func3.write("Informativeness list:");
-			bw_func3.newLine();
-			bw_func3.write(func3scores.toString());
-			bw_func3.newLine();
-			bw_func3.write("Normalized Informativeness list:");
-			bw_func3.newLine();
-			bw_func3.write(Arrays.toString(ZScore(scores)) + scores.length);
-			bw_func3.newLine();
-			bw_func3.write("Complexity count:");
-			bw_func3.newLine();
-			bw_func3.write(Integer.toString(complexities.size()));
+				bw_func_statistics.write("Informativeness list:");
+				bw_func_statistics.newLine();
+				bw_func_statistics.write(func3scores.toString());
+				bw_func_statistics.newLine();
+			bw_func_statistics.write("Sum of informativeness:"+ sum_info_func3);
+			bw_func_statistics.newLine();
+			bw_func_statistics.write("Normalized Informativeness list:");
+			bw_func_statistics.newLine();
+			bw_func_statistics.write(Arrays.toString(ZScore(scores)) + scores.length);
+			bw_func_statistics.newLine();
+			bw_func_statistics.write("Complexity count:");
+			bw_func_statistics.newLine();
+			bw_func_statistics.write(Integer.toString(complexities.size()));
 			cc3 = complexities.size();
 			bw_func3.flush();
 			bw_func3.close();
+			bw_func_statistics.close();
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.err.println("Error in function 3!");
